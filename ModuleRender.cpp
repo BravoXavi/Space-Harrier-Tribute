@@ -124,8 +124,10 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 {
 	bool ret = true;
 	SDL_Rect rect;
-	
-	rect.w = SCREEN_WIDTH;
+	int textW, textH;
+	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+
+	rect.w = textW;
 	rect.h = horizonY;
 
 	int pX = (SCREEN_WIDTH / 2) + x;
@@ -138,8 +140,10 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	rect.w *= SCREEN_SIZE;
 	rect.h *= SCREEN_SIZE;
 
-	int textW, textH;
-	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+	float maxExtraPixelsX = ((textW - SCREEN_WIDTH) / 2) * SCREEN_SIZE;
+
+	if (increasingExtraPixelsX >= maxExtraPixelsX || increasingExtraPixelsX <= -maxExtraPixelsX) increasingExtraPixelsX = 1.0f;
+	increasingExtraPixelsX += playerSpeed;
 
 	float pixelsPerRow = (float)textH / rect.h;
 	float pixelsPerRowOffset = 0.0f;
@@ -147,15 +151,28 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	SDL_Rect textureLine = { 0, 0, textW, 1 };
 	rect.h = 1;
 
+	int originalRectX = rect.x;
+	float deviation = 0.0f;
+
 	for (int i = 0; i <= (horizonY*SCREEN_SIZE); i++)
 	{
+		deviation = (((float)i / ((float)horizonY*(float)SCREEN_SIZE))*increasingExtraPixelsX);
+		rect.x = originalRectX + round(deviation);	
 		SDL_RenderCopy(renderer, texture, &textureLine, &rect);
 		pixelsPerRowOffset += pixelsPerRow;
 		textureLine.y = (int)pixelsPerRowOffset;
-		rect.y += 1;
+		rect.y += 1;		
 	}
 
+	//TODO -> Make this function do the vertical lines move
+	AlphaHorizontalLines();
+
 	return ret;
+}
+
+void ModuleRender::AlphaHorizontalLines()
+{
+	//TODO VERTICAL LINES
 }
 
 bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)

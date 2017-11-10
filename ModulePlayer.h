@@ -37,6 +37,7 @@ public:
 private:
 	void checkHorizontalAnimation();
 	void modifyHorizonY();
+	void setCharSpeed(float speed);
 };
 
 #endif

@@ -126,26 +126,31 @@ void ModulePlayer::checkHorizontalAnimation()
 	if (realPosition <= SCREEN_DIVISOR)
 	{
 		current_animation = &left2;
+		setCharSpeed(10.0f);
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 2))
 	{
 		current_animation = &left1;
+		setCharSpeed(5.0f);
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 3))
 	{
 		current_animation = &middle;
+		setCharSpeed(0.0f);
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 4))
 	{
 		current_animation = &right1;
+		setCharSpeed(-5.0f);
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 5))
 	{
 		current_animation = &right2;
+		setCharSpeed(-10.0f);
 		return;
 	}
 }
@@ -156,6 +161,12 @@ void ModulePlayer::modifyHorizonY()
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	App->renderer->horizonY = (int)(temp * (FLOOR_Y_MAX - FLOOR_Y_MIN)) + FLOOR_Y_MIN;
 }
+
+void ModulePlayer::setCharSpeed(float speed)
+{
+	App->renderer->playerSpeed = speed;
+}
+
 // TODO 13: Make so is the laser collides, it is removed and create an explosion particle at its position
 
 // TODO 14: Make so if the player collides, it is removed and create few explosions at its positions
