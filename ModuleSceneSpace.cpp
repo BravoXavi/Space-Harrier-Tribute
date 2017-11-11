@@ -21,7 +21,7 @@ bool ModuleSceneSpace::Start()
 {
 	LOG("Loading space scene");
 	
-	floor = App->textures->Load("assets/Floor.png");
+	floor = App->textures->Load("assets/Floor.bmp");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
 	App->player->Enable();

@@ -132,7 +132,7 @@ void ModulePlayer::checkHorizontalAnimation()
 	else if (realPosition <= (SCREEN_DIVISOR * 2))
 	{
 		current_animation = &left1;
-		setCharSpeed(5.0f);
+		setCharSpeed(2.0f);
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 3))
@@ -144,7 +144,7 @@ void ModulePlayer::checkHorizontalAnimation()
 	else if (realPosition <= (SCREEN_DIVISOR * 4))
 	{
 		current_animation = &right1;
-		setCharSpeed(-5.0f);
+		setCharSpeed(-2.0f);
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 5))
@@ -160,6 +160,8 @@ void ModulePlayer::modifyHorizonY()
 	float offsetValue = (float)SCREEN_HEIGHT - (float)current_animation->GetCurrentFrame().h;
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	App->renderer->horizonY = (int)(temp * (FLOOR_Y_MAX - FLOOR_Y_MIN)) + FLOOR_Y_MIN;
+
+	App->renderer->SetAlphaLineParametersPercentual(temp);
 }
 
 void ModulePlayer::setCharSpeed(float speed)

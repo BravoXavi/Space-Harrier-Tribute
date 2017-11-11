@@ -8,6 +8,11 @@ struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Rect;
 
+#define ALPHA_DISTANCE_MAX 20.0f*SCREEN_SIZE
+#define ALPHA_DISTANCE_MIN 6.0f*SCREEN_SIZE
+#define ALPHA_SIZE_MAX 10.3f*SCREEN_SIZE
+#define ALPHA_SIZE_MIN 3.32f*SCREEN_SIZE
+
 class ModuleRender : public Module
 {
 public:
@@ -23,9 +28,10 @@ public:
 	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f);
 
 	bool FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f);
-	void AlphaHorizontalLines();
+	void AlphaVerticalLinesMove();
 
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
+	void SetAlphaLineParametersPercentual(float percent);
 
 public:
 	SDL_Renderer* renderer = nullptr;
@@ -33,6 +39,15 @@ public:
 	int horizonY;
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
+
+private:
+	float startDistanceBetweenAlphaLines;
+	float distanceBetweenAlphaLines;
+
+	float startSizeOfAlphaLines;
+	float sizeOfAlphaLines;
+
+	int iterationOfAlphaLine;
 };
 
 #endif // __MODULERENDER_H__

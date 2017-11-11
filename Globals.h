@@ -43,7 +43,7 @@ typedef unsigned int uint;
 	 }
 
 // Configuration -----------
-#define FLOOR_Y_MIN 15
+#define FLOOR_Y_MIN 20
 #define FLOOR_Y_MAX 80
 #define SCREEN_SIZE 3
 #define SCREEN_WIDTH 384

@@ -11,6 +11,9 @@ ModuleRender::ModuleRender()
 	camera.w = SCREEN_WIDTH * SCREEN_SIZE;
 	camera.h = SCREEN_HEIGHT* SCREEN_SIZE;
 	horizonY = FLOOR_Y_MIN;
+
+	startDistanceBetweenAlphaLines = ALPHA_DISTANCE_MIN;
+	startSizeOfAlphaLines = ALPHA_SIZE_MIN;
 }
 
 // Destructor
@@ -127,7 +130,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	int textW, textH;
 	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
 
-	rect.w = textW;
+	rect.w = SCREEN_WIDTH;
 	rect.h = horizonY;
 
 	int pX = (SCREEN_WIDTH / 2) + x;
@@ -140,39 +143,63 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	rect.w *= SCREEN_SIZE;
 	rect.h *= SCREEN_SIZE;
 
-	float maxExtraPixelsX = ((textW - SCREEN_WIDTH) / 2) * SCREEN_SIZE;
+	float maxExtraPixelsX = ((textW - SCREEN_WIDTH) / 2);
 
-	if (increasingExtraPixelsX >= maxExtraPixelsX || increasingExtraPixelsX <= -maxExtraPixelsX) increasingExtraPixelsX = 1.0f;
+	if (increasingExtraPixelsX >= (120.0f) || increasingExtraPixelsX <= (-120.0f))
+	{
+		increasingExtraPixelsX = 2.0f;
+	}
 	increasingExtraPixelsX += playerSpeed;
 
 	float pixelsPerRow = (float)textH / rect.h;
 	float pixelsPerRowOffset = 0.0f;
 
-	SDL_Rect textureLine = { 0, 0, textW, 1 };
+	SDL_Rect textureLine = { maxExtraPixelsX, 0, (textW - maxExtraPixelsX * 2), 1 };
 	rect.h = 1;
 
-	int originalRectX = rect.x;
+	int originalRectX = textureLine.x;
 	float deviation = 0.0f;
 
 	for (int i = 0; i <= (horizonY*SCREEN_SIZE); i++)
 	{
-		deviation = (((float)i / ((float)horizonY*(float)SCREEN_SIZE))*increasingExtraPixelsX);
-		rect.x = originalRectX + round(deviation);	
+		deviation = (((float)i / ((float)horizonY*(float)SCREEN_SIZE))*increasingExtraPixelsX);	
+		textureLine.x = originalRectX + (int)deviation;
 		SDL_RenderCopy(renderer, texture, &textureLine, &rect);
 		pixelsPerRowOffset += pixelsPerRow;
 		textureLine.y = (int)pixelsPerRowOffset;
 		rect.y += 1;		
 	}
 
-	//TODO -> Make this function do the vertical lines move
-	AlphaHorizontalLines();
+	AlphaVerticalLinesMove();
 
 	return ret;
 }
 
-void ModuleRender::AlphaHorizontalLines()
+void ModuleRender::AlphaVerticalLinesMove()
 {
-	//TODO VERTICAL LINES
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
+
+	distanceBetweenAlphaLines = startDistanceBetweenAlphaLines;
+	sizeOfAlphaLines = startSizeOfAlphaLines;
+
+	float coef = iterationOfAlphaLine / distanceBetweenAlphaLines;
+	float offsetDif = 0;
+
+	while (distanceBetweenAlphaLines <= horizonY * SCREEN_SIZE)
+	{
+		const SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, sizeOfAlphaLines + (offsetDif * (coef / 2)) };
+		SDL_RenderFillRect(renderer, &test);
+		offsetDif = sizeOfAlphaLines / 4.0f;
+		sizeOfAlphaLines -= offsetDif;
+		distanceBetweenAlphaLines += (sizeOfAlphaLines * 2.0f);
+	}
+
+	iterationOfAlphaLine = (iterationOfAlphaLine + 2) % (int)(startDistanceBetweenAlphaLines * 2);
+}
+
+void ModuleRender::SetAlphaLineParametersPercentual(float percent) {
+	startDistanceBetweenAlphaLines = ALPHA_DISTANCE_MIN + (percent*(ALPHA_DISTANCE_MAX - ALPHA_DISTANCE_MIN));
+	startSizeOfAlphaLines = ALPHA_SIZE_MIN + (percent*(ALPHA_SIZE_MAX - ALPHA_SIZE_MIN));
 }
 
 bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)
