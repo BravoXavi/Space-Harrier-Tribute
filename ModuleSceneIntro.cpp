@@ -6,6 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleSceneIntro.h"
+#include "FontManager.h"
 
 // Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
 
@@ -20,7 +21,8 @@ bool ModuleSceneIntro::Start()
 {
 	LOG("Loading space intro");
 	
-	background = App->textures->Load("assets/intro.png");
+	background = App->textures->Load("assets/intro.png");	
+	blueFont = App->fontManager->addReference("blue");
 
 	if(fx == 0)
 		fx = App->audio->LoadFx("assets/introSound.wav");
@@ -45,6 +47,7 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(background, 0, 0, NULL);
+	App->fontManager->printWithFont(blueFont, 150, 150, "SPACE HARRIER RULEZ");
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
 	{

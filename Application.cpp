@@ -7,7 +7,8 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
-
+#include "FontManager.h"
+#include "Font.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneSpace.h"
 #include "ModulePlayer.h"
@@ -23,6 +24,8 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+
+	fontManager = new FontManager();
 
 	// Game Modules
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
@@ -54,8 +57,10 @@ bool Application::Init()
 			ret = (*it)->Start();
 	}
 
+	fontManager->Start();
+
 	// Start the first scene --
-	fade->FadeToBlack(scene_space, nullptr, 3.0f);
+	fade->FadeToBlack(scene_intro, nullptr, 3.0f);
 
 	return ret;
 }

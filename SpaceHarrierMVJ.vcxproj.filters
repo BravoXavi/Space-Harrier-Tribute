@@ -67,6 +67,8 @@
     <ClInclude Include="ModuleSceneSpace.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="FontManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -111,5 +113,7 @@
     <ClCompile Include="ModuleSceneSpace.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontManager.cpp" />
   </ItemGroup>
 </Project>

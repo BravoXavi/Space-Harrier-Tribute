@@ -2,6 +2,7 @@
 #define __MODULESCENEINTRO_H__
 
 #include "Module.h"
+#include "Font.h"
 
 struct SDL_Texture;
 
@@ -19,6 +20,9 @@ public:
 	
 	SDL_Texture* background = nullptr;
 	uint fx = 0;
+
+private:
+	Font* blueFont;
 };
 
 #endif // __MODULESCENEINTRO_H__
