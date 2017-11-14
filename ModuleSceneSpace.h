@@ -18,6 +18,7 @@ public:
 public:
 	uint startFx;
 	SDL_Texture* floor = nullptr;
+	SDL_Texture* stars = nullptr;
 };
 
 #endif // __MODULESCENESPACE_H__

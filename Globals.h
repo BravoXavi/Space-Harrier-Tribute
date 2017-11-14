@@ -43,11 +43,13 @@ typedef unsigned int uint;
 	 }
 
 // Configuration -----------
+#define MIN_Z 0
+#define MAX_Z 25
 #define FLOOR_Y_MIN 20
 #define FLOOR_Y_MAX 80
 #define SCREEN_SIZE 3
-#define SCREEN_WIDTH 384
-#define SCREEN_HEIGHT 240
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 224
 #define SCREEN_DIVISOR SCREEN_WIDTH/5
 #define FULLSCREEN false
 #define VSYNC true

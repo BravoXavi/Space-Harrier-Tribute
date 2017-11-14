@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include <queue>
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -12,6 +13,25 @@ struct SDL_Rect;
 #define ALPHA_DISTANCE_MIN 6.0f*SCREEN_SIZE
 #define ALPHA_SIZE_MAX 10.3f*SCREEN_SIZE
 #define ALPHA_SIZE_MIN 3.32f*SCREEN_SIZE
+
+struct BlitTarget
+{
+	SDL_Texture* texture;
+	int x;
+	int y;
+	SDL_Rect* section;
+	SDL_Rect* resize;
+	int depth;
+
+	BlitTarget(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth) : // expand this call if you need to
+		texture(texture),
+		x(x),
+		y(y),
+		section(section),
+		resize(resize),
+		depth(depth)
+	{}
+};
 
 class ModuleRender : public Module
 {
@@ -25,7 +45,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f);
+	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, float speed = 1.0f);
 
 	bool FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f);
 	void AlphaVerticalLinesMove();
@@ -39,6 +59,7 @@ public:
 	int horizonY;
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
+	std::queue<BlitTarget> depthBuffer;
 
 private:
 	float startDistanceBetweenAlphaLines;

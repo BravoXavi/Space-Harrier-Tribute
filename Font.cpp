@@ -7,14 +7,14 @@
 #include <iostream>
 #include <assert.h>
 
-Font::Font(const char* pathToBMP, const char* traductor)
+Font::Font(const char* pathToImage, const char* traductor)
 {
-	fontPNG = App->textures->Load(pathToBMP);
+	fontPNG = App->textures->Load(pathToImage);
 	int textW, textH;
 
 	SDL_QueryTexture(fontPNG, NULL, NULL, &textW, &textH);
 
-	//Considering fixed known size of 16x16
+	//Considering fixed known size game fonts
 	characterWidth = 8;
 	characterHeight = textH;
 
@@ -30,9 +30,6 @@ Font::Font(const char* pathToBMP, const char* traductor)
 		traductorMap[traductor[charCounter]] = charCounter;
 		++charCounter;
 	}
-	
-
-	std::cout << "Font " << pathToBMP << " loaded succesfully!" << std::endl;
 }
 
 void Font::printText(const char* textToWrite, int x, int y) 
@@ -41,6 +38,6 @@ void Font::printText(const char* textToWrite, int x, int y)
 	{
 		if (textToWrite[i] == ' ') simbolSize.y = 8;
 		else simbolSize = simbolPosition[traductorMap[textToWrite[i]]];
-		App->renderer->Blit(fontPNG, x + (i*8), y, &simbolSize);
+		App->renderer->Blit(fontPNG, x + (i*8), y, &simbolSize, nullptr);
 	}
 }

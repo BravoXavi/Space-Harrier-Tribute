@@ -17,6 +17,8 @@ struct Particle
 	unsigned int fxIndex;
 	int speed;
 	iPoint position = { 0, 0 };
+	int z = 0;
+
 	Animation anim;
 	collisionType colType;
 
@@ -49,7 +51,7 @@ private:
 	std::list<Particle*> active;
 
 public:
-	Particle laser;
+	Particle cannon;
 	Particle explosion;
 	// prototype particles go here ...
 };

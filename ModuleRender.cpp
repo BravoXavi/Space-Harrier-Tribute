@@ -54,19 +54,24 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	// debug camera
-	int speed = 1;
+	//int speed = 1;
 
-	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->renderer->camera.y += speed;
+	//if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	//	App->renderer->camera.y += speed;
 
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		App->renderer->camera.y -= speed;
+	//if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	//	App->renderer->camera.y -= speed;
 
-	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->renderer->camera.x += speed;
+	//if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	//	App->renderer->camera.x += speed;
 
-	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->renderer->camera.x -= speed;
+	//if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	//	App->renderer->camera.x -= speed;
+
+	for (auto it = depthBuffer.begin(); it != depthBuffer.end(); ++it)
+		Blit(it->texture, it->x, it->y, it->section, it->resize);
+
+	depthBuffer.clear();
 
 	return UPDATE_CONTINUE;
 }
@@ -92,7 +97,7 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed)
+bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, float speed)
 {
 	bool ret = true;
 	SDL_Rect rect;
@@ -100,7 +105,12 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 	rect.x = x * SCREEN_SIZE;
 	rect.y = y * SCREEN_SIZE;
 
-	if(section != NULL)
+	if (resize != NULL)
+	{
+		rect.w = resize->w;
+		rect.h = resize->h;
+	}
+	else if(section != NULL)
 	{
 		rect.w = section->w;
 		rect.h = section->h;
@@ -194,7 +204,7 @@ void ModuleRender::AlphaVerticalLinesMove()
 		distanceBetweenAlphaLines += (sizeOfAlphaLines * 2.0f);
 	}
 
-	iterationOfAlphaLine = (iterationOfAlphaLine + 2) % (int)(startDistanceBetweenAlphaLines * 2);
+	iterationOfAlphaLine = (iterationOfAlphaLine + 7) % (int)(startDistanceBetweenAlphaLines * 2);
 }
 
 void ModuleRender::SetAlphaLineParametersPercentual(float percent) {

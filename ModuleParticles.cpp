@@ -18,18 +18,22 @@ ModuleParticles::~ModuleParticles()
 bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
-	graphics = App->textures->Load("rtype/particles.png");
+	graphics = App->textures->Load("assets/Shoots.png");
 
 
 	// TODO 2: Create a prototype for the laser particle -- DONE
 	// audio: rtype/laser.wav
 	// coords: {232, 103, 16, 12}; {249, 103, 16, 12};
-	laser.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	laser.anim.frames.push_back({ 232, 103, 16, 12 });
-	laser.anim.frames.push_back({ 249, 103, 16, 12 });
-	laser.speed = 10;
-	laser.colType = LASER;
-	laser.collision = new Collider({ laser.position.x, laser.position.y, 16, 12 });
+	cannon.fxIndex = App->audio->LoadFx("rtype/laser.wav");
+	cannon.anim.frames.push_back({ 1, 1, 91, 61 });
+	cannon.anim.frames.push_back({ 95, 0, 91, 61 });
+	cannon.anim.frames.push_back({ 188, 1, 91, 61 });
+	cannon.anim.frames.push_back({ 284, 0, 91, 61 });
+	cannon.anim.speed = 0.1f;
+	cannon.z = 1;
+	cannon.speed = 1;
+	cannon.colType = CANNON;
+	cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
 
 	// TODO 12: Create a new "Explosion" particle -- DONE
 	// audio: rtype/explosion.wav
@@ -77,9 +81,13 @@ update_status ModuleParticles::Update()
 		Particle* p = *it;
 
 		p->Update();
-		App->renderer->Blit(graphics, p->position.x, p->position.y, &(p->anim.GetCurrentFrame()));
 
-		// Handle particle fx here ?
+		float zModifier = 1.0f - ((float)p->z / MAX_Z);
+		int newX = (p->anim.GetCurrentFrame().w - (p->anim.GetCurrentFrame().w * zModifier)) / 2;
+		int newY = (p->anim.GetCurrentFrame().h - (p->anim.GetCurrentFrame().h * zModifier)) / 2;
+		SDL_Rect resizeParticle = { 0, 0, p->anim.GetCurrentFrame().w * zModifier, p->anim.GetCurrentFrame().h * zModifier };
+
+		App->renderer->Blit(graphics, p->position.x + newX, p->position.y + newY, &(p->anim.GetCurrentFrame()), &resizeParticle);
 	}
 
 	return UPDATE_CONTINUE;
@@ -110,11 +118,13 @@ Particle::~Particle()
 
 void Particle::Update()
 {
+	z += speed;
+	if (z > MAX_Z) to_delete = true;
+
 	// TODO 5: This is the core of the particle logic
 	// draw and audio will be managed by ModuleParticle::Update()
 	// Note: Set to_delete to true is you want it deleted
-	position.x += speed;
-	
+	//position.x += speed;
 
 }
 

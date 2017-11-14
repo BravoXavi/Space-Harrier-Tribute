@@ -10,14 +10,14 @@ ModuleCollision::ModuleCollision()
 {
 	collisionMatrix[WALL][WALL] = false;
 
-	collisionMatrix[LASER][LASER] = false;
+	collisionMatrix[CANNON][CANNON] = false;
 
-	collisionMatrix[EXPLOSION][LASER] = false;
+	collisionMatrix[EXPLOSION][CANNON] = false;
 	collisionMatrix[EXPLOSION][WALL] = false;
 	collisionMatrix[EXPLOSION][EXPLOSION] = false;
 
 	collisionMatrix[PLAYER][EXPLOSION] = false;
-	collisionMatrix[PLAYER][LASER] = false;
+	collisionMatrix[PLAYER][CANNON] = false;
 }
 
 // Destructor

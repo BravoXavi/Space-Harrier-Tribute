@@ -65,15 +65,15 @@ update_status ModulePlayer::Update()
 	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		if(position.x > 0) position.x -= speed;
-		if (current_animation != &run)
-			checkHorizontalAnimation();
+		if(current_animation == &run) checkHorizontalAnimation(true);
+		else checkHorizontalAnimation();
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		if(position.x + current_animation->GetCurrentFrame().w < SCREEN_WIDTH) position.x += speed;
-		if(current_animation != &run) 
-			checkHorizontalAnimation();
+		if (position.x + current_animation->GetCurrentFrame().w < SCREEN_WIDTH) position.x += speed;
+		if (current_animation == &run) checkHorizontalAnimation(true);
+		else checkHorizontalAnimation();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
@@ -105,7 +105,7 @@ update_status ModulePlayer::Update()
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		// TODO 6: Shoot a laser using the particle system
-		App->particles->AddParticle(App->particles->laser, position.x, position.y);
+		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y);
 	}
 
 	//if(App->input->GetKey(SDL_SCANCODE_S) == KEY_IDLE
@@ -113,46 +113,49 @@ update_status ModulePlayer::Update()
 	//	current_animation = &idle;
 
 	// Draw everything --------------------------------------
-	if(destroyed == false)
-		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()));
+	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, 0);
+	if (destroyed == false)
+		//App->renderer->depthBuffer.push_back(*temp);
+		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr);
 
 	return UPDATE_CONTINUE;
 }
 
-void ModulePlayer::checkHorizontalAnimation()
+void ModulePlayer::checkHorizontalAnimation(bool running)
 {
 	int realPosition = position.x + middle.GetCurrentFrame().w / 2;
 	
-	if (realPosition <= SCREEN_DIVISOR)
-	{
-		current_animation = &left2;
-		setCharSpeed(10.0f);
-		return;
-	}
-	else if (realPosition <= (SCREEN_DIVISOR * 2))
-	{
-		current_animation = &left1;
-		setCharSpeed(2.0f);
-		return;
-	}
-	else if (realPosition <= (SCREEN_DIVISOR * 3))
-	{
-		current_animation = &middle;
-		setCharSpeed(0.0f);
-		return;
-	}
-	else if (realPosition <= (SCREEN_DIVISOR * 4))
-	{
-		current_animation = &right1;
-		setCharSpeed(-2.0f);
-		return;
-	}
-	else if (realPosition <= (SCREEN_DIVISOR * 5))
-	{
-		current_animation = &right2;
-		setCharSpeed(-10.0f);
-		return;
-	}
+		if (realPosition <= SCREEN_DIVISOR)
+		{
+			if(!running) current_animation = &left2;
+			setCharSpeed();
+			return;
+		}
+		else if (realPosition <= (SCREEN_DIVISOR * 2))
+		{
+			if (!running) current_animation = &left1;
+			setCharSpeed();
+			return;
+		}
+		else if (realPosition <= (SCREEN_DIVISOR * 3))
+		{
+			if (!running) current_animation = &middle;
+			setCharSpeed();
+			return;
+		}
+		else if (realPosition <= (SCREEN_DIVISOR * 4))
+		{
+			if (!running) current_animation = &right1;
+			setCharSpeed();
+			return;
+		}
+		else if (realPosition <= (SCREEN_DIVISOR * 5))
+		{
+			if (!running) current_animation = &right2;
+			setCharSpeed();
+			return;
+		}
+	
 }
 
 void ModulePlayer::modifyHorizonY()
@@ -164,13 +167,14 @@ void ModulePlayer::modifyHorizonY()
 	App->renderer->SetAlphaLineParametersPercentual(temp);
 }
 
-void ModulePlayer::setCharSpeed(float speed)
+void ModulePlayer::setCharSpeed()
 {
-	App->renderer->playerSpeed = speed;
+	int screenPosition = (position.x + middle.GetCurrentFrame().w / 2) - (SCREEN_WIDTH/2);
+	float speedPercent = ((float)screenPosition * 1.0f) / (SCREEN_WIDTH/2.0f);
+	App->renderer->playerSpeed = speedPercent * 10;
 }
 
 // TODO 13: Make so is the laser collides, it is removed and create an explosion particle at its position
-
 // TODO 14: Make so if the player collides, it is removed and create few explosions at its positions
 // then fade away back to the first screen (use the "destroyed" bool already created 
 // You will need to create, update and destroy the collider with the player

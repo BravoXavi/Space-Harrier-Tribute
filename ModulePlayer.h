@@ -35,9 +35,9 @@ public:
 	bool destroyed = false;
 
 private:
-	void checkHorizontalAnimation();
+	void checkHorizontalAnimation(bool running = false);
 	void modifyHorizonY();
-	void setCharSpeed(float speed);
+	void setCharSpeed();
 };
 
 #endif

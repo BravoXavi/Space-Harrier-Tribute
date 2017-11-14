@@ -12,7 +12,7 @@
 enum collisionType {
 	PLAYER,
 	WALL,
-	LASER,
+	CANNON,
 	EXPLOSION,
 	MAXIMUM
 };

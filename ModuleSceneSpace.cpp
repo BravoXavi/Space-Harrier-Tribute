@@ -21,6 +21,7 @@ bool ModuleSceneSpace::Start()
 {
 	LOG("Loading space scene");
 	
+	stars = App->textures->Load("assets/stars.png");
 	floor = App->textures->Load("assets/Floor.bmp");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
@@ -60,7 +61,8 @@ update_status ModuleSceneSpace::Update()
 	//App->renderer->camera.x -= 3;
 	
 	// Draw everything --------------------------------------
-	App->renderer->FloorBlit(floor, 0, 0, NULL);
+	App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
+	App->renderer->FloorBlit(floor, 0, 0, nullptr);
 	
 	return UPDATE_CONTINUE;
 }

@@ -46,8 +46,8 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	App->renderer->Blit(background, 0, 0, NULL);
-	App->fontManager->printWithFont(blueFont, 150, 150, "SPACE HARRIER RULEZ");
+	App->renderer->Blit(background, 0, 0, nullptr, nullptr);
+	blueFont->printText("FONT MENU TEST", 150, 150);
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
 	{
