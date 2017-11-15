@@ -3,7 +3,8 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include <queue>
+#include <map>
+#include <vector>
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -23,7 +24,7 @@ struct BlitTarget
 	SDL_Rect* resize;
 	int depth;
 
-	BlitTarget(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth) : // expand this call if you need to
+	BlitTarget(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth) :
 		texture(texture),
 		x(x),
 		y(y),
@@ -59,7 +60,7 @@ public:
 	int horizonY;
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
-	std::queue<BlitTarget> depthBuffer;
+	std::map<int, std::vector<BlitTarget>> depthBuffer;
 
 private:
 	float startDistanceBetweenAlphaLines;

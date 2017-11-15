@@ -39,7 +39,9 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading space scene");
 
 	App->textures->Unload(background);
-	
+
+	delete blueFont;
+
 	return true;
 }
 

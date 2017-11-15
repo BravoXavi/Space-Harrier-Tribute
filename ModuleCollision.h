@@ -38,9 +38,6 @@ struct Collider
 	}
 
 	bool CheckCollision(const SDL_Rect& r) const;
-	void Attach(Module* mod);
-	void Detach(Module* mod);
-	void Notify();
 };
 
 class ModuleCollision : public Module

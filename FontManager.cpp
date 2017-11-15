@@ -21,6 +21,7 @@ Font* FontManager::addReference(const char* fontName)
 
 void FontManager::removeReferences() 
 {
+	fontMap.clear();
 	//delete fontMap["black"];
 	//delete fontMap["blue"];
 }

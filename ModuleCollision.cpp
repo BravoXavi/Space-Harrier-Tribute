@@ -107,8 +107,3 @@ bool Collider::CheckCollision(const SDL_Rect& r) const
 
 	return (xColl && yColl);
 }
-
-void Collider::Attach(Module *mod)
-{
-	listOfLookers.push_back(mod);
-}

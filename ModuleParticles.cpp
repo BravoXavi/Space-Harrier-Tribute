@@ -12,7 +12,10 @@ ModuleParticles::ModuleParticles()
 {}
 
 ModuleParticles::~ModuleParticles()
-{}
+{
+	//delete resizeParticleRect;
+	//delete particleRect;
+}
 
 // Load assets
 bool ModuleParticles::Start()
@@ -33,7 +36,7 @@ bool ModuleParticles::Start()
 	cannon.z = 1;
 	cannon.speed = 1;
 	cannon.colType = CANNON;
-	cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
+    //cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
 
 	// TODO 12: Create a new "Explosion" particle -- DONE
 	// audio: rtype/explosion.wav
@@ -47,12 +50,12 @@ bool ModuleParticles::CleanUp()
 {
 	LOG("Unloading particles");
 	App->textures->Unload(graphics);
-
+	
 	for (list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
 		RELEASE(*it);
 
 	active.clear();
-
+	
 	return true;
 }
 
@@ -83,11 +86,15 @@ update_status ModuleParticles::Update()
 		p->Update();
 
 		float zModifier = 1.0f - ((float)p->z / MAX_Z);
-		int newX = (p->anim.GetCurrentFrame().w - (p->anim.GetCurrentFrame().w * zModifier)) / 2;
-		int newY = (p->anim.GetCurrentFrame().h - (p->anim.GetCurrentFrame().h * zModifier)) / 2;
-		SDL_Rect resizeParticle = { 0, 0, p->anim.GetCurrentFrame().w * zModifier, p->anim.GetCurrentFrame().h * zModifier };
+		int newWidth = (int)(p->anim.GetCurrentFrame().w * zModifier);
+		int newHeight = (int)(p->anim.GetCurrentFrame().h * zModifier);
+		int xMove = (p->anim.GetCurrentFrame().w - newWidth) / 2;
+		int yMove = (p->anim.GetCurrentFrame().h - newHeight) / 2;
 
-		App->renderer->Blit(graphics, p->position.x + newX, p->position.y + newY, &(p->anim.GetCurrentFrame()), &resizeParticle);
+		p->setResizeRect(0, 0, newWidth, newHeight);
+		p->setRect(graphics, p->position.x + xMove, p->position.y + yMove, &(p->anim.GetCurrentFrame()), p->resizeRect, 1);
+
+		App->renderer->depthBuffer[p->rect->depth].push_back(*p->rect);
 	}
 
 	return UPDATE_CONTINUE;
@@ -128,3 +135,20 @@ void Particle::Update()
 
 }
 
+void Particle::setResizeRect(int x, int y, int w, int h)
+{
+	resizeRect->x = x;
+	resizeRect->y = y;
+	resizeRect->w = w;
+	resizeRect->h = h;
+}
+
+void Particle::setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth)
+{
+	rect->texture = texture;
+	rect->x = x;
+	rect->y = y;
+	rect->section = section;
+	rect->resize = resize;
+	rect->depth = depth;
+}

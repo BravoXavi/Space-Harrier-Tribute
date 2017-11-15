@@ -53,23 +53,19 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	// debug camera
-	//int speed = 1;
+	//for (auto it = depthBuffer.begin(); it != depthBuffer.end(); ++it)
+	//	Blit(it->texture, it->x, it->y, it->section, it->resize);
 
-	//if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-	//	App->renderer->camera.y += speed;
-
-	//if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-	//	App->renderer->camera.y -= speed;
-
-	//if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	//	App->renderer->camera.x += speed;
-
-	//if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	//	App->renderer->camera.x -= speed;
-
-	for (auto it = depthBuffer.begin(); it != depthBuffer.end(); ++it)
-		Blit(it->texture, it->x, it->y, it->section, it->resize);
+	for (auto it = depthBuffer.rbegin(); it != depthBuffer.rend(); ++it)
+	{
+		if (!it->second.empty())
+		{
+			for (std::vector<BlitTarget>::iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
+			{
+				Blit(itt->texture, itt->x, itt->y, itt->section, itt->resize);
+			}
+		}
+	}
 
 	depthBuffer.clear();
 
@@ -153,7 +149,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	rect.w *= SCREEN_SIZE;
 	rect.h *= SCREEN_SIZE;
 
-	float maxExtraPixelsX = ((textW - SCREEN_WIDTH) / 2);
+	int maxExtraPixelsX = ((textW - SCREEN_WIDTH) / 2);
 
 	if (increasingExtraPixelsX >= (120.0f) || increasingExtraPixelsX <= (-120.0f))
 	{
@@ -197,7 +193,8 @@ void ModuleRender::AlphaVerticalLinesMove()
 
 	while (distanceBetweenAlphaLines <= horizonY * SCREEN_SIZE)
 	{
-		const SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, sizeOfAlphaLines + (offsetDif * (coef / 2)) };
+
+		const SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (int)(distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, (int)(sizeOfAlphaLines + (offsetDif * (coef / 2.0f))) };
 		SDL_RenderFillRect(renderer, &test);
 		offsetDif = sizeOfAlphaLines / 4.0f;
 		sizeOfAlphaLines -= offsetDif;

@@ -115,8 +115,10 @@ update_status ModulePlayer::Update()
 	// Draw everything --------------------------------------
 	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, 0);
 	if (destroyed == false)
-		//App->renderer->depthBuffer.push_back(*temp);
-		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr);
+		App->renderer->depthBuffer[temp->depth].push_back(*temp);
+
+	delete temp;
+		//App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr);
 
 	return UPDATE_CONTINUE;
 }

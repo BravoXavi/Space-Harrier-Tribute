@@ -42,6 +42,8 @@ Application::~Application()
 {
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
 		RELEASE(*it);
+
+	RELEASE(fontManager);
 }
 
 bool Application::Init()

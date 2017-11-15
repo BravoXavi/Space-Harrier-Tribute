@@ -21,7 +21,6 @@ public:
 	SDL_Rect simbolSize;
 
 private:
-	SDL_Surface* fontBMP = nullptr;
 	SDL_Texture* fontPNG = nullptr;
 	std::map<char, int> traductorMap;
 
