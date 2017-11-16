@@ -12,6 +12,7 @@ public:
 	~ModuleSceneSpace();
 
 	bool Start();
+	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
 

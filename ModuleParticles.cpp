@@ -121,6 +121,8 @@ Particle::Particle(const Particle& p) : anim(p.anim), position(p.position), fxIn
 
 Particle::~Particle()
 {
+	delete rect;
+	delete resizeRect;
 }
 
 void Particle::Update()

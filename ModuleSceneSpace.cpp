@@ -21,7 +21,7 @@ bool ModuleSceneSpace::Start()
 {
 	LOG("Loading space scene");
 	
-	stars = App->textures->Load("assets/stars.png");
+	//stars = App->textures->Load("assets/stars.png");
 	floor = App->textures->Load("assets/Floor.bmp");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
@@ -51,18 +51,18 @@ bool ModuleSceneSpace::CleanUp()
 	return true;
 }
 
+//Draw Floor, Background, and extras (All this parts will ALWAYS stay in the back of the screen)
+update_status ModuleSceneSpace::PreUpdate()
+{
+	App->renderer->FloorBlit(floor, 0, 0, nullptr);
+	return UPDATE_CONTINUE;
+}
+
 // Update: draw background
 update_status ModuleSceneSpace::Update()
 {
-	// Move camera forward -----------------------------
-	//int scroll_speed = 1;
-
-	//App->player->position.x += 1;
-	//App->renderer->camera.x -= 3;
-	
 	// Draw everything --------------------------------------
-	App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
-	App->renderer->FloorBlit(floor, 0, 0, nullptr);
-	
+	//App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
+		
 	return UPDATE_CONTINUE;
 }

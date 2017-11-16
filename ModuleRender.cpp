@@ -14,6 +14,7 @@ ModuleRender::ModuleRender()
 
 	startDistanceBetweenAlphaLines = ALPHA_DISTANCE_MIN;
 	startSizeOfAlphaLines = ALPHA_SIZE_MIN;
+	iterationOfAlphaLine = 0;
 }
 
 // Destructor
@@ -53,9 +54,6 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	//for (auto it = depthBuffer.begin(); it != depthBuffer.end(); ++it)
-	//	Blit(it->texture, it->x, it->y, it->section, it->resize);
-
 	for (auto it = depthBuffer.rbegin(); it != depthBuffer.rend(); ++it)
 	{
 		if (!it->second.empty())
@@ -153,7 +151,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 
 	if (increasingExtraPixelsX >= (120.0f) || increasingExtraPixelsX <= (-120.0f))
 	{
-		increasingExtraPixelsX = 2.0f;
+		increasingExtraPixelsX = 0.0f;
 	}
 	increasingExtraPixelsX += playerSpeed;
 
@@ -182,31 +180,42 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 }
 
 void ModuleRender::AlphaVerticalLinesMove()
-{
+{	
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
 
 	distanceBetweenAlphaLines = startDistanceBetweenAlphaLines;
 	sizeOfAlphaLines = startSizeOfAlphaLines;
 
-	float coef = iterationOfAlphaLine / distanceBetweenAlphaLines;
 	float offsetDif = 0;
-
-	while (distanceBetweenAlphaLines <= horizonY * SCREEN_SIZE)
+	float normalIteration = (float)iterationOfAlphaLine*((startDistanceBetweenAlphaLines + startSizeOfAlphaLines) / 10.0f);
+	int tempIteration = (int)normalIteration % (int)(startDistanceBetweenAlphaLines * 2);
+	
+	float coef = tempIteration / distanceBetweenAlphaLines;
+	if (coef >= 1.8f) 
 	{
+		iterationOfAlphaLine = 0;
+	}
+			
+	while(distanceBetweenAlphaLines <= horizonY*SCREEN_SIZE)
+	{
+		SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (int)(distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, (int)(sizeOfAlphaLines + (offsetDif * (coef / 2.0f))) };
+		DrawQuad(test, 0, 0, 0, 50, false);
 
-		const SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (int)(distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, (int)(sizeOfAlphaLines + (offsetDif * (coef / 2.0f))) };
-		SDL_RenderFillRect(renderer, &test);
 		offsetDif = sizeOfAlphaLines / 4.0f;
 		sizeOfAlphaLines -= offsetDif;
+		
+		if (sizeOfAlphaLines <= 1) {
+			sizeOfAlphaLines = 1;
+		}
 		distanceBetweenAlphaLines += (sizeOfAlphaLines * 2.0f);
 	}
 
-	iterationOfAlphaLine = (iterationOfAlphaLine + 7) % (int)(startDistanceBetweenAlphaLines * 2);
+	iterationOfAlphaLine += 1;
 }
 
-void ModuleRender::SetAlphaLineParametersPercentual(float percent) {
+void ModuleRender::ModifyFloorLines(float percent) {
 	startDistanceBetweenAlphaLines = ALPHA_DISTANCE_MIN + (percent*(ALPHA_DISTANCE_MAX - ALPHA_DISTANCE_MIN));
-	startSizeOfAlphaLines = ALPHA_SIZE_MIN + (percent*(ALPHA_SIZE_MAX - ALPHA_SIZE_MIN));
+	startSizeOfAlphaLines = ALPHA_SIZE_MIN + (percent*(ALPHA_SIZE_MAX - ALPHA_SIZE_MIN));	
 }
 
 bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)

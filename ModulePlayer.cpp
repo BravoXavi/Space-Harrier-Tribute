@@ -166,14 +166,15 @@ void ModulePlayer::modifyHorizonY()
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	App->renderer->horizonY = (int)(temp * (FLOOR_Y_MAX - FLOOR_Y_MIN)) + FLOOR_Y_MIN;
 
-	App->renderer->SetAlphaLineParametersPercentual(temp);
+	App->renderer->ModifyFloorLines(temp);
 }
 
 void ModulePlayer::setCharSpeed()
 {
-	int screenPosition = (position.x + middle.GetCurrentFrame().w / 2) - (SCREEN_WIDTH/2);
+	int screenPosition = (position.x + (run.GetCurrentFrame().w / 2)) - (SCREEN_WIDTH/2);
 	float speedPercent = ((float)screenPosition * 1.0f) / (SCREEN_WIDTH/2.0f);
-	App->renderer->playerSpeed = speedPercent * 10;
+	if (current_animation == &middle) speedPercent = 0.0f;
+	App->renderer->playerSpeed = speedPercent * 10.0f;
 }
 
 // TODO 13: Make so is the laser collides, it is removed and create an explosion particle at its position

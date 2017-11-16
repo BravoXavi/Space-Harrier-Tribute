@@ -52,7 +52,7 @@ public:
 	void AlphaVerticalLinesMove();
 
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
-	void SetAlphaLineParametersPercentual(float percent);
+	void ModifyFloorLines(float percent);
 
 public:
 	SDL_Renderer* renderer = nullptr;
