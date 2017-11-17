@@ -158,7 +158,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	float pixelsPerRow = (float)textH / rect.h;
 	float pixelsPerRowOffset = 0.0f;
 
-	SDL_Rect textureLine = { maxExtraPixelsX, 0, (textW - maxExtraPixelsX * 2), 1 };
+	SDL_Rect textureLine = { maxExtraPixelsX / 2, 0, textW - maxExtraPixelsX, 1 };
 	rect.h = 1;
 
 	int originalRectX = textureLine.x;
@@ -181,7 +181,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 
 void ModuleRender::AlphaVerticalLinesMove()
 {	
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
+	//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
 	distanceBetweenAlphaLines = startDistanceBetweenAlphaLines;
 	sizeOfAlphaLines = startSizeOfAlphaLines;
@@ -199,7 +199,7 @@ void ModuleRender::AlphaVerticalLinesMove()
 	while(distanceBetweenAlphaLines <= horizonY*SCREEN_SIZE)
 	{
 		SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (int)(distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, (int)(sizeOfAlphaLines + (offsetDif * (coef / 2.0f))) };
-		DrawQuad(test, 0, 0, 0, 50, false);
+		DrawQuad(test, 0, 100, 0, 100, false);
 
 		offsetDif = sizeOfAlphaLines / 4.0f;
 		sizeOfAlphaLines -= offsetDif;
