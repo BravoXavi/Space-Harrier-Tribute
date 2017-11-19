@@ -165,8 +165,6 @@ void ModulePlayer::modifyHorizonY()
 	float offsetValue = (float)SCREEN_HEIGHT - (float)current_animation->GetCurrentFrame().h;
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	App->renderer->horizonY = (int)(temp * (FLOOR_Y_MAX - FLOOR_Y_MIN)) + FLOOR_Y_MIN;
-
-	App->renderer->ModifyFloorLines(temp);
 }
 
 void ModulePlayer::setCharSpeed()

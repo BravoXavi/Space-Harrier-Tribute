@@ -5,16 +5,23 @@
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
 
+const float ModuleRender::LINE_REDUCTION = 0.60f;
+
 ModuleRender::ModuleRender()
 {
 	camera.x = camera.y = 0;
 	camera.w = SCREEN_WIDTH * SCREEN_SIZE;
 	camera.h = SCREEN_HEIGHT* SCREEN_SIZE;
 	horizonY = FLOOR_Y_MIN;
+	firstLinePositionPercentage = 0.0f;
+	firstLineIndex = 0;
 
-	startDistanceBetweenAlphaLines = ALPHA_DISTANCE_MIN;
-	startSizeOfAlphaLines = ALPHA_SIZE_MIN;
-	iterationOfAlphaLine = 0;
+	for (int i = 0; i < alphaLines; i++)
+	{
+		alphaLinesArray[i].x = 0;
+		alphaLinesArray[i].w = SCREEN_WIDTH*SCREEN_SIZE;
+		lineDivisor += pow(LINE_REDUCTION, i);
+	}	
 }
 
 // Destructor
@@ -181,41 +188,41 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 
 void ModuleRender::AlphaVerticalLinesMove()
 {	
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);
+	float baseLineHeight = (float)(horizonY*SCREEN_SIZE) / lineDivisor;
 
-	distanceBetweenAlphaLines = startDistanceBetweenAlphaLines;
-	sizeOfAlphaLines = startSizeOfAlphaLines;
+	float startRenderPos = SCREEN_HEIGHT*SCREEN_SIZE - baseLineHeight*(1.0f - firstLinePositionPercentage);
+	float firstLineHeight = baseLineHeight * (1.0f - firstLinePositionPercentage) + baseLineHeight * (1.0f / LINE_REDUCTION) * (firstLinePositionPercentage);
 
-	float offsetDif = 0;
-	float normalIteration = (float)iterationOfAlphaLine*((startDistanceBetweenAlphaLines + startSizeOfAlphaLines) / 10.0f);
-	int tempIteration = (int)normalIteration % (int)(startDistanceBetweenAlphaLines * 2);
-	
-	float coef = tempIteration / distanceBetweenAlphaLines;
-	if (coef >= 1.8f) 
+	float currentLineHeight = firstLineHeight;
+	float actualRenderPos = startRenderPos;
+
+	int actualLineIndex = firstLineIndex;
+
+	bool reOrganizeLines = true;
+
+	while(reOrganizeLines) 
 	{
-		iterationOfAlphaLine = 0;
-	}
-			
-	while(distanceBetweenAlphaLines <= horizonY*SCREEN_SIZE)
-	{
-		SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (int)(distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, (int)(sizeOfAlphaLines + (offsetDif * (coef / 2.0f))) };
-		DrawQuad(test, 0, 0, 0, 50, false);
+		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
+		alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
+		alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
+		currentLineHeight = currentLineHeight * LINE_REDUCTION;
+		actualRenderPos -= currentLineHeight;
 
-		offsetDif = sizeOfAlphaLines / 4.0f;
-		sizeOfAlphaLines -= offsetDif;
-		
-		if (sizeOfAlphaLines <= 1) {
-			sizeOfAlphaLines = 1;
-		}
-		distanceBetweenAlphaLines += (sizeOfAlphaLines * 2.0f);
+		actualLineIndex = (actualLineIndex + 1) % alphaLines;
+		reOrganizeLines = !(actualLineIndex == firstLineIndex);
 	}
 
-	iterationOfAlphaLine += 1;
-}
+	for (int i = 0; i < alphaLines; i++)
+	{
+		App->renderer->DrawQuad(alphaLinesArray[i], 0, 100, 0, 100);
+	}
 
-void ModuleRender::ModifyFloorLines(float percent) {
-	startDistanceBetweenAlphaLines = ALPHA_DISTANCE_MIN + (percent*(ALPHA_DISTANCE_MAX - ALPHA_DISTANCE_MIN));
-	startSizeOfAlphaLines = ALPHA_SIZE_MIN + (percent*(ALPHA_SIZE_MAX - ALPHA_SIZE_MIN));	
+	float nextfirstSegmentPositionPercentage = fmod(firstLinePositionPercentage + 0.01f, 1.0f);
+	if (nextfirstSegmentPositionPercentage < firstLinePositionPercentage) {
+		firstLineIndex = (firstLineIndex + 1) % alphaLines;
+	}
+
+	firstLinePositionPercentage = nextfirstSegmentPositionPercentage;
 }
 
 bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)
@@ -225,16 +232,7 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);
 
-	SDL_Rect rec(rect);
-	if (use_camera)
-	{
-		rec.x = (int)(camera.x + rect.x * SCREEN_SIZE);
-		rec.y = (int)(camera.y + rect.y * SCREEN_SIZE);
-		rec.w *= SCREEN_SIZE;
-		rec.h *= SCREEN_SIZE;
-	}
-
-	if (SDL_RenderFillRect(renderer, &rec) != 0)
+	if (SDL_RenderFillRect(renderer, &rect) != 0)
 	{
 		LOG("Cannot draw quad to screen. SDL_RenderFillRect error: %s", SDL_GetError());
 		ret = false;

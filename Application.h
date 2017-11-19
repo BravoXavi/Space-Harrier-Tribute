@@ -16,6 +16,7 @@ class ModuleParticles;
 class FontManager;
 
 // Game modules ---
+class ModuleEnemy;
 class ModulePlayer;
 class ModuleSceneIntro;
 class ModuleSceneSpace;
@@ -43,6 +44,7 @@ public:
 	FontManager* fontManager;
 
 	// Game modules ---
+	ModuleEnemy* enemies;
 	ModulePlayer* player;
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneSpace* scene_space;

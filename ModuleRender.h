@@ -10,11 +10,6 @@ struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Rect;
 
-#define ALPHA_DISTANCE_MAX 20.0f*SCREEN_SIZE
-#define ALPHA_DISTANCE_MIN 6.0f*SCREEN_SIZE
-#define ALPHA_SIZE_MAX 10.3f*SCREEN_SIZE
-#define ALPHA_SIZE_MIN 3.32f*SCREEN_SIZE
-
 struct BlitTarget
 {
 	SDL_Texture* texture;
@@ -52,24 +47,24 @@ public:
 	void AlphaVerticalLinesMove();
 
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
-	void ModifyFloorLines(float percent);
 
 public:
 	SDL_Renderer* renderer = nullptr;
-	SDL_Rect camera;
+	SDL_Rect camera;	
+
+	static const float LINE_REDUCTION;
+	static const int alphaLines = 11;
+	
 	int horizonY;
+	int firstLineIndex;
+	
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
+	float lineDivisor = 0.0f;
+	float firstLinePositionPercentage;
+
 	std::map<int, std::vector<BlitTarget>> depthBuffer;
-
-private:
-	float startDistanceBetweenAlphaLines;
-	float distanceBetweenAlphaLines;
-
-	float startSizeOfAlphaLines;
-	float sizeOfAlphaLines;
-
-	int iterationOfAlphaLine;
+	SDL_Rect alphaLinesArray[alphaLines];
 };
 
 #endif // __MODULERENDER_H__

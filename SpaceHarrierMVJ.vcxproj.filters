@@ -69,6 +69,9 @@
     </ClInclude>
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="ModuleEnemy.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -115,5 +118,8 @@
     </ClCompile>
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="ModuleEnemy.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
