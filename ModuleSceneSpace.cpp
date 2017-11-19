@@ -7,6 +7,7 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleSceneSpace.h"
+#include "ModuleObstacle.h"
 
 // Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
 
@@ -21,7 +22,6 @@ bool ModuleSceneSpace::Start()
 {
 	LOG("Loading space scene");
 	
-	//stars = App->textures->Load("assets/stars.png");
 	floor = App->textures->Load("assets/Floor.bmp");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
@@ -31,9 +31,6 @@ bool ModuleSceneSpace::Start()
 
 	//App->audio->PlayFx(startFx);
 	//App->audio->PlayMusic("assets/Theme.wav", 1.0f);
-	
-	// TODO 15: create some colliders for the walls
-	// solution wall coords: {0, 224, 3930, 16} {1375, 0, 111, 96} {1375, 145, 111, 96}
 
 	return true;
 }
@@ -63,6 +60,19 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 	//App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
+
+	if (timeCounter < 100)
+	{
+		timeCounter++;
+	}
+	else
+	{
+		timeCounter = 0;
+
+		//Add Obstacle.
+		int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
+		App->obstacles->AddObstacle(App->obstacles->tree, randNum, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h);
+	}
 		
 	return UPDATE_CONTINUE;
 }

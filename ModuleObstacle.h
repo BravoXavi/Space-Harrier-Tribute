@@ -1,5 +1,5 @@
-#ifndef __MODULEPARTICLES_H__
-#define __MODULEPARTICLES_H__
+#ifndef __MODULEOBSTACLE_H__
+#define __MODULEOBSTACLE_H__
 
 #include<list>
 #include "Globals.h"
@@ -11,12 +11,10 @@
 
 struct SDL_Texture;
 
-struct Particle
+struct Obstacle
 {
 	// TODO 1: Fill in the structure with all the properties you need for each particle
 	bool to_delete = false;
-	unsigned int fxIndex;
-	int speed;
 	iPoint position = { 0, 0 };
 	int z = 0;
 
@@ -26,39 +24,39 @@ struct Particle
 	// TODO 11: Add an optional collider to each particle -- DONE
 	Collider* collision = nullptr;
 
-	Particle();
-	Particle(const Particle& p);
-	~Particle();
+	Obstacle();
+	Obstacle(const Obstacle& p);
+	~Obstacle();
 
 	void setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth);
-	void setResizeRect(int x, int y, int w, int h);
 	void Update();
 
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
-	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };
 
-class ModuleParticles : public Module
+class ModuleObstacle : public Module
 {
 public:
-	ModuleParticles();
-	~ModuleParticles();
+	ModuleObstacle();
+	~ModuleObstacle();
 
 	bool Start();
 	update_status PreUpdate(); // clear dirty particles
 	update_status Update(); // draw
 	bool CleanUp();
 
-	void AddParticle(const Particle& particle, int x, int y); // feel free to expand this call
+	void AddObstacle(const Obstacle& particle, int x, int y); // feel free to expand this call
 
 private:
-	
-	std::list<Particle*> active;
+
+	std::list<Obstacle*> active;
 
 public:
 	SDL_Texture* graphics = nullptr;
-	Particle cannon;
+	Obstacle tree;
+	Obstacle rock;
+	Obstacle tower;
 	// prototype particles go here ...
 };
 
-#endif // __MODULEPARTICLES_H__
+#endif // __MODULEOBSTACLE_H__

@@ -2,6 +2,7 @@
 #define __MODULESCENESPACE_H__
 
 #include "Module.h"
+#include <list>
 
 struct SDL_Texture;
 
@@ -20,6 +21,8 @@ public:
 	uint startFx;
 	SDL_Texture* floor = nullptr;
 	SDL_Texture* stars = nullptr;
+
+	int timeCounter = 0;
 };
 
 #endif // __MODULESCENESPACE_H__

@@ -13,6 +13,7 @@
 #include "ModuleSceneSpace.h"
 #include "ModulePlayer.h"
 #include "ModuleEnemy.h"
+#include "ModuleObstacle.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ Application::Application()
 	modules.push_back(scene_space = new ModuleSceneSpace(false));
 	modules.push_back(player = new ModulePlayer(false));
 	modules.push_back(enemies = new ModuleEnemy());
+	modules.push_back(obstacles = new ModuleObstacle());
 
 	// Modules to draw on top of game logic
 	modules.push_back(collision = new ModuleCollision());

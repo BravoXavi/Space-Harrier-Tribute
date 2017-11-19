@@ -21,22 +21,15 @@ ModuleEnemy::~ModuleEnemy()
 bool ModuleEnemy::Start()
 {
 	LOG("Loading enemies");
-	//graphics = App->textures->Load("assets/Shoots.png");
+	graphics = App->textures->Load("assets/Arboles.png");
 
-
-	// TODO 2: Create a prototype for the laser particle -- DONE
-	// audio: rtype/laser.wav
-	// coords: {232, 103, 16, 12}; {249, 103, 16, 12};
-	//cannon.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	//cannon.anim.frames.push_back({ 1, 1, 91, 61 });
-	//cannon.anim.frames.push_back({ 95, 0, 91, 61 });
-	//cannon.anim.frames.push_back({ 188, 1, 91, 61 });
-	//cannon.anim.frames.push_back({ 284, 0, 91, 61 });
-	//cannon.anim.speed = 0.1f;
-	//cannon.z = 1;
-	//cannon.speed = 1;
-	//cannon.colType = CANNON;
-	//cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
+	tree.fxIndex = App->audio->LoadFx("rtype/laser.wav");
+	tree.anim.frames.push_back({ 155, 85, 31, 122 });
+	tree.anim.speed = 0.1f;
+	tree.z = MAX_Z;
+	tree.speed = 1;
+	tree.colType = CANNON;
+	tree.collision = new Collider({ tree.position.x, tree.position.y, 16, 12 });
 
 	// TODO 12: Create a new "Explosion" particle -- DONE
 	// audio: rtype/explosion.wav
@@ -94,7 +87,8 @@ update_status ModuleEnemy::Update()
 		//p->setResizeRect(0, 0, newWidth, newHeight);
 		//p->setRect(graphics, p->position.x + xMove, p->position.y + yMove, &(p->anim.GetCurrentFrame()), p->resizeRect, 1);
 
-		//App->renderer->depthBuffer[p->rect->depth].push_back(*p->rect);
+		e->setRect(graphics, e->position.x, (SCREEN_HEIGHT-App->renderer->horizonY) - e->anim.GetCurrentFrame().h, &(e->anim.GetCurrentFrame()), nullptr, 1);
+		App->renderer->depthBuffer[e->rect->depth].push_back(*e->rect);
 	}
 
 	return UPDATE_CONTINUE;
@@ -121,16 +115,27 @@ Enemy::Enemy(const Enemy& p) : anim(p.anim), position(p.position), fxIndex(p.fxI
 
 Enemy::~Enemy()
 {
+	delete rect;
 }
 
 void Enemy::Update()
 {
-	z += speed;
-	if (z > MAX_Z) to_delete = true;
+	//z += speed;
+	//if (z > MAX_Z) to_delete = true;
 
 	// TODO 5: This is the core of the particle logic
 	// draw and audio will be managed by ModuleParticle::Update()
 	// Note: Set to_delete to true is you want it deleted
 	//position.x += speed;
 
+}
+
+void Enemy::setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth)
+{
+	rect->texture = texture;
+	rect->x = x;
+	rect->y = y;
+	rect->section = section;
+	rect->resize = resize;
+	rect->depth = depth;
 }

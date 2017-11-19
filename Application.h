@@ -20,6 +20,7 @@ class ModuleEnemy;
 class ModulePlayer;
 class ModuleSceneIntro;
 class ModuleSceneSpace;
+class ModuleObstacle;
 
 class Application
 {
@@ -44,6 +45,7 @@ public:
 	FontManager* fontManager;
 
 	// Game modules ---
+	ModuleObstacle* obstacles;
 	ModuleEnemy* enemies;
 	ModulePlayer* player;
 	ModuleSceneIntro* scene_intro;

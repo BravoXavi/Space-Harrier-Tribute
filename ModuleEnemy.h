@@ -31,6 +31,10 @@ struct Enemy
 	~Enemy();
 
 	void Update();
+
+	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
+
+	void setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth);
 };
 
 class ModuleEnemy : public Module
@@ -52,7 +56,8 @@ private:
 	std::list<Enemy*> active;
 
 public:
-	Enemy smallOne;
+	Enemy tree;
+	Enemy rock;
 	// prototype particles go here ...
 };
 

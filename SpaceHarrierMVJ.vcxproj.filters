@@ -72,6 +72,9 @@
     <ClInclude Include="ModuleEnemy.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleObstacle.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -119,6 +122,9 @@
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="ModuleEnemy.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleObstacle.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>

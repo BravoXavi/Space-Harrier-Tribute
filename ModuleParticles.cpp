@@ -34,7 +34,7 @@ bool ModuleParticles::Start()
 	cannon.anim.frames.push_back({ 284, 0, 91, 61 });
 	cannon.anim.speed = 0.1f;
 	cannon.z = 1;
-	cannon.speed = 1;
+	cannon.speed = 2;
 	cannon.colType = CANNON;
     //cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
 
@@ -85,15 +85,6 @@ update_status ModuleParticles::Update()
 
 		p->Update();
 
-		float zModifier = 1.0f - ((float)p->z / MAX_Z);
-		int newWidth = (int)(p->anim.GetCurrentFrame().w * zModifier);
-		int newHeight = (int)(p->anim.GetCurrentFrame().h * zModifier);
-		int xMove = (p->anim.GetCurrentFrame().w - newWidth) / 2;
-		int yMove = (p->anim.GetCurrentFrame().h - newHeight) / 2;
-
-		p->setResizeRect(0, 0, newWidth, newHeight);
-		p->setRect(graphics, p->position.x + xMove, p->position.y + yMove, &(p->anim.GetCurrentFrame()), p->resizeRect, 1);
-
 		App->renderer->depthBuffer[p->rect->depth].push_back(*p->rect);
 	}
 
@@ -129,6 +120,15 @@ void Particle::Update()
 {
 	z += speed;
 	if (z > MAX_Z) to_delete = true;
+
+	float zModifier = 1.0f - ((float)z / MAX_Z);
+	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
+	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
+	int xMove = (anim.GetCurrentFrame().w - newWidth) / 2;
+	int yMove = (anim.GetCurrentFrame().h - newHeight) / 2;
+
+	setResizeRect(0, 0, newWidth, newHeight);
+	setRect(App->particles->graphics, position.x + xMove, position.y + yMove, &(anim.GetCurrentFrame()), resizeRect, 1);
 
 	// TODO 5: This is the core of the particle logic
 	// draw and audio will be managed by ModuleParticle::Update()

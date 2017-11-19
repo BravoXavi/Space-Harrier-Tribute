@@ -7,6 +7,7 @@
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
 #include "ModulePlayer.h"
+#include "ModuleEnemy.h"
 
 // Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
 
@@ -106,6 +107,7 @@ update_status ModulePlayer::Update()
 	{
 		// TODO 6: Shoot a laser using the particle system
 		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y);
+		//App->enemies->AddEnemy(App->enemies->tree, 100, 100);
 	}
 
 	//if(App->input->GetKey(SDL_SCANCODE_S) == KEY_IDLE
