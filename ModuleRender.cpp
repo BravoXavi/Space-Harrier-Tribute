@@ -165,7 +165,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	float pixelsPerRow = (float)textH / rect.h;
 	float pixelsPerRowOffset = 0.0f;
 
-	SDL_Rect textureLine = { maxExtraPixelsX, 0, (textW - maxExtraPixelsX * 2), 1 };
+	SDL_Rect textureLine = { maxExtraPixelsX / 2, 0, textW - maxExtraPixelsX, 1 };
 	rect.h = 1;
 
 	int originalRectX = textureLine.x;
