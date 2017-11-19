@@ -188,7 +188,11 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 
 void ModuleRender::AlphaVerticalLinesMove()
 {	
+<<<<<<< HEAD
 	float baseLineHeight = (float)(horizonY*SCREEN_SIZE) / lineDivisor;
+=======
+	//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+>>>>>>> ad6c4b4e0a7072b6f43c1c4cbe9ae8ff950bf88a
 
 	float startRenderPos = SCREEN_HEIGHT*SCREEN_SIZE - baseLineHeight*(1.0f - firstLinePositionPercentage);
 	float firstLineHeight = baseLineHeight * (1.0f - firstLinePositionPercentage) + baseLineHeight * (1.0f / LINE_REDUCTION) * (firstLinePositionPercentage);
@@ -214,7 +218,20 @@ void ModuleRender::AlphaVerticalLinesMove()
 
 	for (int i = 0; i < alphaLines; i++)
 	{
+<<<<<<< HEAD
 		App->renderer->DrawQuad(alphaLinesArray[i], 0, 100, 0, 100);
+=======
+		SDL_Rect test = { 0, SCREEN_HEIGHT * SCREEN_SIZE - (int)(distanceBetweenAlphaLines - (coef*sizeOfAlphaLines)), SCREEN_WIDTH * SCREEN_SIZE, (int)(sizeOfAlphaLines + (offsetDif * (coef / 2.0f))) };
+		DrawQuad(test, 0, 100, 0, 100, false);
+
+		offsetDif = sizeOfAlphaLines / 4.0f;
+		sizeOfAlphaLines -= offsetDif;
+		
+		if (sizeOfAlphaLines <= 1) {
+			sizeOfAlphaLines = 1;
+		}
+		distanceBetweenAlphaLines += (sizeOfAlphaLines * 2.0f);
+>>>>>>> ad6c4b4e0a7072b6f43c1c4cbe9ae8ff950bf88a
 	}
 
 	float nextfirstSegmentPositionPercentage = fmod(firstLinePositionPercentage + 0.01f, 1.0f);
