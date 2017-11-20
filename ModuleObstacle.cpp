@@ -82,6 +82,7 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, int x, int y)
 	// TODO 4: Fill in a method to create an instance of a prototype particle	
 	Obstacle* o = new Obstacle(obstacle);
 	o->position = { x, y };
+	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
 
@@ -106,13 +107,15 @@ void Obstacle::Update()
 	// draw and audio will be managed by ModuleParticle::Update()
 	// Note: Set to_delete to true is you want it deleted
 	//position.x += speed;
-	z -= 1;
-	if (z < 5)
-	{
-		to_delete = true;
-	}
-
-	setRect(App->obstacles->graphics, position.x, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h, &(anim.GetCurrentFrame()), nullptr, MAX_Z);
+	//z -= 1;
+	//if (z < 5)
+	//{
+	//	to_delete = true;
+	//}
+	int oldY = (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h;
+	int newY = (App->renderer->alphaLinesArray[lineToFollow].y/SCREEN_SIZE) - App->obstacles->tree.anim.GetCurrentFrame().h;
+	int lineHeight = App->renderer->alphaLinesArray[lineToFollow].h / SCREEN_SIZE;
+	setRect(App->obstacles->graphics, position.x, newY + lineHeight , &(anim.GetCurrentFrame()), nullptr, MAX_Z);
 }
 
 void Obstacle::setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth)

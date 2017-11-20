@@ -53,11 +53,11 @@ public:
 	SDL_Rect camera;	
 
 	static const float LINE_REDUCTION;
-	static const int alphaLines = 11;
+	static const int alphaLines = 8;
 	
 	int horizonY;
 	int firstLineIndex;
-	
+	int nextTopLine;
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
 	float lineDivisor = 0.0f;

@@ -15,6 +15,7 @@ ModuleRender::ModuleRender()
 	horizonY = FLOOR_Y_MIN;
 	firstLinePositionPercentage = 0.0f;
 	firstLineIndex = 0;
+	nextTopLine = 0;
 
 	for (int i = 0; i < alphaLines; i++)
 	{
@@ -202,11 +203,17 @@ void ModuleRender::AlphaVerticalLinesMove()
 
 	bool reOrganizeLines = true;
 
+	if (actualLineIndex == 0) nextTopLine = 7;
+	else nextTopLine = actualLineIndex - 1;
+
+	LOG("Next top line = %i", nextTopLine);
+
 	while(reOrganizeLines) 
 	{
 		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
 		alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
 		alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
+		LOG("Actual Line - Index = %i, Y position = %i, H = %i", actualLineIndex, alphaLinesArray[actualLineIndex].y, alphaLinesArray[actualLineIndex].h);
 		currentLineHeight = currentLineHeight * LINE_REDUCTION;
 		actualRenderPos -= currentLineHeight;
 

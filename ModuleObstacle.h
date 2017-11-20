@@ -17,6 +17,7 @@ struct Obstacle
 	bool to_delete = false;
 	iPoint position = { 0, 0 };
 	int z = 0;
+	int lineToFollow = 0;
 
 	Animation anim;
 	collisionType colType;

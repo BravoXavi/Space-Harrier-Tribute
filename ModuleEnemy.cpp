@@ -29,7 +29,7 @@ bool ModuleEnemy::Start()
 	tree.z = MAX_Z;
 	tree.speed = 1;
 	tree.colType = CANNON;
-	tree.collision = new Collider({ tree.position.x, tree.position.y, 16, 12 });
+	//tree.collision = new Collider({ tree.position.x, tree.position.y, 16, 12 });
 
 	// TODO 12: Create a new "Explosion" particle -- DONE
 	// audio: rtype/explosion.wav
