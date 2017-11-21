@@ -206,14 +206,12 @@ void ModuleRender::AlphaVerticalLinesMove()
 	if (actualLineIndex == 0) nextTopLine = 7;
 	else nextTopLine = actualLineIndex - 1;
 
-	LOG("Next top line = %i", nextTopLine);
-
 	while(reOrganizeLines) 
 	{
 		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
 		alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
 		alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
-		LOG("Actual Line - Index = %i, Y position = %i, H = %i", actualLineIndex, alphaLinesArray[actualLineIndex].y, alphaLinesArray[actualLineIndex].h);
+		//LOG("Actual Line - Index = %i, Y position = %i, H = %i", actualLineIndex, alphaLinesArray[actualLineIndex].y, alphaLinesArray[actualLineIndex].h);
 		currentLineHeight = currentLineHeight * LINE_REDUCTION;
 		actualRenderPos -= currentLineHeight;
 
@@ -229,6 +227,7 @@ void ModuleRender::AlphaVerticalLinesMove()
 	float nextfirstSegmentPositionPercentage = fmod(firstLinePositionPercentage + 0.05f, 1.0f);
 	if (nextfirstSegmentPositionPercentage < firstLinePositionPercentage) {
 		firstLineIndex = (firstLineIndex + 1) % alphaLines;
+		LOG("MODIFYING STARTING LINE TO %i", firstLineIndex);
 	}
 
 	firstLinePositionPercentage = nextfirstSegmentPositionPercentage;

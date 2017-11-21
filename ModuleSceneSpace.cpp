@@ -61,17 +61,18 @@ update_status ModuleSceneSpace::Update()
 	// Draw everything --------------------------------------
 	//App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
 
-	if (timeCounter < 200)
+	if (timeCounter < 1)
 	{
+		int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
+		App->obstacles->AddObstacle(App->obstacles->tree, randNum, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h);
 		timeCounter++;
 	}
 	else
 	{
-		timeCounter = 0;
+		timeCounter = 2;
 
 		//Add Obstacle.
-		int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
-		App->obstacles->AddObstacle(App->obstacles->tree, randNum, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h);
+		
 
 		
 	}

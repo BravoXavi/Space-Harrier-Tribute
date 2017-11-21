@@ -99,6 +99,7 @@ Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), position(o.position), z(o.
 Obstacle::~Obstacle()
 {
 	delete rect;
+	delete resizeRect;
 }
 
 void Obstacle::Update()
@@ -112,10 +113,29 @@ void Obstacle::Update()
 	//{
 	//	to_delete = true;
 	//}
-	int oldY = (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h;
-	int newY = (App->renderer->alphaLinesArray[lineToFollow].y/SCREEN_SIZE) - App->obstacles->tree.anim.GetCurrentFrame().h;
+
+	float scaleSize = 0.1f;
+	int newY = (App->renderer->alphaLinesArray[lineToFollow].y / SCREEN_SIZE);
+
+	scaleSize = (1.0f - ( (float)(SCREEN_HEIGHT - newY) / (float)App->renderer->horizonY));
+
 	int lineHeight = App->renderer->alphaLinesArray[lineToFollow].h / SCREEN_SIZE;
-	setRect(App->obstacles->graphics, position.x, newY + lineHeight , &(anim.GetCurrentFrame()), nullptr, MAX_Z);
+	int newWidth = 1 + (int)(anim.GetCurrentFrame().w * scaleSize);
+	int newHeight = 1 + (int)(anim.GetCurrentFrame().h * scaleSize);
+
+	newY -= newHeight;
+
+	setResizeRect(0, 0, newWidth, newHeight);
+
+	setRect(App->obstacles->graphics, (position.x - newWidth/2), newY + lineHeight, &(anim.GetCurrentFrame()), resizeRect, MAX_Z);
+}
+
+void Obstacle::setResizeRect(int x, int y, int w, int h)
+{
+	resizeRect->x = x;
+	resizeRect->y = y;
+	resizeRect->w = w;
+	resizeRect->h = h;
 }
 
 void Obstacle::setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth)

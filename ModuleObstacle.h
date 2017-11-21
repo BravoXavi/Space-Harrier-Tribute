@@ -29,10 +29,14 @@ struct Obstacle
 	Obstacle(const Obstacle& p);
 	~Obstacle();
 
+	void setResizeRect(int x, int y, int w, int h);
 	void setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth);
 	void Update();
 
-	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
+	int counter = 1;
+
+	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);	
+	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };
 
 class ModuleObstacle : public Module
