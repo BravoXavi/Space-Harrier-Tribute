@@ -44,7 +44,7 @@ typedef unsigned int uint;
 
 // Configuration -----------
 #define MIN_Z 0
-#define MAX_Z 50
+#define MAX_Z 25
 #define FLOOR_Y_MIN 20
 #define FLOOR_Y_MAX 80
 #define SCREEN_SIZE 3

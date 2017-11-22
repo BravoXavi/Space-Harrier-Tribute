@@ -104,30 +104,37 @@ Obstacle::~Obstacle()
 
 void Obstacle::Update()
 {
-	// TODO 5: This is the core of the particle logic
-	// draw and audio will be managed by ModuleParticle::Update()
-	// Note: Set to_delete to true is you want it deleted
-	//position.x += speed;
 	//z -= 1;
-	//if (z < 5)
+	//if (z < 2)
 	//{
 	//	to_delete = true;
 	//}
 
-	float scaleSize = 0.1f;
-	int newY = (App->renderer->alphaLinesArray[lineToFollow].y / SCREEN_SIZE);
+	//Calculate Y of the obstacle and scale percentual value
+	float newY = (((float)App->renderer->alphaLinesArray[lineToFollow].y) / (float)SCREEN_SIZE);
+	scaleSize = (1.0f - ( ((float)SCREEN_HEIGHT - newY) / (float)App->renderer->horizonY));
 
-	scaleSize = (1.0f - ( (float)(SCREEN_HEIGHT - newY) / (float)App->renderer->horizonY));
+	//Calculate X movement of the obstacle (Regarding the speed)
+	position.x -= App->renderer->playerSpeed;
+	int newX = (SCREEN_WIDTH / 2) + position.x*scaleSize;
 
+	//Calculate Z of the obstacle
+	float zTemp = SCREEN_HEIGHT - newY;
+	z = zTemp / ((float)App->renderer->horizonY / (float)MAX_Z);
+	
+	//Rescale size of the obstacle and calculate other small values
 	int lineHeight = App->renderer->alphaLinesArray[lineToFollow].h / SCREEN_SIZE;
 	int newWidth = 1 + (int)(anim.GetCurrentFrame().w * scaleSize);
-	int newHeight = 1 + (int)(anim.GetCurrentFrame().h * scaleSize);
+	int newHeight = 2 + (int)(anim.GetCurrentFrame().h * scaleSize);
+	
+	//Give a default size for the obstacles (avoid seeing them too small)
+	if (newWidth < 2) newWidth = 2;
+	if (newHeight < 5) newHeight = 5;
 
 	newY -= newHeight;
-
+	
 	setResizeRect(0, 0, newWidth, newHeight);
-
-	setRect(App->obstacles->graphics, (position.x - newWidth/2), newY + lineHeight, &(anim.GetCurrentFrame()), resizeRect, MAX_Z);
+	setRect(App->obstacles->graphics, 0, newY + lineHeight, &(anim.GetCurrentFrame()), resizeRect, z);
 }
 
 void Obstacle::setResizeRect(int x, int y, int w, int h)

@@ -53,7 +53,7 @@ public:
 	SDL_Rect camera;	
 
 	static const float LINE_REDUCTION;
-	static const int alphaLines = 8;
+	static const int alphaLines = 11;
 	
 	int horizonY;
 	int firstLineIndex;

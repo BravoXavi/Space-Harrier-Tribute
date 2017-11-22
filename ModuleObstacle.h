@@ -35,6 +35,7 @@ struct Obstacle
 
 	int counter = 1;
 
+	float scaleSize = 0.0f;
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);	
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };

@@ -203,7 +203,7 @@ void ModuleRender::AlphaVerticalLinesMove()
 
 	bool reOrganizeLines = true;
 
-	if (actualLineIndex == 0) nextTopLine = 7;
+	if (actualLineIndex == 0) nextTopLine = 10;
 	else nextTopLine = actualLineIndex - 1;
 
 	while(reOrganizeLines) 
