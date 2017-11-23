@@ -203,15 +203,16 @@ void ModuleRender::AlphaVerticalLinesMove()
 
 	bool reOrganizeLines = true;
 
-	if (actualLineIndex == 0) nextTopLine = 10;
+	if (actualLineIndex == 0) nextTopLine = alphaLines - 1;
 	else nextTopLine = actualLineIndex - 1;
 
 	while(reOrganizeLines) 
 	{
 		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
 		alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
+		renderLineValues[actualLineIndex] = actualRenderPos;
 		alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
-		//LOG("Actual Line - Index = %i, Y position = %i, H = %i", actualLineIndex, alphaLinesArray[actualLineIndex].y, alphaLinesArray[actualLineIndex].h);
+		//LOG("Actual Line - Index = %i, Y position = %f, H = %i", actualLineIndex, actualRenderPos, alphaLinesArray[actualLineIndex].h);
 		currentLineHeight = currentLineHeight * LINE_REDUCTION;
 		actualRenderPos -= currentLineHeight;
 
@@ -224,10 +225,9 @@ void ModuleRender::AlphaVerticalLinesMove()
 		DrawQuad(alphaLinesArray[i], 0, 100, 0, 100);
 	}
 
-	float nextfirstSegmentPositionPercentage = fmod(firstLinePositionPercentage + 0.05f, 1.0f);
+	float nextfirstSegmentPositionPercentage = fmod(firstLinePositionPercentage + 0.07f, 1.0f);
 	if (nextfirstSegmentPositionPercentage < firstLinePositionPercentage) {
 		firstLineIndex = (firstLineIndex + 1) % alphaLines;
-		LOG("MODIFYING STARTING LINE TO %i", firstLineIndex);
 	}
 
 	firstLinePositionPercentage = nextfirstSegmentPositionPercentage;

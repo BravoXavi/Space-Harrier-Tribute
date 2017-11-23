@@ -55,7 +55,7 @@ public:
 	static const float LINE_REDUCTION;
 	static const int alphaLines = 11;
 	
-	int horizonY;
+	float horizonY;
 	int firstLineIndex;
 	int nextTopLine;
 	float increasingExtraPixelsX = 0.0f;
@@ -65,6 +65,7 @@ public:
 
 	std::map<int, std::vector<BlitTarget>> depthBuffer;
 	SDL_Rect alphaLinesArray[alphaLines];
+	float renderLineValues[alphaLines];
 };
 
 #endif // __MODULERENDER_H__

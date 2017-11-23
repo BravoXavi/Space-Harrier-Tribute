@@ -69,13 +69,16 @@ update_status ModuleSceneSpace::Update()
 	}
 	else
 	{
-		timeCounter = 2;
-
-		//Add Obstacle.
-		
-
-		
+		timeCounter = 2;	
 	}
 		
+
+	//if (timeCounter < 50) timeCounter++;
+	//else {
+	//	timeCounter = 0;
+	//	int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
+	//	App->obstacles->AddObstacle(App->obstacles->tree, randNum, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h);
+	//}
+
 	return UPDATE_CONTINUE;
 }
