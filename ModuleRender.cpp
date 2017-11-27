@@ -145,7 +145,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
 
 	rect.w = SCREEN_WIDTH;
-	rect.h = horizonY;
+	rect.h = (int)horizonY;
 
 	int pX = (SCREEN_WIDTH / 2) + x;
 	int pY = SCREEN_HEIGHT - y;

@@ -112,33 +112,35 @@ void Obstacle::Update()
 
 	//Calculate Y of the obstacle and scale percentual value
 	float newY = (((float)App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
-	scaleSize = (1.0f - ( ((float)SCREEN_HEIGHT - newY) / (float)App->renderer->horizonY));
-	if (scaleSize < 0.0f) scaleSize = 0.0f;
 	
+	float min = ((float)SCREEN_HEIGHT - (float)App->renderer->horizonY)*(float)SCREEN_SIZE;
+	float max = (float)SCREEN_HEIGHT*(float)SCREEN_SIZE;
+
+	float scaleValue = ((float)App->renderer->renderLineValues[lineToFollow] - min) / (max - min);
+	if (scaleValue < 0.0f) scaleValue = 0.0f;
 	//Calculate X movement of the obstacle (Regarding the speed)
 	//position.x -= App->renderer->playerSpeed;
 
-	float newX = 0;
-	if (position.x < SCREEN_WIDTH / 2) newX = ((float)SCREEN_WIDTH / 2.0f) - position.x*scaleSize;
-	else newX = ((float)SCREEN_WIDTH / 2.0f) + position.x*scaleSize;
-
-	LOG("ScaleSize %f for Line %i", scaleSize, lineToFollow);
+	float newX = 0.0f;
+	if ((float)position.x < (float)SCREEN_WIDTH / 2.0f) newX = ((float)SCREEN_WIDTH / 2.0f) - (float)position.x*scaleValue;
+	else newX = ((float)SCREEN_WIDTH / 2.0f) + (float)position.x*scaleValue;
 
 	//Calculate Z of the obstacle
-	float zTemp = SCREEN_HEIGHT - newY;
+	float zTemp = (float)SCREEN_HEIGHT - newY;
 	z = zTemp / ((float)App->renderer->horizonY / (float)MAX_Z);
+	LOG("Z =  %i", z);
 
 	//Rescale size of the obstacle and calculate other small values
 	int lineHeight = (int)((float)App->renderer->alphaLinesArray[lineToFollow].h / (float)SCREEN_SIZE);
-	int newWidth = (int)((float)anim.GetCurrentFrame().w * scaleSize);
-	int newHeight = (int)((float)anim.GetCurrentFrame().h * scaleSize);
+	int newWidth = (int)((float)anim.GetCurrentFrame().w * scaleValue);
+	int newHeight = (int)((float)anim.GetCurrentFrame().h * scaleValue);
 
 	if (newHeight < 3) newHeight = 2;
 	if (newWidth < 1) newWidth = 1;
 	newY -= newHeight;
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->graphics, newX, newY + lineHeight, &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->obstacles->graphics, newX, newY, &(anim.GetCurrentFrame()), resizeRect, z);
 }
 
 void Obstacle::setResizeRect(int x, int y, int w, int h)
