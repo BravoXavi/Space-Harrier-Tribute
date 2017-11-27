@@ -62,7 +62,7 @@ update_status ModuleObstacle::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
-// Update all particle logic and draw them
+// Update all obstacle logic and draw them
 update_status ModuleObstacle::Update()
 {
 	for (list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)
@@ -79,7 +79,6 @@ update_status ModuleObstacle::Update()
 
 void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float y)
 {
-	// TODO 4: Fill in a method to create an instance of a prototype particle	
 	Obstacle* o = new Obstacle(obstacle);
 	o->position = { x, y };
 	o->lineToFollow = App->renderer->nextTopLine;
@@ -104,46 +103,47 @@ Obstacle::~Obstacle()
 
 void Obstacle::Update()
 {
-	//z -= 1;
-	//if (z < 1)
-	//{
-	//	to_delete = true;
-	//}
+	z -= 1;
+	if (z < 1)
+	{
+		to_delete = true;
+	}
 
 	//Calculate Y of the obstacle
-	float newY = (((float)App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
+	float newY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
 
 	//Calculate Z of the obstacle
-	float zTemp = (float)SCREEN_HEIGHT - newY;
-	z = (int)(zTemp / ((float)App->renderer->horizonY / (float)MAX_Z));
+	z = (int)( ((float)SCREEN_HEIGHT - newY) / ((float)App->renderer->horizonY / (float)MAX_Z) );
 
 	//Calculate the scale of the projection
-	float min = ((float)SCREEN_HEIGHT - App->renderer->horizonY);
-	float max = (float)SCREEN_HEIGHT;
-	float scaleValue = (newY - min) / (max - min);
-	if (scaleValue < 0.0f) scaleValue = 0.0f;
-	LOG("NEW UPDATE --------------------");
-	LOG("newY = %f", newY);
-	LOG("min = %f", min);
-	LOG("max = %f", max);
-	LOG("scaleValue =  %f", scaleValue);
+	scaleValue = calculateScaleValue(newY);
 
 	//Calculate X projection using the scale and playerSpeed
-	//position.x -= App->renderer->playerSpeed;
 	float newX = 0.0f;
 	if (position.x < (float)SCREEN_WIDTH / 2.0f) newX = ((float)SCREEN_WIDTH / 2.0f) - (position.x*scaleValue);
 	else newX = (position.x*scaleValue);
+	//position.x -= App->renderer->playerSpeed;
 
 	//Rescale size of the obstacle and calculate other small values
 	int newWidth = (int)((float)anim.GetCurrentFrame().w * scaleValue);
 	int newHeight = (int)((float)anim.GetCurrentFrame().h * scaleValue);
 
-	if (newHeight < 3) newHeight = 2;
+	if (newHeight < 2) newHeight = 2;
 	if (newWidth < 1) newWidth = 1;
 	newY -= newHeight;
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->graphics, newX, newY, &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY, &(anim.GetCurrentFrame()), resizeRect, z);
+}
+
+float Obstacle::calculateScaleValue(float yRender)
+{
+	float min = ((float)SCREEN_HEIGHT - App->renderer->horizonY);
+	float max = (float)SCREEN_HEIGHT;
+	float toReturn = (yRender - min) / (max - min);
+	if (toReturn < 0.0f) toReturn = 0.0f;
+
+	return toReturn;
 }
 
 void Obstacle::setResizeRect(int x, int y, int w, int h)

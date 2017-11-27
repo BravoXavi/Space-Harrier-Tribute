@@ -15,14 +15,13 @@ struct Obstacle
 {
 	// TODO 1: Fill in the structure with all the properties you need for each particle
 	bool to_delete = false;
+
 	fPoint position = { 0.0f, 0.0f };
 	int z = 0;
 	int lineToFollow = 0;
 
 	Animation anim;
 	collisionType colType;
-
-	// TODO 11: Add an optional collider to each particle -- DONE
 	Collider* collision = nullptr;
 
 	Obstacle();
@@ -33,10 +32,9 @@ struct Obstacle
 	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
 	void Update();
 
-	int counter = 1;
+	float calculateScaleValue(float yRender);
 
-	float potato = 0.0f;
-	float scaleSize = 0.0f;
+	float scaleValue = 0.0f;
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);	
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };
