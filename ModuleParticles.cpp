@@ -145,7 +145,7 @@ void Particle::setResizeRect(int x, int y, int w, int h)
 	resizeRect->h = h;
 }
 
-void Particle::setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth)
+void Particle::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth)
 {
 	rect->texture = texture;
 	rect->x = x;

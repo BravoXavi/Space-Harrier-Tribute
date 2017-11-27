@@ -64,7 +64,8 @@ update_status ModuleSceneSpace::Update()
 	if (timeCounter < 1)
 	{
 		int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
-		App->obstacles->AddObstacle(App->obstacles->tree, SCREEN_WIDTH/2, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h);
+		App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f) - 50.0f, 0.0f);
+		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f) + 50.0f, ((float)SCREEN_HEIGHT - App->renderer->horizonY));
 		timeCounter++;
 	}
 	else

@@ -30,7 +30,7 @@ struct Particle
 	Particle(const Particle& p);
 	~Particle();
 
-	void setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth);
+	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
 	void setResizeRect(int x, int y, int w, int h);
 	void Update();
 

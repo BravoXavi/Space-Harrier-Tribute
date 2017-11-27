@@ -15,7 +15,7 @@ struct Obstacle
 {
 	// TODO 1: Fill in the structure with all the properties you need for each particle
 	bool to_delete = false;
-	iPoint position = { 0, 0 };
+	fPoint position = { 0.0f, 0.0f };
 	int z = 0;
 	int lineToFollow = 0;
 
@@ -30,7 +30,7 @@ struct Obstacle
 	~Obstacle();
 
 	void setResizeRect(int x, int y, int w, int h);
-	void setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth);
+	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
 	void Update();
 
 	int counter = 1;
@@ -52,7 +52,7 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
-	void AddObstacle(const Obstacle& particle, int x, int y); // feel free to expand this call
+	void AddObstacle(const Obstacle& particle, float x, float y); // feel free to expand this call
 
 private:
 

@@ -101,13 +101,13 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, float speed)
+bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, float speed)
 {
 	bool ret = true;
 	SDL_Rect rect;
 
-	rect.x = x * SCREEN_SIZE;
-	rect.y = y * SCREEN_SIZE;
+	rect.x = (int)(x * SCREEN_SIZE);
+	rect.y = (int)(y * SCREEN_SIZE);
 
 	if (resize != NULL)
 	{
@@ -137,7 +137,7 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, S
 }
 
 // Blit floor to screen ( (0,0) will be the down-mid of the screen )
-bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed)
+bool ModuleRender::FloorBlit(SDL_Texture* texture, float x, float y, SDL_Rect* section, float speed)
 {
 	bool ret = true;
 	SDL_Rect rect;
@@ -147,8 +147,8 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* secti
 	rect.w = SCREEN_WIDTH;
 	rect.h = (int)horizonY;
 
-	int pX = (SCREEN_WIDTH / 2) + x;
-	int pY = SCREEN_HEIGHT - y;
+	int pX = (SCREEN_WIDTH / 2) + (int)x;
+	int pY = SCREEN_HEIGHT - (int)y;
 	pX = pX - (rect.w / 2);
 	pY = pY - rect.h;
 
@@ -193,7 +193,7 @@ void ModuleRender::AlphaVerticalLinesMove()
 {	
 	float baseLineHeight = (float)(horizonY*SCREEN_SIZE) / lineDivisor;
 
-	float startRenderPos = SCREEN_HEIGHT*SCREEN_SIZE - baseLineHeight*(1.0f - firstLinePositionPercentage);
+	float startRenderPos = (float)SCREEN_HEIGHT*(float)SCREEN_SIZE - baseLineHeight*(1.0f - firstLinePositionPercentage);
 	float firstLineHeight = baseLineHeight * (1.0f - firstLinePositionPercentage) + baseLineHeight * (1.0f / LINE_REDUCTION) * (firstLinePositionPercentage);
 
 	float currentLineHeight = firstLineHeight;

@@ -13,13 +13,13 @@ struct SDL_Rect;
 struct BlitTarget
 {
 	SDL_Texture* texture;
-	int x;
-	int y;
+	float x;
+	float y;
 	SDL_Rect* section;
 	SDL_Rect* resize;
 	int depth;
 
-	BlitTarget(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth) :
+	BlitTarget(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth) :
 		texture(texture),
 		x(x),
 		y(y),
@@ -41,9 +41,9 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, float speed = 1.0f);
+	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, float speed = 1.0f);
 
-	bool FloorBlit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f);
+	bool FloorBlit(SDL_Texture* texture, float x, float y, SDL_Rect* section, float speed = 1.0f);
 	void AlphaVerticalLinesMove();
 
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
