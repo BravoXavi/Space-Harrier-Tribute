@@ -105,9 +105,7 @@ update_status ModulePlayer::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		// TODO 6: Shoot a laser using the particle system
 		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y);
-		//App->enemies->AddEnemy(App->enemies->tree, 100, 100);
 	}
 
 	//if(App->input->GetKey(SDL_SCANCODE_S) == KEY_IDLE
@@ -120,7 +118,6 @@ update_status ModulePlayer::Update()
 		App->renderer->depthBuffer[temp->depth].push_back(*temp);
 
 	delete temp;
-		//App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr);
 
 	return UPDATE_CONTINUE;
 }
@@ -129,37 +126,36 @@ void ModulePlayer::checkHorizontalAnimation(bool running)
 {
 	int realPosition = position.x + middle.GetCurrentFrame().w / 2;
 	
-		if (realPosition <= SCREEN_DIVISOR)
-		{
-			if(!running) current_animation = &left2;
-			setCharSpeed();
-			return;
-		}
-		else if (realPosition <= (SCREEN_DIVISOR * 2))
-		{
-			if (!running) current_animation = &left1;
-			setCharSpeed();
-			return;
-		}
-		else if (realPosition <= (SCREEN_DIVISOR * 3))
-		{
-			if (!running) current_animation = &middle;
-			setCharSpeed();
-			return;
-		}
-		else if (realPosition <= (SCREEN_DIVISOR * 4))
-		{
-			if (!running) current_animation = &right1;
-			setCharSpeed();
-			return;
-		}
-		else if (realPosition <= (SCREEN_DIVISOR * 5))
-		{
-			if (!running) current_animation = &right2;
-			setCharSpeed();
-			return;
-		}
-	
+	if (realPosition <= SCREEN_DIVISOR)
+	{
+		if(!running) current_animation = &left2;
+		setCharSpeed();
+		return;
+	}
+	else if (realPosition <= (SCREEN_DIVISOR * 2))
+	{
+		if (!running) current_animation = &left1;
+		setCharSpeed();
+		return;
+	}
+	else if (realPosition <= (SCREEN_DIVISOR * 3))
+	{
+		if (!running) current_animation = &middle;
+		setCharSpeed();
+		return;
+	}
+	else if (realPosition <= (SCREEN_DIVISOR * 4))
+	{
+		if (!running) current_animation = &right1;
+		setCharSpeed();
+		return;
+	}
+	else if (realPosition <= (SCREEN_DIVISOR * 5))
+	{
+		if (!running) current_animation = &right2;
+		setCharSpeed();
+		return;
+	}
 }
 
 void ModulePlayer::modifyHorizonY()
