@@ -20,10 +20,15 @@ bool ModuleObstacle::Start()
 {
 	LOG("Loading obstacles");
 	graphics = App->textures->Load("assets/Arboles.png");
+	models = App->textures->Load("assets/obstacleModels.png");
 
 	tree.anim.frames.push_back({ 208, 50, 40, 158 });
 	tree.z = MAX_Z;
 	tree.colType = OBSTACLE;
+
+	rock.anim.frames.push_back({ 192, 72, 59, 37 });
+	rock.z = MAX_Z;
+	rock.colType = WALL;
 
 	//Create rock obstacle
 	//Create tower obstacle
@@ -77,11 +82,12 @@ update_status ModuleObstacle::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffset, float y)
+void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffset, float y, collisionType type)
 {
 	Obstacle* o = new Obstacle(obstacle);
 	o->position = { x, y };
 	o->xOffset = xOffset;
+	o->colType = type;
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
@@ -126,12 +132,20 @@ void Obstacle::Update()
 	int newWidth = (int)((float)anim.GetCurrentFrame().w * scaleValue);
 	int newHeight = (int)((float)anim.GetCurrentFrame().h * scaleValue);
 
-	if (newHeight < 2) newHeight = 2;
-	if (newWidth < 1) newWidth = 1;
-	newY -= newHeight;
+	if (newHeight < 2)
+	{
+		newHeight = 2;
+	}
+
+	if (newWidth < 1)
+	{
+		newWidth = 1;
+	}
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY, &(anim.GetCurrentFrame()), resizeRect, z);
+	if(colType == OBSTACLE) setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
+	else setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
+
 }
 
 float Obstacle::calculateScaleValue(float yRender)

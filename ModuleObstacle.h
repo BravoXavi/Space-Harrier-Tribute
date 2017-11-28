@@ -51,7 +51,7 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
-	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y); // feel free to expand this call
+	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y, collisionType type); // feel free to expand this call
 
 private:
 
@@ -59,9 +59,10 @@ private:
 
 public:
 	SDL_Texture* graphics = nullptr;
+	SDL_Texture* models = nullptr;
 	Obstacle tree;
 	Obstacle rock;
-	Obstacle tower;
+	Obstacle bush;
 	// prototype particles go here ...
 };
 

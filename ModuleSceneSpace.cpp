@@ -74,13 +74,25 @@ update_status ModuleSceneSpace::Update()
 	//}
 		
 
-	if (timeCounter < 30) timeCounter++;
+	if (timeCounter < 20) timeCounter++;
 	else 
 	{
 		timeCounter = 0;
-		int randNum = rand() % (200 - (-200) + 1) + (-200);
-		//int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
-		App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNum, 0.0f);
+		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
+
+		//App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
+		App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, OBSTACLE);
+	}
+
+	if (timeCounter2 < 50) timeCounter2++;
+	else
+	{
+		timeCounter2 = 0;
+		int randNumX = rand() % (200 - (-200) + 1) + (-200);
+		int randNumY = rand() % (170 - 80 + 1) + 80;
+
+		App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
+		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, OBSTACLE);
 	}
 
 	return UPDATE_CONTINUE;

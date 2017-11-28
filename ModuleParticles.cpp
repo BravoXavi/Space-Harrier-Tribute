@@ -34,7 +34,7 @@ bool ModuleParticles::Start()
 	cannon.anim.frames.push_back({ 284, 0, 91, 61 });
 	cannon.anim.speed = 0.1f;
 	cannon.z = 1;
-	cannon.speed = 2;
+	cannon.speed = 1;
 	cannon.colType = CANNON;
     //cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
 
@@ -128,7 +128,7 @@ void Particle::Update()
 	int yMove = (anim.GetCurrentFrame().h - newHeight) / 2;
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->particles->graphics, position.x + xMove, position.y + yMove, &(anim.GetCurrentFrame()), resizeRect, 1);
+	setRect(App->particles->graphics, position.x + xMove, position.y + yMove, &(anim.GetCurrentFrame()), resizeRect, z);
 
 	// TODO 5: This is the core of the particle logic
 	// draw and audio will be managed by ModuleParticle::Update()

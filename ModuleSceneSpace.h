@@ -23,6 +23,7 @@ public:
 	SDL_Texture* stars = nullptr;
 
 	int timeCounter = 0;
+	int timeCounter2 = 0;
 };
 
 #endif // __MODULESCENESPACE_H__
