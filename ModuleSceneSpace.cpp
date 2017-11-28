@@ -61,25 +61,27 @@ update_status ModuleSceneSpace::Update()
 	// Draw everything --------------------------------------
 	//App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
 
-	if (timeCounter < 1)
-	{
-		int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
-		App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f) - 50.0f, 0.0f);
-		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f) + 50.0f, ((float)SCREEN_HEIGHT - App->renderer->horizonY));
-		timeCounter++;
-	}
-	else
-	{
-		timeCounter = 2;	
-	}
+	//if (timeCounter < 1)
+	//{
+	//	int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
+	//	App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), 100.0f, 0.0f);
+	//	App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), -100.0f, 0.0f); 
+	//	timeCounter++;
+	//}
+	//else
+	//{
+	//	timeCounter = 2;	
+	//}
 		
 
-	//if (timeCounter < 50) timeCounter++;
-	//else {
-	//	timeCounter = 0;
-	//	int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
-	//	App->obstacles->AddObstacle(App->obstacles->tree, randNum, (SCREEN_HEIGHT - App->renderer->horizonY) - App->obstacles->tree.anim.GetCurrentFrame().h);
-	//}
+	if (timeCounter < 30) timeCounter++;
+	else 
+	{
+		timeCounter = 0;
+		int randNum = rand() % (200 - (-200) + 1) + (-200);
+		//int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
+		App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNum, 0.0f);
+	}
 
 	return UPDATE_CONTINUE;
 }

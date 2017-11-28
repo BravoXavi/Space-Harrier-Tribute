@@ -21,7 +21,7 @@ bool ModuleObstacle::Start()
 	LOG("Loading obstacles");
 	graphics = App->textures->Load("assets/Arboles.png");
 
-	tree.anim.frames.push_back({ 155, 85, 31, 122 });
+	tree.anim.frames.push_back({ 208, 50, 40, 158 });
 	tree.z = MAX_Z;
 	tree.colType = OBSTACLE;
 
@@ -77,10 +77,11 @@ update_status ModuleObstacle::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float y)
+void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffset, float y)
 {
 	Obstacle* o = new Obstacle(obstacle);
 	o->position = { x, y };
+	o->xOffset = xOffset;
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
@@ -103,8 +104,7 @@ Obstacle::~Obstacle()
 
 void Obstacle::Update()
 {
-	z -= 1;
-	if (z < 1)
+	if (z <= 1)
 	{
 		to_delete = true;
 	}
@@ -113,16 +113,14 @@ void Obstacle::Update()
 	float newY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
 
 	//Calculate Z of the obstacle
-	z = (int)( ((float)SCREEN_HEIGHT - newY) / ((float)App->renderer->horizonY / (float)MAX_Z) );
+	z = (int)( ((float)SCREEN_HEIGHT - newY) / (App->renderer->horizonY / (float)MAX_Z) );
 
 	//Calculate the scale of the projection
 	scaleValue = calculateScaleValue(newY);
 
 	//Calculate X projection using the scale and playerSpeed
-	float newX = 0.0f;
-	if (position.x < (float)SCREEN_WIDTH / 2.0f) newX = ((float)SCREEN_WIDTH / 2.0f) - (position.x*scaleValue);
-	else newX = (position.x*scaleValue);
-	//position.x -= App->renderer->playerSpeed;
+	xOffset -= App->renderer->playerSpeed;
+	float newX = position.x + (xOffset*scaleValue);
 
 	//Rescale size of the obstacle and calculate other small values
 	int newWidth = (int)((float)anim.GetCurrentFrame().w * scaleValue);

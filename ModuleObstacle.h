@@ -17,6 +17,7 @@ struct Obstacle
 	bool to_delete = false;
 
 	fPoint position = { 0.0f, 0.0f };
+	float xOffset = 0.0f;
 	int z = 0;
 	int lineToFollow = 0;
 
@@ -50,7 +51,7 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
-	void AddObstacle(const Obstacle& particle, float x, float y); // feel free to expand this call
+	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y); // feel free to expand this call
 
 private:
 

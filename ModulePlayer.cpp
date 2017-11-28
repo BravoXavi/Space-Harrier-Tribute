@@ -113,7 +113,7 @@ update_status ModulePlayer::Update()
 	//	current_animation = &idle;
 
 	// Draw everything --------------------------------------
-	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, 0);
+	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, -1);
 	if (destroyed == false)
 		App->renderer->depthBuffer[temp->depth].push_back(*temp);
 
