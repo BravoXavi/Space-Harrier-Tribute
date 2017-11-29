@@ -5,37 +5,40 @@
 #include <vector>
 #include "Module.h"
 
-// TODO 9: Create a matrix of game specific types of collision for early discard
-// Example: lasers should not collide with lasers but should collider with walls
-// enemy shots will collide with other enemies ? and against walls ?
-
 enum collisionType {
 	PLAYER,
-	WALL,
-	CANNON,
-	OBSTACLE,
-	EXPLOSION,
+	P_LASER,
+	E_LASER,
+	D_OBSTACLE,
+	ND_OBSTACLE,
 	MAXIMUM
 };
 
 struct Collider
 {
 	SDL_Rect rect = { 0,0,0,0 };
+	collisionType colType;
+	int z = 0;
 	bool to_delete = false;
 
 	// TODO 10: Add a way to notify other classes that a collision happened
-	std::vector<Module*> listOfLookers;
 
-	collisionType colType;
-
-	Collider(SDL_Rect rectangle) : // expand this call if you need to
-		rect(rectangle)
+	Collider(SDL_Rect rectangle, collisionType colType, int zDepth) : // expand this call if you need to
+		rect(rectangle),
+		colType(colType),
+		z(zDepth)
 	{}
 
 	void SetPos(int x, int y)
 	{
-		rect.x = x;
-		rect.y = y;
+		rect.x = x*SCREEN_SIZE;
+		rect.y = y*SCREEN_SIZE;
+	}
+
+	void SetSize(int w, int h)
+	{
+		rect.w = w*SCREEN_SIZE;
+		rect.h = h*SCREEN_SIZE;
 	}
 
 	bool CheckCollision(const SDL_Rect& r) const;
@@ -53,7 +56,7 @@ public:
 
 	bool CleanUp();
 
-	Collider* AddCollider(const SDL_Rect& rect);
+	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, int zDepth);
 	void DebugDraw();
 
 private:
