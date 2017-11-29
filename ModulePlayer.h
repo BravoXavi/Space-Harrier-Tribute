@@ -29,9 +29,9 @@ public:
 	Animation right1;
 	Animation right2;
 
-	Animation* activeCharAnimation = nullptr;
+	Collider* collider = nullptr;
 
-	iPoint position;
+	fPoint position;
 	bool destroyed = false;
 
 private:

@@ -13,7 +13,6 @@
 
 ModulePlayer::ModulePlayer(bool active) : Module(active)
 {
-
 	run.frames.push_back({ 4, 4, 20, 47 });
 	run.frames.push_back({ 25, 4, 20, 47 });
 	run.frames.push_back({ 49, 2, 25, 49 });
@@ -29,6 +28,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	right1.frames.push_back({ 221,2,22,50 });
 
 	current_animation = &run;
+
 }
 
 ModulePlayer::~ModulePlayer()
@@ -44,6 +44,8 @@ bool ModulePlayer::Start()
 	destroyed = false;
 	position.x = (SCREEN_WIDTH/2) - (current_animation->GetCurrentFrame().w/2);
 	position.y = SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
+
+	collider = App->collision->AddCollider({ (int)position.x*SCREEN_SIZE, (int)position.y*SCREEN_SIZE, current_animation->GetCurrentFrame().w*SCREEN_SIZE, current_animation->GetCurrentFrame().h*SCREEN_SIZE }, P_LASER, -1);
 
 	return true;
 }
@@ -68,6 +70,9 @@ update_status ModulePlayer::Update()
 		if(position.x > 0) position.x -= speed;
 		if(current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
+
+		collider->SetPos(position.x, position.y);
+		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
@@ -75,6 +80,9 @@ update_status ModulePlayer::Update()
 		if (position.x + current_animation->GetCurrentFrame().w < SCREEN_WIDTH) position.x += speed;
 		if (current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
+
+		collider->SetPos(position.x, position.y);
+		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
@@ -88,6 +96,9 @@ update_status ModulePlayer::Update()
 		{
 			current_animation = &run;
 		}
+
+		collider->SetPos(position.x, position.y);
+		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
@@ -101,16 +112,15 @@ update_status ModulePlayer::Update()
 		{
 			checkHorizontalAnimation();
 		}
+
+		collider->SetPos(position.x, position.y);
+		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y);
 	}
-
-	//if(App->input->GetKey(SDL_SCANCODE_S) == KEY_IDLE
-	//   && App->input->GetKey(SDL_SCANCODE_W) == KEY_IDLE)
-	//	current_animation = &idle;
 
 	// Draw everything --------------------------------------
 	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, -1);

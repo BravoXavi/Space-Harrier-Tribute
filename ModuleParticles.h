@@ -24,7 +24,7 @@ struct Particle
 	collisionType colType;
 
 	// TODO 11: Add an optional collider to each particle -- DONE
-	Collider* collision = nullptr;
+	Collider* collider = nullptr;
 
 	Particle();
 	Particle(const Particle& p);
