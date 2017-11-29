@@ -88,6 +88,7 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 	o->position = { x, y };
 	o->xOffset = xOffset;
 	o->colType = type;
+	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->z);
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
@@ -112,6 +113,7 @@ void Obstacle::Update()
 {
 	if (z <= 1)
 	{
+		collider->to_delete = true;
 		to_delete = true;
 	}
 
@@ -122,7 +124,7 @@ void Obstacle::Update()
 	z = (int)( ((float)SCREEN_HEIGHT - newY) / (App->renderer->horizonY / (float)MAX_Z) );
 
 	//Calculate the scale of the projection
-	scaleValue = calculateScaleValue(newY);
+	float scaleValue = calculateScaleValue(newY);
 
 	//Calculate X projection using the scale and playerSpeed
 	xOffset -= App->renderer->playerSpeed;
@@ -142,8 +144,11 @@ void Obstacle::Update()
 		newWidth = 1;
 	}
 
+	collider->SetPos(newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, z);
+	collider->SetSize(newWidth, newHeight);
+
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
 }
 
 float Obstacle::calculateScaleValue(float yRender)
