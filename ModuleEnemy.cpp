@@ -28,7 +28,7 @@ bool ModuleEnemy::Start()
 	tree.anim.speed = 0.1f;
 	tree.z = MAX_Z;
 	tree.speed = 1;
-	tree.colType = CANNON;
+	tree.colType = D_OBSTACLE;
 	//tree.collision = new Collider({ tree.position.x, tree.position.y, 16, 12 });
 
 	// TODO 12: Create a new "Explosion" particle -- DONE

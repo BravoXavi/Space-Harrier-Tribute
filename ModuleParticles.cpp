@@ -23,7 +23,6 @@ bool ModuleParticles::Start()
 	LOG("Loading particles");
 	graphics = App->textures->Load("assets/Shoots.png");
 
-
 	// TODO 2: Create a prototype for the laser particle -- DONE
 	// audio: rtype/laser.wav
 	// coords: {232, 103, 16, 12}; {249, 103, 16, 12};
@@ -35,8 +34,7 @@ bool ModuleParticles::Start()
 	cannon.anim.speed = 0.1f;
 	cannon.z = 1;
 	cannon.speed = 1;
-	cannon.colType = CANNON;
-    //cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
+	cannon.colType = P_LASER;
 
 	// TODO 12: Create a new "Explosion" particle -- DONE
 	// audio: rtype/explosion.wav
@@ -128,7 +126,7 @@ void Particle::Update()
 	int yMove = (anim.GetCurrentFrame().h - newHeight) / 2;
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->particles->graphics, position.x + xMove, position.y + yMove, &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->particles->graphics, (float)(position.x + xMove), (float)(position.y + yMove), &(anim.GetCurrentFrame()), resizeRect, z);
 
 	// TODO 5: This is the core of the particle logic
 	// draw and audio will be managed by ModuleParticle::Update()

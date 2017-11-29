@@ -24,11 +24,11 @@ bool ModuleObstacle::Start()
 
 	tree.anim.frames.push_back({ 208, 50, 40, 158 });
 	tree.z = MAX_Z;
-	tree.colType = OBSTACLE;
+	tree.colType = D_OBSTACLE;
 
 	rock.anim.frames.push_back({ 192, 72, 59, 37 });
 	rock.z = MAX_Z;
-	rock.colType = WALL;
+	rock.colType = D_OBSTACLE;
 
 	//Create rock obstacle
 	//Create tower obstacle
@@ -143,9 +143,7 @@ void Obstacle::Update()
 	}
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	if(colType == OBSTACLE) setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
-	else setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
-
+	setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
 }
 
 float Obstacle::calculateScaleValue(float yRender)
