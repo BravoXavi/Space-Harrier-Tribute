@@ -18,7 +18,7 @@ struct Collider
 {
 	SDL_Rect rect = { 0,0,0,0 };
 	collisionType colType;
-	int z = 0;
+	int depth = 0;
 	bool to_delete = false;
 
 	// TODO 10: Add a way to notify other classes that a collision happened
@@ -26,13 +26,14 @@ struct Collider
 	Collider(SDL_Rect rectangle, collisionType colType, int zDepth) : // expand this call if you need to
 		rect(rectangle),
 		colType(colType),
-		z(zDepth)
+		depth(zDepth)
 	{}
 
-	void SetPos(int x, int y)
+	void SetPos(int x, int y, int z)
 	{
 		rect.x = x*SCREEN_SIZE;
 		rect.y = y*SCREEN_SIZE;
+		depth = z;
 	}
 
 	void SetSize(int w, int h)
@@ -41,7 +42,7 @@ struct Collider
 		rect.h = h*SCREEN_SIZE;
 	}
 
-	bool CheckCollision(const SDL_Rect& r) const;
+	bool CheckCollision(const SDL_Rect& r, const int& depth) const;
 };
 
 class ModuleCollision : public Module

@@ -55,7 +55,7 @@ update_status ModuleCollision::Update()
 		for (list<Collider*>::const_iterator it2 = next(it, 1); it2 != end; it2++)
 		{
 			if (collisionMatrix[(*it)->colType][(*it2)->colType]) {
-				(*it)->CheckCollision((*it2)->rect);
+				(*it)->CheckCollision((*it2)->rect, (*it2)->depth);
 			}
 		}
 	}
@@ -99,15 +99,19 @@ Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colTy
 
 // -----------------------------------------------------
 
-bool Collider::CheckCollision(const SDL_Rect& r) const
+bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 {
 	bool xColl = true;
 	bool yColl = true;
+	bool zColl = false;
 
 	if ( r.x > (this->rect.x + this->rect.w) || (r.x + r.w) < this->rect.x ) xColl = false;
 	if ( r.y > (this->rect.y + this->rect.h) || (r.y + r.h) < this->rect.y ) yColl = false;
 
-	if (xColl && yColl) LOG("COLLISION DETECTED!!!");
+	if ( this->depth == depth || abs(this->depth - depth) <= 2) zColl = true;
+	
+	if (xColl && yColl && zColl) 
+		LOG("COLLISION DETECTED!!!");
 
-	return (xColl && yColl);
+	return (xColl && yColl && zColl);
 }
