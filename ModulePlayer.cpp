@@ -45,7 +45,7 @@ bool ModulePlayer::Start()
 	position.x = (SCREEN_WIDTH/2) - (current_animation->GetCurrentFrame().w/2);
 	position.y = SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
 
-	collider = App->collision->AddCollider({ (int)position.x*SCREEN_SIZE, (int)position.y*SCREEN_SIZE, current_animation->GetCurrentFrame().w*SCREEN_SIZE, current_animation->GetCurrentFrame().h*SCREEN_SIZE }, P_LASER, -1);
+	collider = App->collision->AddCollider({ (int)position.x*SCREEN_SIZE, (int)position.y*SCREEN_SIZE, current_animation->GetCurrentFrame().w*SCREEN_SIZE, current_animation->GetCurrentFrame().h*SCREEN_SIZE }, P_LASER, playerDepth);
 
 	return true;
 }
@@ -71,7 +71,7 @@ update_status ModulePlayer::Update()
 		if(current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
 
-		collider->SetPos(position.x, position.y);
+		collider->SetPos(position.x, position.y, playerDepth);
 		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
@@ -81,7 +81,7 @@ update_status ModulePlayer::Update()
 		if (current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
 
-		collider->SetPos(position.x, position.y);
+		collider->SetPos(position.x, position.y, playerDepth);
 		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
@@ -97,7 +97,7 @@ update_status ModulePlayer::Update()
 			current_animation = &run;
 		}
 
-		collider->SetPos(position.x, position.y);
+		collider->SetPos(position.x, position.y, playerDepth);
 		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
@@ -113,17 +113,17 @@ update_status ModulePlayer::Update()
 			checkHorizontalAnimation();
 		}
 
-		collider->SetPos(position.x, position.y);
+		collider->SetPos(position.x, position.y, playerDepth);
 		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y);
+		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y, P_LASER, 0);
 	}
 
 	// Draw everything --------------------------------------
-	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, -1);
+	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, playerDepth);
 	if (destroyed == false)
 		App->renderer->depthBuffer[temp->depth].push_back(*temp);
 
