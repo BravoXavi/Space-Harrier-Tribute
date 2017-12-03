@@ -20,13 +20,15 @@ struct Collider
 	collisionType colType;
 	int depth = 0;
 	bool to_delete = false;
+	Module* modCallback;
 
 	// TODO 10: Add a way to notify other classes that a collision happened
 
-	Collider(SDL_Rect rectangle, collisionType colType, int zDepth) : // expand this call if you need to
+	Collider(SDL_Rect rectangle, collisionType colType, int zDepth, Module* callback) : // expand this call if you need to
 		rect(rectangle),
 		colType(colType),
-		depth(zDepth)
+		depth(zDepth),
+		modCallback(callback)
 	{}
 
 	void SetPos(int x, int y, int z)
@@ -57,7 +59,7 @@ public:
 
 	bool CleanUp();
 
-	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, int zDepth);
+	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, int zDepth, Module* callback);
 	void DebugDraw();
 
 private:
