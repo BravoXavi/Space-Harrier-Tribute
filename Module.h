@@ -2,6 +2,7 @@
 #define __MODULE_H__
 
 class Application;
+struct Collider;
 
 class Module
 {
@@ -65,6 +66,10 @@ public:
 	}
 
 	// Callbacks ---
+	virtual bool onCollision(Collider* c1, Collider* c2)
+	{
+		return true;
+	}
 
 private:
 	bool active = true;
