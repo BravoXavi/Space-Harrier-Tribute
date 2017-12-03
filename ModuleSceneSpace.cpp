@@ -23,6 +23,7 @@ bool ModuleSceneSpace::Start()
 	LOG("Loading space scene");
 	
 	floor = App->textures->Load("assets/Floor.bmp");
+	background = App->textures->Load("assets/Background3Scaled.png");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
 	App->player->Enable();
@@ -51,7 +52,8 @@ bool ModuleSceneSpace::CleanUp()
 //Draw Floor, Background, and extras (All this parts will ALWAYS stay in the back of the screen)
 update_status ModuleSceneSpace::PreUpdate()
 {
-	App->renderer->FloorBlit(floor, 0, 0, nullptr);
+	App->renderer->BackgroundBlit(background);
+	App->renderer->FloorBlit(floor, nullptr);
 	return UPDATE_CONTINUE;
 }
 
