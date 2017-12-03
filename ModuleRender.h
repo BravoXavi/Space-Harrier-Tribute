@@ -43,7 +43,8 @@ public:
 
 	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, float speed = 1.0f);
 
-	bool FloorBlit(SDL_Texture* texture, float x, float y, SDL_Rect* section, float speed = 1.0f);
+	bool FloorBlit(SDL_Texture* texture, SDL_Rect* section, float speed = 1.0f);
+	void BackgroundBlit(SDL_Texture* texture);
 	void AlphaVerticalLinesMove();
 
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
@@ -62,6 +63,7 @@ public:
 	float playerSpeed = 0.0f;
 	float lineDivisor = 0.0f;
 	float firstLinePositionPercentage;
+	float backgroundXOffset = 0.0f;
 
 	std::map<int, std::vector<BlitTarget>> depthBuffer;
 	SDL_Rect alphaLinesArray[alphaLines];

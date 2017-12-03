@@ -153,8 +153,59 @@ bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* sectio
 	return ret;
 }
 
+void ModuleRender::BackgroundBlit(SDL_Texture* texture)
+{
+	bool ret = true;
+	SDL_Rect rect;
+	int textW;
+	int textH;
+	SDL_Rect screenCutLeft;
+
+	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+
+	backgroundXOffset -= (playerSpeed*0.2);
+	rect.x = 0;
+	rect.y = 0;
+
+	rect.x = backgroundXOffset;
+	rect.y -= horizonY*SCREEN_SIZE;
+	rect.w = textW * SCREEN_SIZE;
+	rect.h = (SCREEN_HEIGHT*SCREEN_SIZE);
+
+	screenCutLeft.x = -textW + backgroundXOffset;
+	screenCutLeft.y = rect.y;
+	screenCutLeft.w = rect.w;
+	screenCutLeft.h = rect.h;
+
+	if (backgroundXOffset > 0.0f && backgroundXOffset < (SCREEN_WIDTH*SCREEN_SIZE))
+	{
+		SDL_RenderCopy(renderer, texture, nullptr, &screenCutLeft);
+		SDL_RenderCopy(renderer, texture, nullptr, &rect);
+	}
+	else if (backgroundXOffset > (SCREEN_WIDTH*SCREEN_SIZE))
+	{
+		SDL_RenderCopy(renderer, texture, nullptr, &screenCutLeft);
+	}
+	else if (backgroundXOffset <= (-textW+SCREEN_WIDTH)*SCREEN_SIZE)
+	{
+		screenCutLeft.x = (textW*SCREEN_SIZE) + rect.x;
+		screenCutLeft.y = rect.y;
+		screenCutLeft.w = rect.w;
+		screenCutLeft.h = rect.h;
+		SDL_RenderCopy(renderer, texture, nullptr, &screenCutLeft);
+		SDL_RenderCopy(renderer, texture, nullptr, &rect);
+	}
+	else
+	{
+		SDL_RenderCopy(renderer, texture, nullptr, &rect);
+	}
+
+	if (backgroundXOffset > textW || backgroundXOffset <= (-textW*SCREEN_SIZE)) backgroundXOffset = 0.0f;
+	
+}
+
 // Blit floor to screen ( (0,0) will be the down-mid of the screen )
-bool ModuleRender::FloorBlit(SDL_Texture* texture, float x, float y, SDL_Rect* section, float speed)
+bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section, float speed)
 {
 	bool ret = true;
 	SDL_Rect rect;
@@ -164,8 +215,8 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, float x, float y, SDL_Rect* s
 	rect.w = SCREEN_WIDTH;
 	rect.h = (int)horizonY;
 
-	int pX = (SCREEN_WIDTH / 2) + (int)x;
-	int pY = SCREEN_HEIGHT - (int)y;
+	int pX = (SCREEN_WIDTH / 2);
+	int pY = SCREEN_HEIGHT;
 	pX = pX - (rect.w / 2);
 	pY = pY - rect.h;
 
