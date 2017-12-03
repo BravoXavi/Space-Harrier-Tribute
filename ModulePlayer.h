@@ -38,6 +38,7 @@ public:
 private:
 	const static int playerDepth = -1;
 	void checkHorizontalAnimation(bool running = false);
+	bool onCollision(Collider* c1, Collider* c2);
 	void modifyHorizonY();
 	void setCharSpeed();
 };

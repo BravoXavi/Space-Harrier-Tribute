@@ -45,7 +45,7 @@ bool ModulePlayer::Start()
 	position.x = (SCREEN_WIDTH/2) - (current_animation->GetCurrentFrame().w/2);
 	position.y = SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
 
-	collider = App->collision->AddCollider({ (int)position.x*SCREEN_SIZE, (int)position.y*SCREEN_SIZE, current_animation->GetCurrentFrame().w*SCREEN_SIZE, current_animation->GetCurrentFrame().h*SCREEN_SIZE }, P_LASER, playerDepth);
+	collider = App->collision->AddCollider({ (int)position.x*SCREEN_SIZE, (int)position.y*SCREEN_SIZE, current_animation->GetCurrentFrame().w*SCREEN_SIZE, current_animation->GetCurrentFrame().h*SCREEN_SIZE }, PLAYER, playerDepth, App->player);
 
 	return true;
 }
@@ -181,6 +181,12 @@ void ModulePlayer::setCharSpeed()
 	float speedPercent = ((float)screenPosition * 1.0f) / (SCREEN_WIDTH/2.0f);
 	if (current_animation == &middle) speedPercent = 0.0f;
 	App->renderer->playerSpeed = speedPercent * 10.0f;
+}
+
+bool ModulePlayer::onCollision(Collider* c1, Collider* c2) 
+{
+	LOG("Player Collision");
+	return true;
 }
 
 // TODO 13: Make so is the laser collides, it is removed and create an explosion particle at its position

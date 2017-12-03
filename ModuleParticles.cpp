@@ -93,9 +93,31 @@ void ModuleParticles::AddParticle(const Particle& particle, int x, int y, collis
 	p->position = { (float)x, (float)y };
 	p->colType = colType;
 	p->z = depth;
-	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, depth);
+	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, depth, App->particles);
 	active.push_back(p);
 	App->audio->PlayFx(p->fxIndex, 0);
+}
+
+bool ModuleParticles::onCollision(Collider* c1, Collider* c2)
+{
+	for (std::list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
+	{
+		if ((*it)->collider == c1 || (*it)->collider == c2)
+		{
+			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE)
+			{
+				(*it)->to_delete = true;
+				(*it)->collider->to_delete = true;
+				LOG("OBSTACLE GETS DESTROY AND BULLET TOO");
+			}
+			else if (c1->colType == ND_OBSTACLE || c2->colType == ND_OBSTACLE)
+			{
+				LOG("OBSTACLE REMAINS UNAFFECTED AND BULLET BOUNCES");
+			}
+		}
+	}
+
+	return true;
 }
 
 // -------------------------------------------------------------
