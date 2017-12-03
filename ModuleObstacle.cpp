@@ -88,9 +88,24 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 	o->position = { x, y };
 	o->xOffset = xOffset;
 	o->colType = type;
-	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->z);
+	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->z, App->obstacles);
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
+}
+
+bool ModuleObstacle::onCollision(Collider* c1, Collider* c2)
+{
+	for (std::list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)
+	{
+		if ((*it)->collider == c1 || (*it)->collider == c2)
+		{
+			(*it)->to_delete = true;
+			(*it)->collider->to_delete = true;
+			LOG("PLAYER LOSES ONE LIVE")
+		}
+	}
+
+	return true;
 }
 
 // -------------------------------------------------------------

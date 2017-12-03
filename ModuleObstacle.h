@@ -48,6 +48,7 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
+	bool onCollision(Collider* c1, Collider* c2);
 	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y, collisionType type); // feel free to expand this call
 
 private:
