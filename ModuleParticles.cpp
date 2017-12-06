@@ -104,7 +104,7 @@ bool ModuleParticles::onCollision(Collider* c1, Collider* c2)
 	{
 		if ((*it)->collider == c1 || (*it)->collider == c2)
 		{
-			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE)
+			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE || c1->colType == NOLETHAL_D_OBSTACLE || c2->colType == NOLETHAL_D_OBSTACLE)
 			{
 				(*it)->to_delete = true;
 				(*it)->collider->to_delete = true;

@@ -30,8 +30,9 @@ bool ModuleObstacle::Start()
 	rock.z = MAX_Z;
 	rock.colType = D_OBSTACLE;
 
-	//Create rock obstacle
-	//Create tower obstacle
+	bush.anim.frames.push_back({ 193, 8, 59, 41 });
+	bush.z = MAX_Z;
+	bush.colType = NOLETHAL_D_OBSTACLE;
 
 	return true;
 }
@@ -163,7 +164,8 @@ void Obstacle::Update()
 	collider->SetSize(newWidth, newHeight);
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
+	//setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
 }
 
 float Obstacle::calculateScaleValue(float yRender)
