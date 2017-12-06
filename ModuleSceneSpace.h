@@ -21,6 +21,7 @@ public:
 	uint startFx;
 	SDL_Texture* floor = nullptr;
 	SDL_Texture* background = nullptr;
+	SDL_Texture* backgroundFront = nullptr;
 
 	int timeCounter = 0;
 	int timeCounter2 = 0;
