@@ -278,14 +278,14 @@ void ModuleRender::AlphaVerticalLinesMove()
 
 	float currentLineHeight = firstLineHeight;
 	float actualRenderPos = startRenderPos;
-
+	
 	int actualLineIndex = firstLineIndex;
 
 	bool reOrganizeLines = true;
 
 	if (actualLineIndex == 0) nextTopLine = alphaLines - 1;
 	else nextTopLine = actualLineIndex - 1;
-
+	
 	while(reOrganizeLines) 
 	{
 		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
