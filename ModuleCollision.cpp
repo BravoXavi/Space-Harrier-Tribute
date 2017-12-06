@@ -17,9 +17,14 @@ ModuleCollision::ModuleCollision()
 	collisionMatrix[E_LASER][E_LASER] = false;
 	collisionMatrix[E_LASER][D_OBSTACLE] = false;
 	collisionMatrix[E_LASER][ND_OBSTACLE] = false;
+	collisionMatrix[E_LASER][NOLETHAL_D_OBSTACLE] = false;
 
 	collisionMatrix[D_OBSTACLE][D_OBSTACLE] = false;
 	collisionMatrix[D_OBSTACLE][ND_OBSTACLE] = false;
+	collisionMatrix[D_OBSTACLE][NOLETHAL_D_OBSTACLE] = false;
+
+	collisionMatrix[NOLETHAL_D_OBSTACLE][NOLETHAL_D_OBSTACLE] = false;
+	collisionMatrix[NOLETHAL_D_OBSTACLE][ND_OBSTACLE] = false;
 
 	collisionMatrix[ND_OBSTACLE][ND_OBSTACLE] = false;
 }

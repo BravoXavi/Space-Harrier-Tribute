@@ -10,6 +10,7 @@ enum collisionType {
 	P_LASER,
 	E_LASER,
 	D_OBSTACLE,
+	NOLETHAL_D_OBSTACLE,
 	ND_OBSTACLE,
 	MAXIMUM
 };
