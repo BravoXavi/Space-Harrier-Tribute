@@ -75,6 +75,9 @@
     <ClInclude Include="ModuleObstacle.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleTime.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -125,6 +128,9 @@
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleObstacle.cpp">
+      <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleTime.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>
