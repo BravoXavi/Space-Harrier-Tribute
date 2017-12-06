@@ -53,6 +53,8 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneSpace* scene_space;
 
+	bool paused = false;
+
 private:
 
 	std::list<Module*> modules;

@@ -75,17 +75,43 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
-			ret = (*it)->PreUpdate();
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	{
+		LOG("PAUSED ---------------------------------------------------------------------------");
+		if (paused == false)
+		{
+			paused = true;
+		}
+		else if (paused == true)
+		{
+			paused = false;
+		}
+	}
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
-			ret = (*it)->Update();
+	if (!paused)
+	{
+		for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+			if ((*it)->IsEnabled() == true)
+				ret = (*it)->PreUpdate();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
-			ret = (*it)->PostUpdate();
+		for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+			if ((*it)->IsEnabled() == true)
+				ret = (*it)->Update();
+
+		for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+			if ((*it)->IsEnabled() == true)
+				ret = (*it)->PostUpdate();
+	}
+	else
+	{
+		ret = input->PreUpdate();
+		if (ret == UPDATE_CONTINUE)
+		{
+			ret = input->Update();
+			ret = input->PostUpdate();
+			ret = renderer->PostUpdate();
+		}
+	}
 
 	return ret;
 }
