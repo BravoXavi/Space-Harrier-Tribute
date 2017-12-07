@@ -23,12 +23,12 @@ bool ModuleEnemy::Start()
 	LOG("Loading enemies");
 	graphics = App->textures->Load("assets/Arboles.png");
 
-	tree.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	tree.anim.frames.push_back({ 155, 85, 31, 122 });
-	tree.anim.speed = 0.1f;
-	tree.z = MAX_Z;
-	tree.speed = 1;
-	tree.colType = D_OBSTACLE;
+	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
+	alienShip.anim.frames.push_back({ 155, 85, 31, 122 });
+	alienShip.anim.speed = 0.1f;
+	alienShip.z = MAX_Z;
+	alienShip.speed = 1;
+	alienShip.colType = ENEMY;
 	//tree.collision = new Collider({ tree.position.x, tree.position.y, 16, 12 });
 
 	// TODO 12: Create a new "Explosion" particle -- DONE

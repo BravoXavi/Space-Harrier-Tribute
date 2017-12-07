@@ -56,9 +56,7 @@ private:
 	std::list<Enemy*> active;
 
 public:
-	Enemy tree;
-	Enemy rock;
-	// prototype particles go here ...
+	Enemy alienShip;
 };
 
 #endif // __MODULEENEMY_H__
