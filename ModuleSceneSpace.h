@@ -18,6 +18,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void PrintUI();
+
 public:
 	uint startFx;
 	SDL_Texture* floor = nullptr;

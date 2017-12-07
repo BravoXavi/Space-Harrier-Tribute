@@ -67,30 +67,16 @@ update_status ModuleSceneSpace::PreUpdate()
 update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
-	//App->renderer->Blit(stars, 0, 0, nullptr, nullptr);
-
-	//if (timeCounter < 1)
-	//{
-	//	int randNum = rand() % ((SCREEN_WIDTH - 20) - 20 + 1) + 20;
-	//	App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), 100.0f, 0.0f);
-	//	App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), -100.0f, 0.0f); 
-	//	timeCounter++;
-	//}
-	//else
-	//{
-	//	timeCounter = 2;	
-	//}
 		
+	//if (timeCounter < 20) timeCounter++;
+	//else 
+	//{
+	//	timeCounter = 0;
+	//	int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-	if (timeCounter < 20) timeCounter++;
-	else 
-	{
-		timeCounter = 0;
-		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
-
-		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	}
+	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+	//	App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
+	//}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -102,7 +88,12 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	blueFont->printText("STAGE 1", SCREEN_WIDTH - 57, SCREEN_HEIGHT - 9, 0.8f);
+	PrintUI();
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneSpace::PrintUI()
+{
+	blueFont->printText("STAGE 1", SCREEN_WIDTH - 57, SCREEN_HEIGHT - 9, 0.8f);
 }

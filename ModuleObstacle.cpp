@@ -102,7 +102,6 @@ bool ModuleObstacle::onCollision(Collider* c1, Collider* c2)
 		{
 			(*it)->to_delete = true;
 			(*it)->collider->to_delete = true;
-			LOG("PLAYER LOSES ONE LIVE")
 		}
 	}
 

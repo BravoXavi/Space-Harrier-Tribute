@@ -94,7 +94,7 @@ update_status ModulePlayer::Update()
 		}
 		else
 		{
-			current_animation = &run;
+			current_animation = &run;			
 		}
 
 		collider->SetPos(position.x, position.y, playerDepth);

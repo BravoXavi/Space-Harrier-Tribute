@@ -61,7 +61,6 @@ public:
 	Obstacle tree;
 	Obstacle rock;
 	Obstacle bush;
-	// prototype particles go here ...
 };
 
 #endif // __MODULEOBSTACLE_H__

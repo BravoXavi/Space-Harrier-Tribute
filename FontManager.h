@@ -13,13 +13,10 @@ public:
 	void Init();
 	void removeReferences();
 	void printWithFont(Font* font, int x, int y, const char* textToWrite);
-
 	Font* addReference(const char* fontName);
 
 private:
 	std::map<const char*, Font*> fontMap;
-
-	//guardar referencia map Font count //
 };
 
 #endif // !CLASS_FONTMANAGER
