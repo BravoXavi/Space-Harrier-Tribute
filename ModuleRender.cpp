@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
+#include "FontManager.h"
 #include "SDL/include/SDL.h"
 
 const float ModuleRender::LINE_REDUCTION = 0.60f;
@@ -50,6 +51,13 @@ bool ModuleRender::Init()
 	}
 
 	return ret;
+}
+
+bool ModuleRender::Start()
+{
+	pauseFont = App->fontManager->addReference("blue");
+	
+	return true;
 }
 
 update_status ModuleRender::PreUpdate()
@@ -311,4 +319,16 @@ void ModuleRender::AlphaVerticalLinesMove()
 	}
 
 	firstLinePositionPercentage = nextfirstSegmentPositionPercentage;
+}
+
+void ModuleRender::DrawPauseScreen()
+{
+	SDL_Rect screen;
+	screen.x = 0;
+	screen.y = 0;
+	screen.w = SCREEN_WIDTH*SCREEN_SIZE;
+	screen.h = SCREEN_HEIGHT*SCREEN_SIZE;
+
+	DrawQuad(screen, 0, 0, 0, 150);
+	pauseFont->printText("PAUSED", (SCREEN_WIDTH/2) - 24, SCREEN_HEIGHT/2);
 }

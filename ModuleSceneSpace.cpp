@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModulePlayer.h"
 #include "ModuleCollision.h"
+#include "ModuleInput.h"
 #include "ModuleParticles.h"
 #include "ModuleSceneSpace.h"
 #include "ModuleObstacle.h"

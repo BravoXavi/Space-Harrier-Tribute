@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include "Font.h"
 #include <map>
 #include <vector>
 
@@ -36,17 +37,17 @@ public:
 	~ModuleRender();
 
 	bool Init();
+	bool Start();
 	update_status PreUpdate();
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
 
 	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, float speed = 1.0f);
-
 	bool FloorBlit(SDL_Texture* texture, SDL_Rect* section, float speed = 1.0f);
 	void BackgroundBlit(SDL_Texture* texture, float speed, int backgroundPlane);
 	void AlphaVerticalLinesMove();
-
+	void DrawPauseScreen();
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
 
 public:
@@ -69,6 +70,9 @@ public:
 	std::map<int, std::vector<BlitTarget>> depthBuffer;
 	SDL_Rect alphaLinesArray[alphaLines];
 	float renderLineValues[alphaLines];
+
+private:
+	Font* pauseFont;
 };
 
 #endif // __MODULERENDER_H__

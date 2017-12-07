@@ -8,7 +8,7 @@ FontManager::~FontManager()
 {
 }
 
-void FontManager::Start()
+void FontManager::Init()
 {
 	Font* blueFont = new Font("assets/blueFont.png", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ,.<>,?¿!¡ ");
 	fontMap["blue"] = blueFont;

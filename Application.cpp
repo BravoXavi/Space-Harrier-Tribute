@@ -57,13 +57,13 @@ bool Application::Init()
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init(); // we init everything, even if not anabled
 
+	fontManager->Init();
+
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 	{
 		if((*it)->IsEnabled() == true)
 			ret = (*it)->Start();
 	}
-
-	fontManager->Start();
 
 	// Start the first scene --
 	fade->FadeToBlack(scene_intro, nullptr, 3.0f);
@@ -77,14 +77,14 @@ update_status Application::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 	{
-		LOG("PAUSED ---------------------------------------------------------------------------");
-		if (paused == false)
+		if (App->paused == false)
 		{
-			paused = true;
+			App->renderer->DrawPauseScreen();
+			App->paused = true;
 		}
-		else if (paused == true)
+		else if (App->paused == true)
 		{
-			paused = false;
+			App->paused = false;
 		}
 	}
 

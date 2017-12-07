@@ -40,7 +40,7 @@ bool ModuleSceneIntro::CleanUp()
 
 	App->textures->Unload(background);
 
-	delete blueFont;
+	//delete blueFont;
 
 	return true;
 }

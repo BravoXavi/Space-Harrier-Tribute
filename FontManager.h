@@ -10,7 +10,7 @@ public:
 	FontManager();
 	~FontManager();
 
-	void Start();
+	void Init();
 	void removeReferences();
 	void printWithFont(Font* font, int x, int y, const char* textToWrite);
 

@@ -34,7 +34,7 @@ Font::Font(const char* pathToImage, const char* traductor)
 
 Font::~Font()
 {
-	App->textures->Unload(fontPNG);
+	//App->textures->Unload(fontPNG);
 }
 
 void Font::printText(const char* textToWrite, int x, int y) 
