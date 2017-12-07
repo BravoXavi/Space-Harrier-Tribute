@@ -6,6 +6,7 @@
 #include "Point.h"
 
 struct SDL_Texture;
+struct Collider;
 
 class ModulePlayer : public Module
 {
@@ -29,13 +30,15 @@ public:
 	Animation right1;
 	Animation right2;
 
-	Animation* activeCharAnimation = nullptr;
+	Collider* collider = nullptr;
 
-	iPoint position;
+	fPoint position;
 	bool destroyed = false;
 
 private:
+	const static int playerDepth = -1;
 	void checkHorizontalAnimation(bool running = false);
+	bool onCollision(Collider* c1, Collider* c2);
 	void modifyHorizonY();
 	void setCharSpeed();
 };

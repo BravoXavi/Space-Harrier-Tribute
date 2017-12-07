@@ -12,7 +12,10 @@ public:
 	bool Init();
 	update_status PreUpdate();
 	bool CleanUp();
+<<<<<<< HEAD
 
+=======
+>>>>>>> Colliders
 	float getDeltaTime() const;
 
 private:

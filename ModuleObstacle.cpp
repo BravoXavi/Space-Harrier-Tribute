@@ -24,14 +24,15 @@ bool ModuleObstacle::Start()
 
 	tree.anim.frames.push_back({ 208, 50, 40, 158 });
 	tree.z = MAX_Z;
-	tree.colType = OBSTACLE;
+	tree.colType = D_OBSTACLE;
 
 	rock.anim.frames.push_back({ 192, 72, 59, 37 });
 	rock.z = MAX_Z;
-	rock.colType = WALL;
+	rock.colType = D_OBSTACLE;
 
-	//Create rock obstacle
-	//Create tower obstacle
+	bush.anim.frames.push_back({ 193, 8, 59, 41 });
+	bush.z = MAX_Z;
+	bush.colType = NOLETHAL_D_OBSTACLE;
 
 	return true;
 }
@@ -88,8 +89,24 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 	o->position = { x, y };
 	o->xOffset = xOffset;
 	o->colType = type;
+	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->z, App->obstacles);
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
+}
+
+bool ModuleObstacle::onCollision(Collider* c1, Collider* c2)
+{
+	for (std::list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)
+	{
+		if ((*it)->collider == c1 || (*it)->collider == c2)
+		{
+			(*it)->to_delete = true;
+			(*it)->collider->to_delete = true;
+			LOG("PLAYER LOSES ONE LIVE")
+		}
+	}
+
+	return true;
 }
 
 // -------------------------------------------------------------
@@ -112,6 +129,7 @@ void Obstacle::Update()
 {
 	if (z <= 1)
 	{
+		collider->to_delete = true;
 		to_delete = true;
 	}
 
@@ -122,7 +140,7 @@ void Obstacle::Update()
 	z = (int)( ((float)SCREEN_HEIGHT - newY) / (App->renderer->horizonY / (float)MAX_Z) );
 
 	//Calculate the scale of the projection
-	scaleValue = calculateScaleValue(newY);
+	float scaleValue = calculateScaleValue(newY);
 
 	//Calculate X projection using the scale and playerSpeed
 	xOffset -= App->renderer->playerSpeed;
@@ -142,10 +160,12 @@ void Obstacle::Update()
 		newWidth = 1;
 	}
 
-	setResizeRect(0, 0, newWidth, newHeight);
-	if(colType == OBSTACLE) setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
-	else setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - newHeight - (position.y*scaleValue), &(anim.GetCurrentFrame()), resizeRect, z);
+	collider->SetPos(newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, z);
+	collider->SetSize(newWidth, newHeight);
 
+	setResizeRect(0, 0, newWidth, newHeight);
+	setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
+	//setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
 }
 
 float Obstacle::calculateScaleValue(float yRender)

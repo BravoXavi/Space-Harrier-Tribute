@@ -22,7 +22,9 @@ bool ModuleSceneSpace::Start()
 {
 	LOG("Loading space scene");
 	
-	floor = App->textures->Load("assets/Floor.bmp");
+	floor = App->textures->Load("assets/Floor.png");
+	background = App->textures->Load("assets/Background3Scaled.png");
+	backgroundFront = App->textures->Load("assets/backgroundFront.png");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
 	App->player->Enable();
@@ -51,7 +53,10 @@ bool ModuleSceneSpace::CleanUp()
 //Draw Floor, Background, and extras (All this parts will ALWAYS stay in the back of the screen)
 update_status ModuleSceneSpace::PreUpdate()
 {
-	App->renderer->FloorBlit(floor, 0, 0, nullptr);
+	App->renderer->BackgroundBlit(background, 0.2f, 1);
+	App->renderer->BackgroundBlit(backgroundFront, 0.5f, 2);
+
+	App->renderer->FloorBlit(floor, nullptr);
 	return UPDATE_CONTINUE;
 }
 
@@ -80,20 +85,19 @@ update_status ModuleSceneSpace::Update()
 		timeCounter = 0;
 		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-		//App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
-		App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, OBSTACLE);
+		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
 	}
 
-	if (timeCounter2 < 50) timeCounter2++;
-	else
-	{
-		timeCounter2 = 0;
-		int randNumX = rand() % (200 - (-200) + 1) + (-200);
-		int randNumY = rand() % (170 - 80 + 1) + 80;
+	//if (timeCounter2 < 50) timeCounter2++;
+	//else
+	//{
+	//	timeCounter2 = 0;
+	//	int randNumX = rand() % (200 - (-200) + 1) + (-200);
+	//	int randNumY = rand() % (170 - 80 + 1) + 80;
 
-		App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
-		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, OBSTACLE);
-	}
+	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
+	//}
 
 	return UPDATE_CONTINUE;
 }

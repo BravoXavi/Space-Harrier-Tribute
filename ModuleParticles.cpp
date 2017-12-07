@@ -23,10 +23,6 @@ bool ModuleParticles::Start()
 	LOG("Loading particles");
 	graphics = App->textures->Load("assets/Shoots.png");
 
-
-	// TODO 2: Create a prototype for the laser particle -- DONE
-	// audio: rtype/laser.wav
-	// coords: {232, 103, 16, 12}; {249, 103, 16, 12};
 	cannon.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	cannon.anim.frames.push_back({ 1, 1, 91, 61 });
 	cannon.anim.frames.push_back({ 95, 0, 91, 61 });
@@ -35,8 +31,7 @@ bool ModuleParticles::Start()
 	cannon.anim.speed = 0.1f;
 	cannon.z = 1;
 	cannon.speed = 1;
-	cannon.colType = CANNON;
-    //cannon.collision = new Collider({ cannon.position.x, cannon.position.y, 16, 12 });
+	cannon.colType = P_LASER;
 
 	// TODO 12: Create a new "Explosion" particle -- DONE
 	// audio: rtype/explosion.wav
@@ -91,13 +86,38 @@ update_status ModuleParticles::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleParticles::AddParticle(const Particle& particle, int x, int y)
+void ModuleParticles::AddParticle(const Particle& particle, int x, int y, collisionType colType, int depth)
 {
 	// TODO 4: Fill in a method to create an instance of a prototype particle	
 	Particle* p = new Particle(particle);
-	p->position = { x, y };
+	p->position = { (float)x, (float)y };
+	p->colType = colType;
+	p->z = depth;
+	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, depth, App->particles);
 	active.push_back(p);
 	App->audio->PlayFx(p->fxIndex, 0);
+}
+
+bool ModuleParticles::onCollision(Collider* c1, Collider* c2)
+{
+	for (std::list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
+	{
+		if ((*it)->collider == c1 || (*it)->collider == c2)
+		{
+			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE || c1->colType == NOLETHAL_D_OBSTACLE || c2->colType == NOLETHAL_D_OBSTACLE)
+			{
+				(*it)->to_delete = true;
+				(*it)->collider->to_delete = true;
+				LOG("OBSTACLE GETS DESTROY AND BULLET TOO");
+			}
+			else if (c1->colType == ND_OBSTACLE || c2->colType == ND_OBSTACLE)
+			{
+				LOG("OBSTACLE REMAINS UNAFFECTED AND BULLET BOUNCES");
+			}
+		}
+	}
+
+	return true;
 }
 
 // -------------------------------------------------------------
@@ -118,8 +138,11 @@ Particle::~Particle()
 
 void Particle::Update()
 {
-	z += speed;
-	if (z > MAX_Z) to_delete = true;
+	if (z > MAX_Z)
+	{
+		to_delete = true;
+		if( collider != nullptr) collider->to_delete = true;
+	}
 
 	float zModifier = 1.0f - ((float)z / MAX_Z);
 	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
@@ -128,7 +151,15 @@ void Particle::Update()
 	int yMove = (anim.GetCurrentFrame().h - newHeight) / 2;
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->particles->graphics, position.x + xMove, position.y + yMove, &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->particles->graphics, (float)(position.x + xMove), (float)(position.y + yMove), &(anim.GetCurrentFrame()), resizeRect, z);
+
+	if (collider != nullptr)
+	{
+		collider->SetPos(position.x + xMove, position.y + yMove, z);
+		collider->SetSize(newWidth, newHeight);
+	}
+	
+	z += speed;
 
 	// TODO 5: This is the core of the particle logic
 	// draw and audio will be managed by ModuleParticle::Update()

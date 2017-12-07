@@ -13,18 +13,6 @@ struct SDL_Texture;
 
 struct Obstacle
 {
-	// TODO 1: Fill in the structure with all the properties you need for each particle
-	bool to_delete = false;
-
-	fPoint position = { 0.0f, 0.0f };
-	float xOffset = 0.0f;
-	int z = 0;
-	int lineToFollow = 0;
-
-	Animation anim;
-	collisionType colType;
-	Collider* collision = nullptr;
-
 	Obstacle();
 	Obstacle(const Obstacle& p);
 	~Obstacle();
@@ -35,7 +23,16 @@ struct Obstacle
 
 	float calculateScaleValue(float yRender);
 
-	float scaleValue = 0.0f;
+	bool to_delete = false;
+
+	fPoint position = { 0.0f, 0.0f };
+	float xOffset = 0.0f;
+	int z = 0;
+	int lineToFollow = 0;
+
+	Animation anim;
+	collisionType colType;
+	Collider* collider = nullptr;
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);	
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };
@@ -51,6 +48,7 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
+	bool onCollision(Collider* c1, Collider* c2);
 	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y, collisionType type); // feel free to expand this call
 
 private:

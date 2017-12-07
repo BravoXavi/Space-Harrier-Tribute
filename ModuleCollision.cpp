@@ -8,16 +8,25 @@ using namespace std;
 
 ModuleCollision::ModuleCollision()
 {
-	collisionMatrix[WALL][WALL] = false;
+	collisionMatrix[PLAYER][PLAYER] = false;
+	collisionMatrix[PLAYER][P_LASER] = false;
 
-	collisionMatrix[CANNON][CANNON] = false;
+	collisionMatrix[P_LASER][P_LASER] = false;
+	collisionMatrix[P_LASER][E_LASER] = false;
 
-	collisionMatrix[EXPLOSION][CANNON] = false;
-	collisionMatrix[EXPLOSION][WALL] = false;
-	collisionMatrix[EXPLOSION][EXPLOSION] = false;
+	collisionMatrix[E_LASER][E_LASER] = false;
+	collisionMatrix[E_LASER][D_OBSTACLE] = false;
+	collisionMatrix[E_LASER][ND_OBSTACLE] = false;
+	collisionMatrix[E_LASER][NOLETHAL_D_OBSTACLE] = false;
 
-	collisionMatrix[PLAYER][EXPLOSION] = false;
-	collisionMatrix[PLAYER][CANNON] = false;
+	collisionMatrix[D_OBSTACLE][D_OBSTACLE] = false;
+	collisionMatrix[D_OBSTACLE][ND_OBSTACLE] = false;
+	collisionMatrix[D_OBSTACLE][NOLETHAL_D_OBSTACLE] = false;
+
+	collisionMatrix[NOLETHAL_D_OBSTACLE][NOLETHAL_D_OBSTACLE] = false;
+	collisionMatrix[NOLETHAL_D_OBSTACLE][ND_OBSTACLE] = false;
+
+	collisionMatrix[ND_OBSTACLE][ND_OBSTACLE] = false;
 }
 
 // Destructor
@@ -46,12 +55,16 @@ update_status ModuleCollision::Update()
 	// TODO 8: Check collisions between all colliders. 
 	// After making it work, review that you are doing the minumum checks possible
 
-	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
+	for (list<Collider*>::const_iterator it = colliders.cbegin(), end = colliders.cend(); it != end; it++)
 	{
-		for (list<Collider*>::iterator it2 = ++it; it2 != colliders.end(); ++it)
+		for (list<Collider*>::const_iterator it2 = next(it, 1); it2 != end; it2++)
 		{
 			if (collisionMatrix[(*it)->colType][(*it2)->colType]) {
-				(*it)->CheckCollision((*it2)->rect);
+				if ((*it)->CheckCollision((*it2)->rect, (*it2)->depth))
+				{
+					(*it)->modCallback->onCollision((*it), (*it2));
+					(*it2)->modCallback->onCollision((*it), (*it2));
+				}
 			}
 		}
 	}
@@ -84,9 +97,9 @@ bool ModuleCollision::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollision::AddCollider(const SDL_Rect& rect)
+Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colType, int zDepth, Module* callback)
 {
-	Collider* ret = new Collider(rect);
+	Collider* ret = new Collider(rect, colType, zDepth, callback);
 
 	colliders.push_back(ret);
 
@@ -95,15 +108,16 @@ Collider* ModuleCollision::AddCollider(const SDL_Rect& rect)
 
 // -----------------------------------------------------
 
-bool Collider::CheckCollision(const SDL_Rect& r) const
+bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 {
 	bool xColl = true;
 	bool yColl = true;
-	// TODO 7: Create by hand (avoid consulting the internet) a simple collision test
-	// Return true if rectangle argument "r" if intersecting with "this->rect"
+	bool zColl = false;
 
 	if ( r.x > (this->rect.x + this->rect.w) || (r.x + r.w) < this->rect.x ) xColl = false;
 	if ( r.y > (this->rect.y + this->rect.h) || (r.y + r.h) < this->rect.y ) yColl = false;
 
-	return (xColl && yColl);
+	if ( this->depth == depth || abs(this->depth - depth) <= 2) zColl = true;
+	
+	return (xColl && yColl && zColl);
 }
