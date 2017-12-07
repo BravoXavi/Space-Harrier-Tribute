@@ -2,6 +2,7 @@
 #define __MODULESCENESPACE_H__
 
 #include "Module.h"
+#include "Font.h"
 #include <list>
 
 struct SDL_Texture;
@@ -25,6 +26,9 @@ public:
 
 	int timeCounter = 0;
 	int timeCounter2 = 0;
+
+private:
+	Font* blueFont;
 };
 
 #endif // __MODULESCENESPACE_H__

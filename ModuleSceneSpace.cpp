@@ -9,6 +9,7 @@
 #include "ModuleParticles.h"
 #include "ModuleSceneSpace.h"
 #include "ModuleObstacle.h"
+#include "FontManager.h"
 
 // Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
 
@@ -27,6 +28,7 @@ bool ModuleSceneSpace::Start()
 	background = App->textures->Load("assets/Background3Scaled.png");
 	backgroundFront = App->textures->Load("assets/backgroundFront.png");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
+	blueFont = App->fontManager->addReference("blue");
 
 	App->player->Enable();
 	App->particles->Enable();
@@ -99,6 +101,8 @@ update_status ModuleSceneSpace::Update()
 
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
+
+	blueFont->printText("STAGE 1", SCREEN_WIDTH - 57, SCREEN_HEIGHT - 9, 0.8f);
 
 	return UPDATE_CONTINUE;
 }
