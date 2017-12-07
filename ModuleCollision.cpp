@@ -11,6 +11,12 @@ ModuleCollision::ModuleCollision()
 	collisionMatrix[PLAYER][PLAYER] = false;
 	collisionMatrix[PLAYER][P_LASER] = false;
 
+	collisionMatrix[ENEMY][ENEMY] = false;
+	collisionMatrix[ENEMY][E_LASER] = false;
+	collisionMatrix[ENEMY][D_OBSTACLE] = false;
+	collisionMatrix[ENEMY][NOLETHAL_D_OBSTACLE] = false;
+	collisionMatrix[ENEMY][ND_OBSTACLE] = false;
+
 	collisionMatrix[P_LASER][P_LASER] = false;
 	collisionMatrix[P_LASER][E_LASER] = false;
 
@@ -54,17 +60,26 @@ update_status ModuleCollision::Update()
 {
 	// TODO 8: Check collisions between all colliders. 
 	// After making it work, review that you are doing the minumum checks possible
+	bool collisionDone = false;
 
 	for (list<Collider*>::const_iterator it = colliders.cbegin(), end = colliders.cend(); it != end; it++)
 	{
 		for (list<Collider*>::const_iterator it2 = next(it, 1); it2 != end; it2++)
 		{
-			if (collisionMatrix[(*it)->colType][(*it2)->colType]) {
+			if (collisionMatrix[(*it)->colType][(*it2)->colType]) 
+			{
 				if ((*it)->CheckCollision((*it2)->rect, (*it2)->depth))
 				{
 					(*it)->modCallback->onCollision((*it), (*it2));
 					(*it2)->modCallback->onCollision((*it), (*it2));
+					collisionDone = true;
 				}
+			}
+
+			if (collisionDone)
+			{
+				collisionDone = false;
+				continue;
 			}
 		}
 	}
@@ -117,7 +132,7 @@ bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 	if ( r.x > (this->rect.x + this->rect.w) || (r.x + r.w) < this->rect.x ) xColl = false;
 	if ( r.y > (this->rect.y + this->rect.h) || (r.y + r.h) < this->rect.y ) yColl = false;
 
-	if ( this->depth == depth || abs(this->depth - depth) <= 2) zColl = true;
+	if ( this->depth == depth || abs(this->depth - depth) <= 1) zColl = true;
 	
 	return (xColl && yColl && zColl);
 }

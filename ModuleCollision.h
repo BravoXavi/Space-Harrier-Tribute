@@ -7,6 +7,7 @@
 
 enum collisionType {
 	PLAYER,
+	ENEMY,
 	P_LASER,
 	E_LASER,
 	D_OBSTACLE,
