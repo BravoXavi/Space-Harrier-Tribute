@@ -9,6 +9,7 @@
 #include "ModuleParticles.h"
 #include "ModuleSceneSpace.h"
 #include "ModuleObstacle.h"
+#include "ModuleEnemy.h"
 #include "FontManager.h"
 
 // Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
@@ -87,6 +88,13 @@ update_status ModuleSceneSpace::Update()
 
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
+
+	if (timeCounter > 1) timeCounter++;
+	else
+	{
+		timeCounter++;
+		App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, ENEMY);
+	}
 
 	PrintUI();
 
