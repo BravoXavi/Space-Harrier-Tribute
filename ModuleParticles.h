@@ -19,11 +19,15 @@ struct Particle
 
 	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
 	void setResizeRect(int x, int y, int w, int h);
-	void Update();
+	//void Update();
+
+	void p_laser_Update();
+	void e_laser_Update();
+	void explosion_Update();
 
 	bool to_delete = false;
 	unsigned int fxIndex;
-	int speed;
+	float speed;
 	fPoint position = { 0, 0 };
 	int z = 0;
 
@@ -57,7 +61,9 @@ private:
 
 public:
 	SDL_Texture* graphics = nullptr;
-	Particle cannon;
+	Particle p_laser;
+	Particle e_laser;
+	Particle explosion;
 	// prototype particles go here ...
 };
 
