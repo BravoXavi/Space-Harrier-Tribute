@@ -21,7 +21,8 @@ ModuleParticles::~ModuleParticles()
 bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
-	graphics = App->textures->Load("assets/Shoots.png");
+	//graphics = App->textures->Load("assets/Shoots.png");
+	graphics = App->textures->Load("assets/enemyshot.png");
 
 	p_laser.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	p_laser.anim.frames.push_back({ 1, 1, 91, 61 });
@@ -34,9 +35,17 @@ bool ModuleParticles::Start()
 	p_laser.colType = P_LASER;
 
 	//e_laser.fxIndex = App->audio->LoadFx("Insert audio path here");
-	e_laser.anim.frames.push_back({ 0, 0, 0, 0});
+	e_laser.anim.frames.push_back({ 10, 21, 68, 45});
+	e_laser.anim.frames.push_back({ 93, 17, 62, 53 });
+	e_laser.anim.frames.push_back({ 177, 13, 54, 61 });
+	e_laser.anim.frames.push_back({ 261, 10, 46, 68 });
+	e_laser.anim.frames.push_back({ 21, 90, 46, 68 });
+	e_laser.anim.frames.push_back({ 97, 93, 54, 61 });
+	e_laser.anim.frames.push_back({ 173, 98, 62, 53 });
+	e_laser.anim.frames.push_back({ 250, 101, 68, 45 });
+	e_laser.anim.speed = 0.1f;
 	e_laser.z = MAX_Z;
-	e_laser.speed = -0.5f;
+	e_laser.speed = -0.2f;
 	e_laser.colType = E_LASER;
 
 	return true;
@@ -193,7 +202,26 @@ void Particle::p_laser_Update()
 
 void Particle::e_laser_Update()
 {
+	if (z <= MIN_Z)
+	{
+		to_delete = true;
+		if (collider != nullptr) collider->to_delete = true;
+	}
+	
+	float zModifier = 1.0f - ((float)z / MAX_Z);
+	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
+	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
 
+	setResizeRect(0, 0, newWidth, newHeight);
+	setRect(App->particles->graphics, position.x, position.y, &(anim.GetCurrentFrame()), resizeRect, z);
+	
+	if (collider != nullptr)
+	{
+		collider->SetPos(position.x, position.y, z);
+		collider->SetSize(newWidth, newHeight);
+	}
+		
+	z += speed;
 }
 
 void Particle::explosion_Update()

@@ -29,7 +29,7 @@ struct Particle
 	unsigned int fxIndex;
 	float speed;
 	fPoint position = { 0, 0 };
-	int z = 0;
+	float z = 0.0f;
 
 	Animation anim;
 	collisionType colType;
