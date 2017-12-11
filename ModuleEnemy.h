@@ -20,6 +20,8 @@ struct Enemy
 	fPoint position = { 0, 0 };
 	int z = 0;
 
+	int attackCharged = 0;
+
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;

@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleAudio.h"
 #include "ModuleTextures.h"
+#include "ModuleParticles.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 
@@ -82,7 +83,7 @@ void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, collisionType t
 	Enemy* e = new Enemy(enemy);
 	e->position = { x, y };
 	e->colType = type;
-	e->z = 12;
+	e->z = MAX_Z;
 	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, e->z, App->enemies);
 	active.push_back(e);
 }
@@ -107,6 +108,13 @@ void Enemy::Update()
 	//z += speed;
 	if (z > MAX_Z) to_delete = true;
 	
+	if (attackCharged == 200)
+	{
+		attackCharged = 0;
+		App->particles->AddParticle(App->particles->e_laser, position.x, position.y, E_LASER, z);
+	}
+	else attackCharged++;
+
 	if (collider != nullptr)
 	{
 		collider->SetPos(position.x, position.y, z);
