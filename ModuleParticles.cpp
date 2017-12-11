@@ -23,19 +23,21 @@ bool ModuleParticles::Start()
 	LOG("Loading particles");
 	graphics = App->textures->Load("assets/Shoots.png");
 
-	cannon.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	cannon.anim.frames.push_back({ 1, 1, 91, 61 });
-	cannon.anim.frames.push_back({ 95, 0, 91, 61 });
-	cannon.anim.frames.push_back({ 188, 1, 91, 61 });
-	cannon.anim.frames.push_back({ 284, 0, 91, 61 });
-	cannon.anim.speed = 0.1f;
-	cannon.z = 1;
-	cannon.speed = 1;
-	cannon.colType = P_LASER;
+	p_laser.fxIndex = App->audio->LoadFx("rtype/laser.wav");
+	p_laser.anim.frames.push_back({ 1, 1, 91, 61 });
+	p_laser.anim.frames.push_back({ 95, 0, 91, 61 });
+	p_laser.anim.frames.push_back({ 188, 1, 91, 61 });
+	p_laser.anim.frames.push_back({ 284, 0, 91, 61 });
+	p_laser.anim.speed = 0.1f;
+	p_laser.z = 1;
+	p_laser.speed = 1;
+	p_laser.colType = P_LASER;
 
-	// TODO 12: Create a new "Explosion" particle -- DONE
-	// audio: rtype/explosion.wav
-	// coords: {274, 296, 33, 30}; {313, 296, 33, 30}; {346, 296, 33, 30}; {382, 296, 33, 30}; {419, 296, 33, 30}; {457, 296, 33, 30};
+	//e_laser.fxIndex = App->audio->LoadFx("Insert audio path here");
+	e_laser.anim.frames.push_back({ 0, 0, 0, 0});
+	e_laser.z = MAX_Z;
+	e_laser.speed = -0.5f;
+	e_laser.colType = E_LASER;
 
 	return true;
 }
@@ -78,7 +80,9 @@ update_status ModuleParticles::Update()
 	{
 		Particle* p = *it;
 
-		p->Update();
+		if(p->colType == P_LASER) p->p_laser_Update();
+		else if (p->colType == E_LASER) p->e_laser_Update();
+		else if (p->colType == EXPLOSION) p->explosion_Update();
 
 		App->renderer->depthBuffer[p->rect->depth].push_back(*p->rect);
 	}
@@ -88,7 +92,6 @@ update_status ModuleParticles::Update()
 
 void ModuleParticles::AddParticle(const Particle& particle, int x, int y, collisionType colType, int depth)
 {
-	// TODO 4: Fill in a method to create an instance of a prototype particle	
 	Particle* p = new Particle(particle);
 	p->position = { (float)x, (float)y };
 	p->colType = colType;
@@ -136,12 +139,38 @@ Particle::~Particle()
 	delete resizeRect;
 }
 
-void Particle::Update()
+//void Particle::Update()
+//{
+//	if (z > MAX_Z)
+//	{
+//		to_delete = true;
+//		if (collider != nullptr) collider->to_delete = true;
+//	}
+//
+//	float zModifier = 1.0f - ((float)z / MAX_Z);
+//	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
+//	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
+//	int xMove = (anim.GetCurrentFrame().w - newWidth) / 2;
+//	int yMove = (anim.GetCurrentFrame().h - newHeight) / 2;
+//
+//	setResizeRect(0, 0, newWidth, newHeight);
+//	setRect(App->particles->graphics, (float)(position.x + xMove), (float)(position.y + yMove), &(anim.GetCurrentFrame()), resizeRect, z);
+//
+//	if (collider != nullptr)
+//	{
+//		collider->SetPos(position.x + xMove, position.y + yMove, z);
+//		collider->SetSize(newWidth, newHeight);
+//	}
+//	
+//	z += speed;
+//}
+
+void Particle::p_laser_Update()
 {
 	if (z > MAX_Z)
 	{
 		to_delete = true;
-		if( collider != nullptr) collider->to_delete = true;
+		if (collider != nullptr) collider->to_delete = true;
 	}
 
 	float zModifier = 1.0f - ((float)z / MAX_Z);
@@ -158,13 +187,17 @@ void Particle::Update()
 		collider->SetPos(position.x + xMove, position.y + yMove, z);
 		collider->SetSize(newWidth, newHeight);
 	}
-	
-	z += speed;
 
-	// TODO 5: This is the core of the particle logic
-	// draw and audio will be managed by ModuleParticle::Update()
-	// Note: Set to_delete to true is you want it deleted
-	//position.x += speed;
+	z += speed;
+}
+
+void Particle::e_laser_Update()
+{
+
+}
+
+void Particle::explosion_Update()
+{
 
 }
 
