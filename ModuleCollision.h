@@ -13,6 +13,7 @@ enum collisionType {
 	D_OBSTACLE,
 	NOLETHAL_D_OBSTACLE,
 	ND_OBSTACLE,
+	EXPLOSION,
 	MAXIMUM
 };
 
