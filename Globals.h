@@ -43,7 +43,7 @@ typedef unsigned int uint;
 	 }
 
 // Configuration -----------
-#define MIN_Z 0
+#define MIN_Z -1
 #define MAX_Z 25
 #define FLOOR_Y_MIN 20
 #define FLOOR_Y_MAX 80
