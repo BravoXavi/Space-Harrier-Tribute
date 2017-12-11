@@ -36,7 +36,7 @@ public:
 	bool destroyed = false;
 
 private:
-	const static int playerDepth = -1;
+	const static int playerDepth = 0;
 	void checkHorizontalAnimation(bool running = false);
 	bool onCollision(Collider* c1, Collider* c2);
 	void modifyHorizonY();
