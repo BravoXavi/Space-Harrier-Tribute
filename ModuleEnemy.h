@@ -1,7 +1,7 @@
 #ifndef __MODULEENEMY_H__
 #define __MODULEENEMY_H__
 
-#include<list>
+#include <list>
 #include "Globals.h"
 #include "Module.h"
 #include "Animation.h"
@@ -13,25 +13,27 @@ struct SDL_Texture;
 
 struct Enemy
 {
-	// TODO 1: Fill in the structure with all the properties you need for each particle
-	bool to_delete = false;
-	unsigned int fxIndex;
-	int speed;
-	fPoint position = { 0, 0, 0 };
-
-	int attackCharged = 0;
-
-	Animation anim;
-	collisionType colType;
-	Collider* collider = nullptr;
-
 	Enemy();
 	Enemy(const Enemy& p);
 	~Enemy();
 
 	void Update();
+
+	bool to_delete = false;
+	unsigned int fxIndex;
+	int speed;
+	int attackCharged = 0;
+
+	Animation anim;
+	collisionType colType;
+	Collider* collider = nullptr;
+	fPoint position = { 0, 0, 0 };
+	
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
+	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
+
 	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
+	void setResizeRect(int x, int y, int w, int h);
 };
 
 class ModuleEnemy : public Module
@@ -45,7 +47,8 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
-	void AddEnemy(const Enemy& enemy, float x, float y, collisionType colType); // feel free to expand this call
+	bool onCollision(Collider* c1, Collider* c2);
+	void AddEnemy(const Enemy& enemy, float x, float y, collisionType colType, float depth);
 
 private:
 	std::list<Enemy*> active;
@@ -53,6 +56,8 @@ private:
 public:
 	SDL_Texture* graphics = nullptr;
 	Enemy alienShip;
+	Enemy metalFlower;
+	Enemy dragonBoss;
 };
 
 #endif // __MODULEENEMY_H__

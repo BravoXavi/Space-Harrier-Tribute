@@ -78,13 +78,35 @@ update_status ModuleEnemy::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, collisionType type)
+void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, collisionType type, float depth)
 {	
 	Enemy* e = new Enemy(enemy);
-	e->position = { x, y , (float)MAX_Z};
+	e->position = { x, y, depth};
 	e->colType = type;
 	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, e->position.z, App->enemies);
 	active.push_back(e);
+}
+
+bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
+{
+	for (std::list<Enemy*>::iterator it = active.begin(); it != active.end(); ++it)
+	{
+		if ((*it)->collider == c1 || (*it)->collider == c2)
+		{
+			if (c1->colType == PLAYER || c2->colType == PLAYER)
+			{
+				LOG("ENEMY COLLIDED WITH PLAYER - PLAYER LOSES ONE LIVE");
+			}
+			else if (c1->colType == P_LASER || c2->colType == P_LASER)
+			{
+				(*it)->collider->to_delete = true;
+				(*it)->to_delete = true;
+				LOG("ENEMY HIT!! ENEMY DESTROYED!!");
+			}
+		}
+	}
+
+	return true;
 }
 
 // -------------------------------------------------------------
@@ -100,11 +122,11 @@ Enemy::Enemy(const Enemy& p) : anim(p.anim), position(p.position), fxIndex(p.fxI
 Enemy::~Enemy()
 {
 	delete rect;
+	delete resizeRect;
 }
 
 void Enemy::Update()
 {
-	//z += speed;
 	if (position.z > MAX_Z) to_delete = true;
 	
 	if (attackCharged == 200)
@@ -114,13 +136,20 @@ void Enemy::Update()
 	}
 	else attackCharged++;
 
+	float zModifier = 1.0f - (position.z / (float)MAX_Z);
+	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
+	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
+	int xOffset = newWidth/2;
+	int yOffset = newHeight/2;
+
 	if (collider != nullptr)
 	{
-		collider->SetPos(position.x, position.y, position.z);
-		collider->SetSize(anim.GetCurrentFrame().w, anim.GetCurrentFrame().h);
+		collider->SetPos(position.x - xOffset, position.y - yOffset, position.z);
+		collider->SetSize(newWidth, newHeight);
 	}
 	
-	setRect(App->enemies->graphics, position.x, position.y, &(anim.GetCurrentFrame()), nullptr, position.z);
+	setResizeRect(0, 0, newWidth, newHeight);
+	setRect(App->enemies->graphics, position.x - xOffset, position.y - yOffset, &(anim.GetCurrentFrame()), resizeRect, position.z);
 }
 
 void Enemy::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth)
@@ -131,4 +160,12 @@ void Enemy::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, S
 	rect->section = section;
 	rect->resize = resize;
 	rect->depth = depth;
+}
+
+void Enemy::setResizeRect(int x, int y, int w, int h)
+{
+	resizeRect->x = x;
+	resizeRect->y = y;
+	resizeRect->w = w;
+	resizeRect->h = h;
 }
