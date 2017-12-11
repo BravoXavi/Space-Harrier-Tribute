@@ -13,10 +13,7 @@ ModuleParticles::ModuleParticles()
 {}
 
 ModuleParticles::~ModuleParticles()
-{
-	//delete resizeParticleRect;
-	//delete particleRect;
-}
+{}
 
 // Load assets
 bool ModuleParticles::Start()
@@ -46,7 +43,7 @@ bool ModuleParticles::Start()
 	e_laser.anim.frames.push_back({ 250, 101, 68, 45 });
 	e_laser.anim.speed = 0.1f;
 	e_laser.position.z = MAX_Z;
-	e_laser.speed = -0.2f;
+	e_laser.speed = -0.4f;
 	e_laser.colType = E_LASER;
 
 	return true;
@@ -108,8 +105,9 @@ void ModuleParticles::AddParticle(const Particle& particle, int x, int y, collis
 
 	if (colType == E_LASER)
 	{
-		p->targetOffset.x = App->player->position.x - p->position.x;
-		p->targetOffset.y = App->player->position.y - p->position.y;
+		p->targetOffset.x = (App->player->position.x + App->player->current_animation->GetCurrentFrame().w/2) - p->position.x;
+		p->targetOffset.y = (App->player->position.y + App->player->current_animation->GetCurrentFrame().h/2) - p->position.y;
+		p->targetOffset.z = (float)depth;
 	}
 
 	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, depth, App->particles);
@@ -123,11 +121,11 @@ bool ModuleParticles::onCollision(Collider* c1, Collider* c2)
 	{
 		if ((*it)->collider == c1 || (*it)->collider == c2)
 		{
-			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE || c1->colType == NOLETHAL_D_OBSTACLE || c2->colType == NOLETHAL_D_OBSTACLE)
+			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE || c1->colType == NOLETHAL_D_OBSTACLE || c2->colType == NOLETHAL_D_OBSTACLE || c1->colType == ENEMY || c2->colType == ENEMY)
 			{
 				(*it)->to_delete = true;
 				(*it)->collider->to_delete = true;
-				LOG("OBSTACLE GETS DESTROY AND BULLET TOO");
+				LOG("OBSTACLE/ENEMY GETS DESTROYED AND BULLET TOO");
 			}
 			else if (c1->colType == ND_OBSTACLE || c2->colType == ND_OBSTACLE)
 			{
@@ -145,7 +143,6 @@ bool ModuleParticles::onCollision(Collider* c1, Collider* c2)
 Particle::Particle()
 {}
 
-// TODO 3: Fill in a copy constructor
 Particle::Particle(const Particle& p) : anim(p.anim), position(p.position), fxIndex(p.fxIndex), speed(p.speed)
 {}
 
@@ -192,21 +189,22 @@ void Particle::e_laser_Update()
 	float zModifier = 1.0f - ((float)position.z / MAX_Z);
 	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
 	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
-	int xMove = (anim.frames[0].w - newWidth) / 2;
-	int yMove = (anim.frames[0].h - newHeight) / 2;
 
+	//Reescale shot (Sprite too big)
 	newHeight *= 0.5;
 	newWidth *= 0.5;
 
-	float modifier = 0.1f;
-
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->particles->graphics, (float)(position.x + (targetOffset.x * modifier) + xMove), (float)(position.y + (targetOffset.y * modifier) + yMove), &(anim.GetCurrentFrame()), resizeRect, position.z);
-	
-	
+
+	float posModifier = 1.0f - (position.z/targetOffset.z);
+	int xOffset = newWidth/2;
+	int yOffset = newHeight/2;
+
+	setRect(App->particles->graphics, position.x - xOffset + (targetOffset.x*posModifier), position.y - yOffset + (targetOffset.y*posModifier), &(anim.GetCurrentFrame()), resizeRect, position.z);
+
 	if (collider != nullptr)
 	{
-		collider->SetPos((float)(position.x + xMove), (float)(position.y + yMove), position.z);
+		collider->SetPos(position.x - xOffset + (targetOffset.x*posModifier), position.y - yOffset + (targetOffset.y*posModifier), position.z);
 		collider->SetSize(newWidth, newHeight);
 	}
 		
@@ -215,7 +213,7 @@ void Particle::e_laser_Update()
 
 void Particle::explosion_Update()
 {
-
+	//TODO: Explosion when enemy or obstacle is destroyed
 }
 
 void Particle::setResizeRect(int x, int y, int w, int h)
