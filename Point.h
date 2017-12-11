@@ -10,11 +10,11 @@ class Point
 {
 public:
 
-	TYPE x, y;
+	TYPE x, y, z;
 
 	Point()
 	{}
-	Point(TYPE x, TYPE y) : x(x), y(y)
+	Point(TYPE x, TYPE y, TYPE z) : x(x), y(y), z(z)
 	{}
 
 	// Operators ------------------------------------------------

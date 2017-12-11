@@ -5,7 +5,7 @@
 
 #define MAX_KEYS 300
 
-ModuleInput::ModuleInput() : Module(), mouse({0, 0}), mouse_motion({0,0})
+ModuleInput::ModuleInput() : Module(), mouse({0, 0, 0}), mouse_motion({0,0,0})
 {
 	keyboard = new KeyState[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KeyState) * MAX_KEYS);
@@ -45,7 +45,7 @@ update_status ModuleInput::PreUpdate()
 {
 	static SDL_Event event;
 
-	mouse_motion = {0, 0};
+	mouse_motion = {0, 0, 0};
 	memset(windowEvents, false, WE_COUNT * sizeof(bool));
 	
 	const Uint8* keys = SDL_GetKeyboardState(NULL);

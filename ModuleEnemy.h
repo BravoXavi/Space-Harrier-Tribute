@@ -17,8 +17,7 @@ struct Enemy
 	bool to_delete = false;
 	unsigned int fxIndex;
 	int speed;
-	fPoint position = { 0, 0 };
-	int z = 0;
+	fPoint position = { 0, 0, 0 };
 
 	int attackCharged = 0;
 

@@ -23,15 +23,15 @@ bool ModuleObstacle::Start()
 	models = App->textures->Load("assets/obstacleModels.png");
 
 	tree.anim.frames.push_back({ 208, 50, 40, 158 });
-	tree.z = MAX_Z;
+	tree.position.z = MAX_Z;
 	tree.colType = D_OBSTACLE;
 
 	rock.anim.frames.push_back({ 192, 72, 59, 37 });
-	rock.z = MAX_Z;
+	rock.position.z = MAX_Z;
 	rock.colType = D_OBSTACLE;
 
 	bush.anim.frames.push_back({ 193, 8, 59, 41 });
-	bush.z = MAX_Z;
+	bush.position.z = MAX_Z;
 	bush.colType = NOLETHAL_D_OBSTACLE;
 
 	return true;
@@ -86,10 +86,10 @@ update_status ModuleObstacle::Update()
 void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffset, float y, collisionType type)
 {
 	Obstacle* o = new Obstacle(obstacle);
-	o->position = { x, y };
+	o->position = { x, y, (float)MAX_Z};
 	o->xOffset = xOffset;
 	o->colType = type;
-	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->z, App->obstacles);
+	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->position.z, App->obstacles);
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
@@ -115,7 +115,7 @@ Obstacle::Obstacle()
 {}
 
 // TODO 3: Fill in a copy constructor
-Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), position(o.position), z(o.z)
+Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), position(o.position)
 {}
 
 Obstacle::~Obstacle()
@@ -126,7 +126,7 @@ Obstacle::~Obstacle()
 
 void Obstacle::Update()
 {
-	if (z <= 1)
+	if (position.z <= 1)
 	{
 		collider->to_delete = true;
 		to_delete = true;
@@ -136,7 +136,7 @@ void Obstacle::Update()
 	float newY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
 
 	//Calculate Z of the obstacle
-	z = (int)( ((float)SCREEN_HEIGHT - newY) / (App->renderer->horizonY / (float)MAX_Z) );
+	position.z = (int)( ((float)SCREEN_HEIGHT - newY) / (App->renderer->horizonY / (float)MAX_Z) );
 
 	//Calculate the scale of the projection
 	float scaleValue = calculateScaleValue(newY);
@@ -159,11 +159,11 @@ void Obstacle::Update()
 		newWidth = 1;
 	}
 
-	collider->SetPos(newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, z);
+	collider->SetPos(newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, position.z);
 	collider->SetSize(newWidth, newHeight);
 
 	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
+	setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, position.z);
 	//setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
 }
 

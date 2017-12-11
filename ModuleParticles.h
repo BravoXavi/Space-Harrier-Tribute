@@ -17,24 +17,21 @@ struct Particle
 	Particle(const Particle& p);
 	~Particle();
 
-	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
-	void setResizeRect(int x, int y, int w, int h);
-	//void Update();
-
 	void p_laser_Update();
 	void e_laser_Update();
 	void explosion_Update();
 
+	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
+	void setResizeRect(int x, int y, int w, int h);
+
 	bool to_delete = false;
 	unsigned int fxIndex;
-	float speed;
-	fPoint position = { 0, 0 };
-	float z = 0.0f;
+	float speed;	
 
+	fPoint position = { 0, 0, 0 };
+	fPoint targetOffset = { 0, 0, 0 };
 	Animation anim;
 	collisionType colType;
-
-	// TODO 11: Add an optional collider to each particle -- DONE
 	Collider* collider = nullptr;
 
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);

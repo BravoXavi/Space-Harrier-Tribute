@@ -27,7 +27,7 @@ bool ModuleEnemy::Start()
 	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	alienShip.anim.frames.push_back({ 198, 127, 46, 30 });
 	alienShip.anim.speed = 0.1f;
-	alienShip.z = MAX_Z;
+	alienShip.position.z = MAX_Z;
 	alienShip.speed = 1;
 	alienShip.colType = ENEMY;
 
@@ -81,10 +81,9 @@ update_status ModuleEnemy::Update()
 void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, collisionType type)
 {	
 	Enemy* e = new Enemy(enemy);
-	e->position = { x, y };
+	e->position = { x, y , (float)MAX_Z};
 	e->colType = type;
-	e->z = MAX_Z;
-	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, e->z, App->enemies);
+	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, e->position.z, App->enemies);
 	active.push_back(e);
 }
 
@@ -106,22 +105,22 @@ Enemy::~Enemy()
 void Enemy::Update()
 {
 	//z += speed;
-	if (z > MAX_Z) to_delete = true;
+	if (position.z > MAX_Z) to_delete = true;
 	
 	if (attackCharged == 200)
 	{
 		attackCharged = 0;
-		App->particles->AddParticle(App->particles->e_laser, position.x, position.y, E_LASER, z);
+		App->particles->AddParticle(App->particles->e_laser, position.x, position.y, E_LASER, position.z);
 	}
 	else attackCharged++;
 
 	if (collider != nullptr)
 	{
-		collider->SetPos(position.x, position.y, z);
+		collider->SetPos(position.x, position.y, position.z);
 		collider->SetSize(anim.GetCurrentFrame().w, anim.GetCurrentFrame().h);
 	}
 	
-	setRect(App->enemies->graphics, position.x, position.y, &(anim.GetCurrentFrame()), nullptr, z);
+	setRect(App->enemies->graphics, position.x, position.y, &(anim.GetCurrentFrame()), nullptr, position.z);
 }
 
 void Enemy::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth)
