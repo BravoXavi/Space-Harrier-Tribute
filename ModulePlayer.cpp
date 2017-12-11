@@ -96,7 +96,7 @@ update_status ModulePlayer::Update()
 		{
 			current_animation = &run;			
 		}
-
+		
 		collider->SetPos(position.x, position.y, playerDepth);
 		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
 	}
@@ -119,7 +119,7 @@ update_status ModulePlayer::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		App->particles->AddParticle(App->particles->cannon, position.x - current_animation->GetCurrentFrame().w, position.y, P_LASER, 0);
+		App->particles->AddParticle(App->particles->p_laser, position.x - current_animation->GetCurrentFrame().w, position.y, P_LASER, 0);
 	}
 
 	// Draw everything --------------------------------------
