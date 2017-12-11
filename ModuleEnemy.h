@@ -17,24 +17,20 @@ struct Enemy
 	bool to_delete = false;
 	unsigned int fxIndex;
 	int speed;
-	iPoint position = { 0, 0 };
+	fPoint position = { 0, 0 };
 	int z = 0;
 
 	Animation anim;
 	collisionType colType;
-
-	// TODO 11: Add an optional collider to each particle -- DONE
-	Collider* collision = nullptr;
+	Collider* collider = nullptr;
 
 	Enemy();
 	Enemy(const Enemy& p);
 	~Enemy();
 
 	void Update();
-
 	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
-
-	void setRect(SDL_Texture* texture, int x, int y, SDL_Rect* section, SDL_Rect* resize, int depth);
+	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
 };
 
 class ModuleEnemy : public Module
@@ -48,14 +44,13 @@ public:
 	update_status Update(); // draw
 	bool CleanUp();
 
-	void AddEnemy(const Enemy& enemy, int x, int y); // feel free to expand this call
+	void AddEnemy(const Enemy& enemy, float x, float y, collisionType colType); // feel free to expand this call
 
 private:
-
-	SDL_Texture* graphics = nullptr;
 	std::list<Enemy*> active;
 
 public:
+	SDL_Texture* graphics = nullptr;
 	Enemy alienShip;
 };
 
