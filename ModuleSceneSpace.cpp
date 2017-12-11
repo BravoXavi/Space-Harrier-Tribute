@@ -89,11 +89,11 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	if (timeCounter > 1) timeCounter++;
+	if (timeCounter > 0) timeCounter++;
 	else
 	{
 		timeCounter++;
-		App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, ENEMY);
+		App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, ENEMY, 12.0f);
 	}
 
 	PrintUI();
