@@ -12,7 +12,7 @@ public:
 	Font(const char* fontBMP, const char* traductor);
 	~Font();
 		
-	void printText(const char* textToWrite, int x, int y, float resize = 1.0f);
+	void printText(const char* textToWrite, const float& x, const float& y, float resize = 1.0f);
 
 public:
 	int characterHeight, characterWidth;

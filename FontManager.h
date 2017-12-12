@@ -11,12 +11,11 @@ public:
 	~FontManager();
 
 	void Init();
-	void removeReferences();
-	void printWithFont(Font* font, int x, int y, const char* textToWrite);
-	Font* addReference(const char* fontName);
+	void CleanUp();
 
-private:
-	std::map<const char*, Font*> fontMap;
+public:
+	Font* blueFont;
+
 };
 
 #endif // !CLASS_FONTMANAGER

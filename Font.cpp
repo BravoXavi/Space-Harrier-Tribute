@@ -34,10 +34,10 @@ Font::Font(const char* pathToImage, const char* traductor)
 
 Font::~Font()
 {
-	//App->textures->Unload(fontPNG);
+	App->textures->Unload(fontPNG);
 }
 
-void Font::printText(const char* textToWrite, int x, int y, float resize)
+void Font::printText(const char* textToWrite, const float& x, const float& y, float resize)
 {	
 	for (unsigned int i = 0; i < strlen(textToWrite); ++i) 
 	{
@@ -49,14 +49,14 @@ void Font::printText(const char* textToWrite, int x, int y, float resize)
 			SDL_Rect resizeFont;
 			resizeFont.x = 0;
 			resizeFont.y = 0;
-			resizeFont.h = simbolSize.h*resize;
-			resizeFont.w = simbolSize.w*resize;
+			resizeFont.h = (int)((float)simbolSize.h * resize);
+			resizeFont.w = (int)((float)simbolSize.w * resize);
 
-			App->renderer->Blit(fontPNG, x + (i * 8), y, &simbolSize, &resizeFont);
+			App->renderer->Blit(fontPNG, x + ((float)i * 8.0f), y, &simbolSize, &resizeFont);
 		}
 		else
 		{
-			App->renderer->Blit(fontPNG, x + (i * 8), y, &simbolSize, nullptr);
+			App->renderer->Blit(fontPNG, x + ((float)i * 8.0f), y, &simbolSize, nullptr);
 		}
 	}
 }

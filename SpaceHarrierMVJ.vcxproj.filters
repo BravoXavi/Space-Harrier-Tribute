@@ -67,8 +67,6 @@
     <ClInclude Include="ModuleSceneSpace.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FontManager.h" />
     <ClInclude Include="ModuleEnemy.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
@@ -77,6 +75,12 @@
     </ClInclude>
     <ClInclude Include="ModuleTime.h">
       <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FontManager.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -122,8 +126,6 @@
     <ClCompile Include="ModuleSceneSpace.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FontManager.cpp" />
     <ClCompile Include="ModuleEnemy.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
@@ -132,6 +134,12 @@
     </ClCompile>
     <ClCompile Include="ModuleTime.cpp">
       <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="FontManager.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
