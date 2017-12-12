@@ -124,6 +124,8 @@ bool Application::CleanUp()
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->CleanUp();
 
+	fontManager->CleanUp();
+
 	return ret;
 }
 
