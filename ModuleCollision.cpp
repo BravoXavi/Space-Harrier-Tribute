@@ -58,10 +58,6 @@ update_status ModuleCollision::PreUpdate()
 
 update_status ModuleCollision::Update()
 {
-	// TODO 8: Check collisions between all colliders. 
-	// After making it work, review that you are doing the minumum checks possible
-	bool collisionDone = false;
-
 	for (list<Collider*>::const_iterator it = colliders.cbegin(), end = colliders.cend(); it != end; it++)
 	{
 		for (list<Collider*>::const_iterator it2 = next(it, 1); it2 != end; it2++)
@@ -72,14 +68,7 @@ update_status ModuleCollision::Update()
 				{
 					(*it)->modCallback->onCollision((*it), (*it2));
 					(*it2)->modCallback->onCollision((*it), (*it2));
-					collisionDone = true;
 				}
-			}
-
-			if (collisionDone)
-			{
-				collisionDone = false;
-				continue;
 			}
 		}
 	}

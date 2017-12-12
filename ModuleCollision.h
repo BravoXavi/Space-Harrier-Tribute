@@ -1,5 +1,5 @@
-#ifndef __ModuleCollision_H__
-#define __ModuleCollision_H__
+#ifndef __MODULECOLLISION_H__
+#define __MODULECOLLISION_H__
 
 #include <list>
 #include <vector>
@@ -19,57 +19,52 @@ enum collisionType {
 
 struct Collider
 {
-	SDL_Rect rect = { 0,0,0,0 };
+	Module* modCallback;
 	collisionType colType;
+	SDL_Rect rect = { 0, 0, 0, 0 };
+	
 	int depth = 0;
 	bool to_delete = false;
-	Module* modCallback;
-
-	// TODO 10: Add a way to notify other classes that a collision happened
-
-	Collider(SDL_Rect rectangle, collisionType colType, int zDepth, Module* callback) : // expand this call if you need to
+	
+	Collider(SDL_Rect rectangle, collisionType colType, int depth, Module* callback) : // expand this call if you need to
 		rect(rectangle),
 		colType(colType),
-		depth(zDepth),
+		depth(depth),
 		modCallback(callback)
 	{}
 
-	void SetPos(int x, int y, int z)
+	void SetPos(const int& x, const int& y, const int& z)
 	{
-		rect.x = x*SCREEN_SIZE;
-		rect.y = y*SCREEN_SIZE;
+		rect.x = x * SCREEN_SIZE;
+		rect.y = y * SCREEN_SIZE;
 		depth = z;
 	}
 
-	void SetSize(int w, int h)
+	void SetSize(const int& w, const int& h)
 	{
-		rect.w = w*SCREEN_SIZE;
-		rect.h = h*SCREEN_SIZE;
+		rect.w = w * SCREEN_SIZE;
+		rect.h = h * SCREEN_SIZE;
 	}
 
-	bool CheckCollision(const SDL_Rect& r, const int& depth) const;
+	bool CheckCollision(const SDL_Rect& r, const int& z) const;
 };
 
 class ModuleCollision : public Module
 {
 public:
-
 	ModuleCollision();
 	~ModuleCollision();
 
 	update_status PreUpdate();
 	update_status Update();
-
 	bool CleanUp();
-
-	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, int zDepth, Module* callback);
 	void DebugDraw();
+	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, int z, Module* callback);	
 
 private:
-
 	std::list<Collider*> colliders;
 	bool debug = false;
 	bool collisionMatrix[MAXIMUM][MAXIMUM];
 };
 
-#endif // __ModuleCollision_H__
+#endif // __MODULECOLLISION_H__
