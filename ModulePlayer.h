@@ -32,15 +32,18 @@ public:
 
 	Collider* collider = nullptr;
 
-	fPoint position;
-	bool destroyed = false;
+	fPoint position = { 0.0f, 0.0f, 0.0f };
+	
 
 private:
-	const static int playerDepth = 0;
+	const static float playerDepth;
+
+	bool destroyed;
 	void checkHorizontalAnimation(bool running = false);
 	bool onCollision(Collider* c1, Collider* c2);
-	void modifyHorizonY();
+	void modifyHorizonY() const;
 	void setCharSpeed();
+	void moveCollider() const;
 };
 
 #endif

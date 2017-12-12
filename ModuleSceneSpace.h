@@ -17,20 +17,18 @@ public:
 	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
-
-	void PrintUI();
+	void PrintUI() const;
 
 public:
 	uint startFx;
-	SDL_Texture* floor = nullptr;
-	SDL_Texture* background = nullptr;
-	SDL_Texture* backgroundFront = nullptr;
 
 	int timeCounter = 0;
 	int timeCounter2 = 0;
 
 private:
-	Font* blueFont;
+	SDL_Texture* floor = nullptr;
+	SDL_Texture* background = nullptr;
+	SDL_Texture* backgroundFront = nullptr;
 };
 
 #endif // __MODULESCENESPACE_H__

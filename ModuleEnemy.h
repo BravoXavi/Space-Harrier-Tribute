@@ -18,22 +18,23 @@ struct Enemy
 	~Enemy();
 
 	void Update();
+	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
+	void setResizeRect(const float& w, const float& h) const;
 
+	int speed;
+	int moveSet = 0;
 	bool to_delete = false;
 	unsigned int fxIndex;
-	int speed;
+	
+	//DEBUG
 	int attackCharged = 0;
 
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;
-	fPoint position = { 0, 0, 0 };
-	
-	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
-	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
-
-	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
-	void setResizeRect(int x, int y, int w, int h);
+	fPoint position = { 0.0f, 0.0f, 0.0f };
+	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);
+	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });	
 };
 
 class ModuleEnemy : public Module
@@ -43,12 +44,12 @@ public:
 	~ModuleEnemy();
 
 	bool Start();
-	update_status PreUpdate(); // clear dirty particles
-	update_status Update(); // draw
+	update_status PreUpdate();
+	update_status Update();
 	bool CleanUp();
 
 	bool onCollision(Collider* c1, Collider* c2);
-	void AddEnemy(const Enemy& enemy, float x, float y, collisionType colType, float depth);
+	void AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType colType, int moveSet);
 
 private:
 	std::list<Enemy*> active;

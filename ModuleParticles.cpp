@@ -6,7 +6,6 @@
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "ModulePlayer.h"
-
 #include "SDL/include/SDL_timer.h"
 
 ModuleParticles::ModuleParticles()
@@ -91,26 +90,26 @@ update_status ModuleParticles::Update()
 		else if (p->colType == E_LASER) p->e_laser_Update();
 		else if (p->colType == EXPLOSION) p->explosion_Update();
 
-		App->renderer->depthBuffer[p->rect->depth].push_back(*p->rect);
+		App->renderer->depthBuffer[(int)p->rect->z].push_back(*p->rect);
 	}
 
 	return UPDATE_CONTINUE;
 }
 
-void ModuleParticles::AddParticle(const Particle& particle, int x, int y, collisionType colType, int depth)
+void ModuleParticles::AddParticle(const Particle& particle, float x, float y, float z, collisionType colType)
 {
 	Particle* p = new Particle(particle);
-	p->position = { (float)x, (float)y, (float)depth};
+	p->position = { x, y, z };
 	p->colType = colType;
 
 	if (colType == E_LASER)
 	{
-		p->targetOffset.x = (App->player->position.x + App->player->current_animation->GetCurrentFrame().w/2) - p->position.x;
-		p->targetOffset.y = (App->player->position.y + App->player->current_animation->GetCurrentFrame().h/2) - p->position.y;
-		p->targetOffset.z = (float)depth;
+		p->targetOffset.x = (App->player->position.x + (float)App->player->current_animation->GetCurrentFrame().w/2.0f) - p->position.x;
+		p->targetOffset.y = (App->player->position.y + (float)App->player->current_animation->GetCurrentFrame().h/2.0f) - p->position.y;
+		p->targetOffset.z = z;
 	}
 
-	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, depth, App->particles);
+	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)z, App->particles);
 	active.push_back(p);
 	App->audio->PlayFx(p->fxIndex, 0);
 }
@@ -160,19 +159,19 @@ void Particle::p_laser_Update()
 		if (collider != nullptr) collider->to_delete = true;
 	}
 
-	float zModifier = 1.0f - ((float)position.z / MAX_Z);
-	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
-	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
-	int xMove = (anim.GetCurrentFrame().w - newWidth) / 2;
-	int yMove = (anim.GetCurrentFrame().h - newHeight) / 2;
+	float zModifier = 1.0f - (position.z / (float)MAX_Z);
+	float newWidth = (float)anim.GetCurrentFrame().w * zModifier;
+	float newHeight = (float)anim.GetCurrentFrame().h * zModifier;
+	float newX = position.x + (((float)anim.GetCurrentFrame().w - newWidth) / 2.0f);
+	float newY = position.y + (((float)anim.GetCurrentFrame().h - newHeight) / 2.0f);
 
-	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->particles->graphics, (float)(position.x + xMove), (float)(position.y + yMove), &(anim.GetCurrentFrame()), resizeRect, position.z);
+	setResizeRect(newWidth, newHeight);
+	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
 
 	if (collider != nullptr)
 	{
-		collider->SetPos(position.x + xMove, position.y + yMove, position.z);
-		collider->SetSize(newWidth, newHeight);
+		collider->SetPos((int)newX, (int)newY, (int)position.z);
+		collider->SetSize((int)newWidth, (int)newHeight);
 	}
 
 	position.z += speed;
@@ -186,26 +185,26 @@ void Particle::e_laser_Update()
 		if (collider != nullptr) collider->to_delete = true;
 	}
 
-	float zModifier = 1.0f - ((float)position.z / MAX_Z);
-	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
-	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
+	float zModifier = 1.0f - (position.z / (float)MAX_Z);
+	float newWidth = (float)anim.GetCurrentFrame().w * zModifier;
+	float newHeight = (float)anim.GetCurrentFrame().h * zModifier;
 
-	//Reescale shot (Sprite too big)
-	newHeight *= 0.5;
-	newWidth *= 0.5;
+	//Reescale shot (Sprite is too big)
+	newHeight *= 0.5f;
+	newWidth *= 0.5f;
 
-	setResizeRect(0, 0, newWidth, newHeight);
+	setResizeRect(newWidth, newHeight);
 
 	float posModifier = 1.0f - (position.z/targetOffset.z);
-	int xOffset = newWidth/2;
-	int yOffset = newHeight/2;
+	float newX = position.x - (newWidth / 2.0f) + (targetOffset.x * posModifier);
+	float newY = position.y - (newHeight / 2.0f) + (targetOffset.y * posModifier);
 
-	setRect(App->particles->graphics, position.x - xOffset + (targetOffset.x*posModifier), position.y - yOffset + (targetOffset.y*posModifier), &(anim.GetCurrentFrame()), resizeRect, position.z);
+	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
 
 	if (collider != nullptr)
 	{
-		collider->SetPos(position.x - xOffset + (targetOffset.x*posModifier), position.y - yOffset + (targetOffset.y*posModifier), position.z);
-		collider->SetSize(newWidth, newHeight);
+		collider->SetPos((int)newX, (int)newY, (int)position.z);
+		collider->SetSize((int)newWidth, (int)newHeight);
 	}
 		
 	position.z += speed;
@@ -216,20 +215,20 @@ void Particle::explosion_Update()
 	//TODO: Explosion when enemy or obstacle is destroyed
 }
 
-void Particle::setResizeRect(int x, int y, int w, int h)
+void Particle::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
 {
-	resizeRect->x = x;
-	resizeRect->y = y;
-	resizeRect->w = w;
-	resizeRect->h = h;
-}
-
-void Particle::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth)
-{
-	rect->texture = texture;
 	rect->x = x;
 	rect->y = y;
+	rect->z = z;
+	rect->texture = texture;
 	rect->section = section;
 	rect->resize = resize;
-	rect->depth = depth;
+}
+
+void Particle::setResizeRect(const float& w, const float& h) const
+{
+	resizeRect->x = 0;
+	resizeRect->y = 0;
+	resizeRect->w = (int)w;
+	resizeRect->h = (int)h;
 }

@@ -20,21 +20,20 @@ struct Particle
 	void p_laser_Update();
 	void e_laser_Update();
 	void explosion_Update();
-
-	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
-	void setResizeRect(int x, int y, int w, int h);
+	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
+	void setResizeRect(const float& w, const float& h) const;
 
 	bool to_delete = false;
+	float speed;
 	unsigned int fxIndex;
-	float speed;	
-
-	fPoint position = { 0, 0, 0 };
-	fPoint targetOffset = { 0, 0, 0 };
+		
+	fPoint position = { 0.0f, 0.0f, 0.0f };
+	fPoint targetOffset = { 0.0f, 0.0f, 0.0f };
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;
 
-	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);
+	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };
 
@@ -45,15 +44,14 @@ public:
 	~ModuleParticles();
 
 	bool Start();
-	update_status PreUpdate(); // clear dirty particles
-	update_status Update(); // draw
+	update_status PreUpdate();
+	update_status Update();
 	bool CleanUp();
 
 	bool onCollision(Collider* c1, Collider* c2);
-	void AddParticle(const Particle& particle, int x, int y, collisionType colType, int depth); // feel free to expand this call
+	void AddParticle(const Particle& particle, float x, float y, float z, collisionType colType);
 
 private:
-	
 	std::list<Particle*> active;
 
 public:
@@ -61,7 +59,6 @@ public:
 	Particle p_laser;
 	Particle e_laser;
 	Particle explosion;
-	// prototype particles go here ...
 };
 
 #endif // __MODULEPARTICLES_H__

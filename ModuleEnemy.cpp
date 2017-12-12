@@ -13,10 +13,7 @@ ModuleEnemy::ModuleEnemy()
 {}
 
 ModuleEnemy::~ModuleEnemy()
-{
-	//delete resizeParticleRect;
-	//delete particleRect;
-}
+{}
 
 // Load assets
 bool ModuleEnemy::Start()
@@ -37,7 +34,7 @@ bool ModuleEnemy::Start()
 // Unload assets
 bool ModuleEnemy::CleanUp()
 {
-	LOG("Unloading particles");
+	LOG("Unloading enemies");
 	App->textures->Unload(graphics);
 
 	for (list<Enemy*>::iterator it = active.begin(); it != active.end(); ++it)
@@ -72,18 +69,18 @@ update_status ModuleEnemy::Update()
 
 		e->Update();
 
-		App->renderer->depthBuffer[e->rect->depth].push_back(*e->rect);
+		App->renderer->depthBuffer[(int)e->rect->z].push_back(*e->rect);
 	}
 
 	return UPDATE_CONTINUE;
 }
 
-void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, collisionType type, float depth)
+void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType type, int moveSet)
 {	
 	Enemy* e = new Enemy(enemy);
-	e->position = { x, y, depth};
+	e->position = { x, y, z };
 	e->colType = type;
-	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, e->position.z, App->enemies);
+	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->position.z, App->enemies);
 	active.push_back(e);
 }
 
@@ -115,7 +112,6 @@ bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
 Enemy::Enemy()
 {}
 
-// TODO 3: Fill in a copy constructor
 Enemy::Enemy(const Enemy& p) : anim(p.anim), position(p.position), fxIndex(p.fxIndex), speed(p.speed)
 {}
 
@@ -132,40 +128,40 @@ void Enemy::Update()
 	if (attackCharged == 200)
 	{
 		attackCharged = 0;
-		App->particles->AddParticle(App->particles->e_laser, position.x, position.y, E_LASER, position.z);
+		App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
 	}
 	else attackCharged++;
 
 	float zModifier = 1.0f - (position.z / (float)MAX_Z);
-	int newWidth = (int)(anim.GetCurrentFrame().w * zModifier);
-	int newHeight = (int)(anim.GetCurrentFrame().h * zModifier);
-	int xOffset = newWidth/2;
-	int yOffset = newHeight/2;
+	float newWidth = anim.GetCurrentFrame().w * zModifier;
+	float newHeight = anim.GetCurrentFrame().h * zModifier;
+	float newX = position.x - newWidth/2.0f;
+	float newY = position.y - newHeight/2.0f;
 
 	if (collider != nullptr)
 	{
-		collider->SetPos(position.x - xOffset, position.y - yOffset, position.z);
-		collider->SetSize(newWidth, newHeight);
+		collider->SetPos((int)newX, (int)newY, (int)position.z);
+		collider->SetSize((int)newWidth, (int)newHeight);
 	}
 	
-	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->enemies->graphics, position.x - xOffset, position.y - yOffset, &(anim.GetCurrentFrame()), resizeRect, position.z);
+	setResizeRect(newWidth, newHeight);
+	setRect(App->enemies->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
 }
 
-void Enemy::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth)
+void Enemy::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
 {
-	rect->texture = texture;
 	rect->x = x;
 	rect->y = y;
+	rect->z = z;
+	rect->texture = texture;	
 	rect->section = section;
 	rect->resize = resize;
-	rect->depth = depth;
 }
 
-void Enemy::setResizeRect(int x, int y, int w, int h)
+void Enemy::setResizeRect(const float& w, const float& h) const
 {
-	resizeRect->x = x;
-	resizeRect->y = y;
-	resizeRect->w = w;
-	resizeRect->h = h;
+	resizeRect->x = 0;
+	resizeRect->y = 0;
+	resizeRect->w = (int)w;
+	resizeRect->h = (int)h;
 }

@@ -10,18 +10,14 @@ const float ModuleRender::LINE_REDUCTION = 0.60f;
 
 ModuleRender::ModuleRender()
 {
-	camera.x = camera.y = 0;
-	camera.w = SCREEN_WIDTH * SCREEN_SIZE;
-	camera.h = SCREEN_HEIGHT* SCREEN_SIZE;
-	horizonY = FLOOR_Y_MIN;
-	firstLinePositionPercentage = 0.0f;
-	firstLineIndex = 0;
-	nextTopLine = 0;
+	horizonY = (float)FLOOR_Y_MIN;
 
 	for (int i = 0; i < alphaLines; i++)
 	{
+		renderLineValues[i] = 0.0f;
+
 		alphaLinesArray[i].x = 0;
-		alphaLinesArray[i].w = SCREEN_WIDTH*SCREEN_SIZE;
+		alphaLinesArray[i].w = SCREEN_WIDTH * SCREEN_SIZE;
 		lineDivisor += pow(LINE_REDUCTION, i);
 	}	
 }
@@ -51,13 +47,6 @@ bool ModuleRender::Init()
 	}
 
 	return ret;
-}
-
-bool ModuleRender::Start()
-{
-	pauseFont = App->fontManager->addReference("blue");
-	
-	return true;
 }
 
 update_status ModuleRender::PreUpdate()
@@ -109,7 +98,7 @@ bool ModuleRender::CleanUp()
 }
 
 //Draw a quad on screen
-bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)
+bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera) const
 {
 	bool ret = true;
 
@@ -126,9 +115,10 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, float speed)
+bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize) const
 {
 	bool ret = true;
+
 	SDL_Rect rect;
 
 	rect.x = (int)(x * SCREEN_SIZE);
@@ -161,6 +151,7 @@ bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* sectio
 	return ret;
 }
 
+//Blit background layer to screen
 void ModuleRender::BackgroundBlit(SDL_Texture* background, float speed, int backgroundPlane)
 {
 	SDL_Rect rect;
@@ -168,45 +159,46 @@ void ModuleRender::BackgroundBlit(SDL_Texture* background, float speed, int back
 	float offset = 0.0f;
 	int textW;
 	int textH;
+
 	rect.x = 0;
 	rect.y = 0;
-
 	SDL_QueryTexture(background, NULL, NULL, &textW, &textH);
+
 	if (backgroundPlane == 1)
 	{
-		backgroundOffset_B -= playerSpeed*speed;
+		backgroundOffset_B -= playerSpeed * speed;
 		offset = backgroundOffset_B;
-		rect.y -= (horizonY*SCREEN_SIZE) - 3.0f;
+		rect.y -= ((int)horizonY * SCREEN_SIZE) - 3;
 		rect.h = SCREEN_HEIGHT * SCREEN_SIZE;
 	}
 	else
 	{
-		backgroundOffset_BF -= playerSpeed*speed;
+		backgroundOffset_BF -= playerSpeed * speed;
 		offset = backgroundOffset_BF;
-		rect.y = ((SCREEN_HEIGHT - horizonY) - textH)*SCREEN_SIZE + 3.0f;
+		rect.y = ((SCREEN_HEIGHT - (int)horizonY) - textH) * SCREEN_SIZE + 3;
 		rect.h = textH * SCREEN_SIZE;
 	}
 
-	rect.x = offset;	
+	rect.x = (int)offset;	
 	rect.w = textW * SCREEN_SIZE;
 
-	screenCutLeft.x = -(textW*SCREEN_SIZE) + offset;
+	screenCutLeft.x = - (textW * SCREEN_SIZE) + (int)offset;
 	screenCutLeft.y = rect.y;
 	screenCutLeft.w = rect.w;
 	screenCutLeft.h = rect.h;
 
-	if (offset > 0.0f && offset < (SCREEN_WIDTH*SCREEN_SIZE))
+	if (offset > 0.0f && offset < (float)(SCREEN_WIDTH * SCREEN_SIZE))
 	{
 		SDL_RenderCopy(renderer, background, nullptr, &screenCutLeft);
 		SDL_RenderCopy(renderer, background, nullptr, &rect);
 	}
-	else if (offset > (SCREEN_WIDTH*SCREEN_SIZE))
+	else if (offset > (float)(SCREEN_WIDTH * SCREEN_SIZE))
 	{
 		SDL_RenderCopy(renderer, background, nullptr, &screenCutLeft);
 	}
-	else if (offset <= (-textW+SCREEN_WIDTH)*SCREEN_SIZE)
+	else if (offset <= (float)((-textW + SCREEN_WIDTH) * SCREEN_SIZE))
 	{
-		screenCutLeft.x = (textW*SCREEN_SIZE) + rect.x;
+		screenCutLeft.x = (textW * SCREEN_SIZE) + rect.x;
 		screenCutLeft.y = rect.y;
 		screenCutLeft.w = rect.w;
 		screenCutLeft.h = rect.h;
@@ -217,7 +209,7 @@ void ModuleRender::BackgroundBlit(SDL_Texture* background, float speed, int back
 	{
 		SDL_RenderCopy(renderer, background, nullptr, &rect);
 	}
-	if (offset > (textW*SCREEN_SIZE) || offset <= (-textW*SCREEN_SIZE)) 
+	if (offset > (float)(textW * SCREEN_SIZE) || offset <= (float)(-textW * SCREEN_SIZE)) 
 	{
 		if(backgroundPlane == 1) backgroundOffset_B = 0.0f;
 		else backgroundOffset_BF = 0.0f;
@@ -225,9 +217,10 @@ void ModuleRender::BackgroundBlit(SDL_Texture* background, float speed, int back
 }
 
 // Blit floor to screen ( (0,0) will be the down-mid of the screen )
-bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section, float speed)
+bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section)
 {
 	bool ret = true;
+
 	SDL_Rect rect;
 	int textW, textH;
 	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
@@ -277,11 +270,12 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section, float spee
 	return ret;
 }
 
+//Function moving the horizontal descending lines - Avoid modifying it unless absolutely necessary!! ( Messy but fast :) )
 void ModuleRender::AlphaVerticalLinesMove()
 {	
-	float baseLineHeight = (float)(horizonY*SCREEN_SIZE) / lineDivisor;
+	float baseLineHeight = (float)(horizonY * SCREEN_SIZE) / lineDivisor;
 
-	float startRenderPos = (float)SCREEN_HEIGHT*(float)SCREEN_SIZE - baseLineHeight*(1.0f - firstLinePositionPercentage);
+	float startRenderPos = (float)SCREEN_HEIGHT * (float)SCREEN_SIZE - baseLineHeight * (1.0f - firstLinePositionPercentage);
 	float firstLineHeight = baseLineHeight * (1.0f - firstLinePositionPercentage) + baseLineHeight * (1.0f / LINE_REDUCTION) * (firstLinePositionPercentage);
 
 	float currentLineHeight = firstLineHeight;
@@ -289,21 +283,20 @@ void ModuleRender::AlphaVerticalLinesMove()
 	
 	int actualLineIndex = firstLineIndex;
 
-	bool reOrganizeLines = true;
-
 	if (actualLineIndex == 0) nextTopLine = alphaLines - 1;
 	else nextTopLine = actualLineIndex - 1;
-	
+
+	bool reOrganizeLines = true;
 	while(reOrganizeLines) 
 	{
 		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
+
 		alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
 		renderLineValues[actualLineIndex] = actualRenderPos;
 		alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
-		//LOG("Actual Line - Index = %i, Y position = %f, H = %i", actualLineIndex, actualRenderPos, alphaLinesArray[actualLineIndex].h);
+
 		currentLineHeight = currentLineHeight * LINE_REDUCTION;
 		actualRenderPos -= currentLineHeight;
-
 		actualLineIndex = (actualLineIndex + 1) % alphaLines;
 		reOrganizeLines = !(actualLineIndex == firstLineIndex);
 	}
@@ -314,6 +307,7 @@ void ModuleRender::AlphaVerticalLinesMove()
 	}
 
 	float nextfirstSegmentPositionPercentage = fmod(firstLinePositionPercentage + 0.07f, 1.0f);
+
 	if (nextfirstSegmentPositionPercentage < firstLinePositionPercentage) {
 		firstLineIndex = (firstLineIndex + 1) % alphaLines;
 	}
@@ -321,14 +315,15 @@ void ModuleRender::AlphaVerticalLinesMove()
 	firstLinePositionPercentage = nextfirstSegmentPositionPercentage;
 }
 
-void ModuleRender::DrawPauseScreen()
+//Draw pause screen when pause mode is active
+void ModuleRender::DrawPauseScreen() const
 {
 	SDL_Rect screen;
 	screen.x = 0;
 	screen.y = 0;
-	screen.w = SCREEN_WIDTH*SCREEN_SIZE;
-	screen.h = SCREEN_HEIGHT*SCREEN_SIZE;
+	screen.w = SCREEN_WIDTH * SCREEN_SIZE;
+	screen.h = SCREEN_HEIGHT * SCREEN_SIZE;
 
 	DrawQuad(screen, 0, 0, 0, 150);
-	pauseFont->printText("PAUSED", (SCREEN_WIDTH/2) - 24, SCREEN_HEIGHT/2);
+	App->fontManager->blueFont->printText("PAUSED", (SCREEN_WIDTH / 2) - 24, SCREEN_HEIGHT / 2);
 }

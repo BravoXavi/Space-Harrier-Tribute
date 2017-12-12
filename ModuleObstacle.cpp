@@ -77,7 +77,7 @@ update_status ModuleObstacle::Update()
 
 		o->Update();
 
-		App->renderer->depthBuffer[o->rect->depth].push_back(*o->rect);
+		App->renderer->depthBuffer[(int)o->rect->z].push_back(*o->rect);
 	}
 
 	return UPDATE_CONTINUE;
@@ -89,7 +89,7 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 	o->position = { x, y, (float)MAX_Z};
 	o->xOffset = xOffset;
 	o->colType = type;
-	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, o->position.z, App->obstacles);
+	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, (int)o->position.z, App->obstacles);
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
@@ -126,50 +126,38 @@ Obstacle::~Obstacle()
 
 void Obstacle::Update()
 {
-	if (position.z <= 1)
+	if (position.z <= MIN_Z)
 	{
 		collider->to_delete = true;
 		to_delete = true;
 	}
 
-	//Calculate Y of the obstacle
-	float newY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
+	float tempY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
+	float scaleValue = calculateScaleValue(tempY);
 
-	//Calculate Z of the obstacle
-	position.z = (int)( ((float)SCREEN_HEIGHT - newY) / (App->renderer->horizonY / (float)MAX_Z) );
+	float newWidth = (float)anim.GetCurrentFrame().w * scaleValue;
+	float newHeight = (float)anim.GetCurrentFrame().h * scaleValue;
 
-	//Calculate the scale of the projection
-	float scaleValue = calculateScaleValue(newY);
-
-	//Calculate X projection using the scale and playerSpeed
+	//Minimun size to avoid strange obstacle sizes
+	if (newHeight < 2.0f) newHeight = 2.0f;
+	if (newWidth < 1.0f) newWidth = 1.0f;
+	
+	//Set new projected position values for the obstacle (The projection is added by the scaleValue)
 	xOffset -= App->renderer->playerSpeed;
-	float newX = position.x + (xOffset*scaleValue);
+	float newX = position.x - (newWidth / 2.0f) + (xOffset * scaleValue);
+	float newY = tempY - newHeight - (position.y * scaleValue);
+	position.z = ((float)SCREEN_HEIGHT - tempY) / (App->renderer->horizonY / (float)MAX_Z);
 
-	//Rescale size of the obstacle and calculate other small values
-	int newWidth = (int)((float)anim.GetCurrentFrame().w * scaleValue);
-	int newHeight = (int)((float)anim.GetCurrentFrame().h * scaleValue);
+	collider->SetPos((int)newX, (int)newY, (int)position.z);
+	collider->SetSize((int)newWidth, (int)newHeight);
 
-	if (newHeight < 2)
-	{
-		newHeight = 2;
-	}
-
-	if (newWidth < 1)
-	{
-		newWidth = 1;
-	}
-
-	collider->SetPos(newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, position.z);
-	collider->SetSize(newWidth, newHeight);
-
-	setResizeRect(0, 0, newWidth, newHeight);
-	setRect(App->obstacles->models, newX - (newWidth / 2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, position.z);
-	//setRect(App->obstacles->graphics, newX - (newWidth/2.0f), newY - (position.y*scaleValue) - newHeight, &(anim.GetCurrentFrame()), resizeRect, z);
+	setResizeRect(newWidth, newHeight);
+	setRect(App->obstacles->models, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
 }
 
 float Obstacle::calculateScaleValue(float yRender)
 {
-	float min = ((float)SCREEN_HEIGHT - App->renderer->horizonY);
+	float min = (float)SCREEN_HEIGHT - App->renderer->horizonY;
 	float max = (float)SCREEN_HEIGHT;
 	float toReturn = (yRender - min) / (max - min);
 	if (toReturn < 0.0f) toReturn = 0.0f;
@@ -177,20 +165,20 @@ float Obstacle::calculateScaleValue(float yRender)
 	return toReturn;
 }
 
-void Obstacle::setResizeRect(int x, int y, int w, int h)
+void Obstacle::setResizeRect(const float& w, const float& h) const
 {
-	resizeRect->x = x;
-	resizeRect->y = y;
-	resizeRect->w = w;
-	resizeRect->h = h;
+	resizeRect->x = 0;
+	resizeRect->y = 0;
+	resizeRect->w = (int)w;
+	resizeRect->h = (int)h;
 }
 
-void Obstacle::setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth)
+void Obstacle::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
 {
-	rect->texture = texture;
 	rect->x = x;
 	rect->y = y;
+	rect->z = z;
+	rect->texture = texture;	
 	rect->section = section;
-	rect->resize = resize;
-	rect->depth = depth;
+	rect->resize = resize;	
 }

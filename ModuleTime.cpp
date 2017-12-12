@@ -23,8 +23,8 @@ bool ModuleTime::Init()
 update_status ModuleTime::PreUpdate()
 {
 	Uint32 tick = SDL_GetTicks();
-	deltaTime = (tick - lastDeltaTime) / 1000.0f;
-	lastDeltaTime = tick;
+	deltaTime = ((float)tick - lastDeltaTime) / 1000.0f;
+	lastDeltaTime = (float)tick;
 
 	return UPDATE_CONTINUE;
 }

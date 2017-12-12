@@ -12,21 +12,21 @@ struct SDL_Renderer;
 struct SDL_Rect;
 
 struct BlitTarget
-{
-	SDL_Texture* texture;
+{	
 	float x;
 	float y;
+	float z;
 	SDL_Rect* section;
 	SDL_Rect* resize;
-	int depth;
+	SDL_Texture* texture;
 
-	BlitTarget(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth) :
+	BlitTarget(SDL_Texture* texture, float x, float y, float z, SDL_Rect* section, SDL_Rect* resize) :
 		texture(texture),
 		x(x),
 		y(y),
+		z(z),
 		section(section),
-		resize(resize),
-		depth(depth)
+		resize(resize)
 	{}
 };
 
@@ -37,42 +37,40 @@ public:
 	~ModuleRender();
 
 	bool Init();
-	bool Start();
 	update_status PreUpdate();
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
 
-	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, float speed = 1.0f);
-	bool FloorBlit(SDL_Texture* texture, SDL_Rect* section, float speed = 1.0f);
-	void BackgroundBlit(SDL_Texture* texture, float speed, int backgroundPlane);
+	void DrawPauseScreen() const;
 	void AlphaVerticalLinesMove();
-	void DrawPauseScreen();
-	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
+
+	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize) const;
+	bool FloorBlit(SDL_Texture* texture, SDL_Rect* section);
+	void BackgroundBlit(SDL_Texture* texture, float speed, int backgroundPlane);	
+	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true) const;
 
 public:
-	SDL_Renderer* renderer = nullptr;
-	SDL_Rect camera;	
+	SDL_Renderer* renderer = nullptr;	
 
-	static const float LINE_REDUCTION;
 	static const int alphaLines = 11;
+	static const float LINE_REDUCTION;
 	
+	int firstLineIndex = 0;
+	int nextTopLine = 0;
+
 	float horizonY;
-	int firstLineIndex;
-	int nextTopLine;
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
 	float lineDivisor = 0.0f;
-	float firstLinePositionPercentage;
+	float firstLinePositionPercentage = 0.0f;
 	float backgroundOffset_B = 0.0f;
 	float backgroundOffset_BF = 0.0f;
+	float renderLineValues[alphaLines];
 
 	std::map<int, std::vector<BlitTarget>> depthBuffer;
 	SDL_Rect alphaLinesArray[alphaLines];
-	float renderLineValues[alphaLines];
 
-private:
-	Font* pauseFont;
 };
 
 #endif // __MODULERENDER_H__

@@ -17,22 +17,21 @@ struct Obstacle
 	Obstacle(const Obstacle& p);
 	~Obstacle();
 
-	void setResizeRect(int x, int y, int w, int h);
-	void setRect(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize, int depth);
 	void Update();
 
 	float calculateScaleValue(float yRender);
+	void setResizeRect(const float& w, const float& h) const;
+	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
 
+	int lineToFollow = 0;
 	bool to_delete = false;
+	float xOffset = 0.0f;	
 
 	fPoint position = { 0.0f, 0.0f, 0.0f };
-	float xOffset = 0.0f;
-	int lineToFollow = 0;
-
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;
-	BlitTarget* rect = new BlitTarget(nullptr, 0, 0, nullptr, nullptr, 0);	
+	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);	
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 };
 
@@ -43,15 +42,14 @@ public:
 	~ModuleObstacle();
 
 	bool Start();
-	update_status PreUpdate(); // clear dirty particles
-	update_status Update(); // draw
+	update_status PreUpdate();
+	update_status Update();
 	bool CleanUp();
 
 	bool onCollision(Collider* c1, Collider* c2);
-	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y, collisionType type); // feel free to expand this call
+	void AddObstacle(const Obstacle& particle, float x, float xOffset, float y, collisionType type);
 
 private:
-
 	std::list<Obstacle*> active;
 
 public:

@@ -22,14 +22,12 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading space intro");
 	
 	background = App->textures->Load("assets/intro.png");	
-	blueFont = App->fontManager->addReference("blue");
 
 	if(fx == 0)
 		fx = App->audio->LoadFx("assets/introSound.wav");
 
 	App->audio->PlayFx(fx);
-	App->renderer->camera.x = App->renderer->camera.y = 0;
-	
+
 	return true;
 }
 
@@ -40,8 +38,6 @@ bool ModuleSceneIntro::CleanUp()
 
 	App->textures->Unload(background);
 
-	//delete blueFont;
-
 	return true;
 }
 
@@ -49,7 +45,7 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	App->renderer->Blit(background, 0, 0, nullptr, nullptr);
-	blueFont->printText("FONT MENU TEST", 150, 150);
+	App->fontManager->blueFont->printText("FONT MENU TEST", 150, 150);
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
 	{

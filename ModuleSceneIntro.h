@@ -17,12 +17,8 @@ public:
 	bool CleanUp();
 
 public:
-	
 	SDL_Texture* background = nullptr;
 	uint fx = 0;
-
-private:
-	Font* blueFont;
 };
 
 #endif // __MODULESCENEINTRO_H__

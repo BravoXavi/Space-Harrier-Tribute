@@ -29,7 +29,6 @@ bool ModuleSceneSpace::Start()
 	background = App->textures->Load("assets/Background3Scaled.png");
 	backgroundFront = App->textures->Load("assets/backgroundFront.png");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
-	blueFont = App->fontManager->addReference("blue");
 
 	App->player->Enable();
 	App->particles->Enable();
@@ -50,7 +49,7 @@ bool ModuleSceneSpace::CleanUp()
 	App->player->Disable();
 	App->collision->Disable();
 	App->particles->Disable();
-	
+
 	return true;
 }
 
@@ -69,15 +68,15 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 		
-	//if (timeCounter < 20) timeCounter++;
-	//else 
-	//{
-	//	timeCounter = 0;
-	//	int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
+	if (timeCounter < 20) timeCounter++;
+	else 
+	{
+		timeCounter = 0;
+		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-	//	App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	//}
+		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
+	}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -89,19 +88,19 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	if (timeCounter > 0) timeCounter++;
-	else
-	{
-		timeCounter++;
-		App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, ENEMY, 12.0f);
-	}
+	//if (timeCounter > 0) timeCounter++;
+	//else
+	//{
+	//	timeCounter++;
+	//	App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 12.0f, ENEMY, 1);
+	//}
 
 	PrintUI();
 
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneSpace::PrintUI()
+void ModuleSceneSpace::PrintUI() const
 {
-	blueFont->printText("STAGE 1", SCREEN_WIDTH - 57, SCREEN_HEIGHT - 9, 0.8f);
+	App->fontManager->blueFont->printText("STAGE 1", SCREEN_WIDTH - 57, SCREEN_HEIGHT - 9, 0.8f);
 }

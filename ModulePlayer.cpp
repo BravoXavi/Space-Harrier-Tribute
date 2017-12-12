@@ -9,7 +9,7 @@
 #include "ModulePlayer.h"
 #include "ModuleEnemy.h"
 
-// Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
+const float ModulePlayer::playerDepth = 0.0f;
 
 ModulePlayer::ModulePlayer(bool active) : Module(active)
 {
@@ -28,7 +28,6 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	right1.frames.push_back({ 221,2,22,50 });
 
 	current_animation = &run;
-
 }
 
 ModulePlayer::~ModulePlayer()
@@ -40,12 +39,11 @@ bool ModulePlayer::Start()
 	LOG("Loading player");
 
 	graphics = App->textures->Load("assets/character.png");
-
 	destroyed = false;
-	position.x = (SCREEN_WIDTH/2) - (current_animation->GetCurrentFrame().w/2);
-	position.y = SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
+	position.x = (float)(SCREEN_WIDTH / 2) - (current_animation->GetCurrentFrame().w / 2);
+	position.y = (float)(SCREEN_HEIGHT - current_animation->GetCurrentFrame().h);
 
-	collider = App->collision->AddCollider({ (int)position.x*SCREEN_SIZE, (int)position.y*SCREEN_SIZE, current_animation->GetCurrentFrame().w*SCREEN_SIZE, current_animation->GetCurrentFrame().h*SCREEN_SIZE }, PLAYER, playerDepth, App->player);
+	collider = App->collision->AddCollider({ (int)position.x * SCREEN_SIZE, (int)position.y * SCREEN_SIZE, current_animation->GetCurrentFrame().w * SCREEN_SIZE, current_animation->GetCurrentFrame().h * SCREEN_SIZE }, PLAYER, (int)playerDepth, App->player);
 
 	return true;
 }
@@ -63,26 +61,24 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-	int speed = 3;
+	float speed = 3.0f;
 
 	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		if(position.x > 0) position.x -= speed;
-		if(current_animation == &run) checkHorizontalAnimation(true);
+		if (position.x > 0.0f) position.x -= speed;
+		if (current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
 
-		collider->SetPos(position.x, position.y, playerDepth);
-		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
+		moveCollider();
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		if (position.x + current_animation->GetCurrentFrame().w < SCREEN_WIDTH) position.x += speed;
+		if (position.x + (float)current_animation->GetCurrentFrame().w < (float)SCREEN_WIDTH) position.x += speed;
 		if (current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
 
-		collider->SetPos(position.x, position.y, playerDepth);
-		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
+		moveCollider();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
@@ -97,8 +93,7 @@ update_status ModulePlayer::Update()
 			current_animation = &run;			
 		}
 		
-		collider->SetPos(position.x, position.y, playerDepth);
-		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
+		moveCollider();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
@@ -113,28 +108,34 @@ update_status ModulePlayer::Update()
 			checkHorizontalAnimation();
 		}
 
-		collider->SetPos(position.x, position.y, playerDepth);
-		collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
+		moveCollider();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		App->particles->AddParticle(App->particles->p_laser, position.x - current_animation->GetCurrentFrame().w, position.y, P_LASER, 0);
+		App->particles->AddParticle(App->particles->p_laser, position.x - (float)current_animation->GetCurrentFrame().w, position.y, 0.0f, P_LASER);
 	}
 
 	// Draw everything --------------------------------------
-	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), nullptr, playerDepth);
+	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, playerDepth, &(current_animation->GetCurrentFrame()), nullptr);
+
 	if (destroyed == false)
-		App->renderer->depthBuffer[temp->depth].push_back(*temp);
+		App->renderer->depthBuffer[(int)temp->z].push_back(*temp);
 
 	delete temp;
 
 	return UPDATE_CONTINUE;
 }
 
+void ModulePlayer::moveCollider() const
+{
+	collider->SetPos((int)position.x, (int)position.y, (int)playerDepth);
+	collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
+}
+
 void ModulePlayer::checkHorizontalAnimation(bool running)
 {
-	int realPosition = position.x + middle.GetCurrentFrame().w / 2;
+	int realPosition = (int)position.x + middle.GetCurrentFrame().w / 2;
 	
 	if (realPosition <= SCREEN_DIVISOR)
 	{
@@ -168,7 +169,7 @@ void ModulePlayer::checkHorizontalAnimation(bool running)
 	}
 }
 
-void ModulePlayer::modifyHorizonY()
+void ModulePlayer::modifyHorizonY() const
 {
 	float offsetValue = (float)SCREEN_HEIGHT - (float)current_animation->GetCurrentFrame().h;
 	float temp = (offsetValue - (float)position.y) / offsetValue;
@@ -177,8 +178,8 @@ void ModulePlayer::modifyHorizonY()
 
 void ModulePlayer::setCharSpeed()
 {
-	int screenPosition = (position.x + (run.GetCurrentFrame().w / 2)) - (SCREEN_WIDTH/2);
-	float speedPercent = ((float)screenPosition * 1.0f) / (SCREEN_WIDTH/2.0f);
+	int screenPosition = ((int)position.x + (run.GetCurrentFrame().w / 2)) - (SCREEN_WIDTH / 2);
+	float speedPercent = ((float)screenPosition * 1.0f) / ((float)SCREEN_WIDTH / 2.0f);
 	if (current_animation == &middle) speedPercent = 0.0f;
 	App->renderer->playerSpeed = speedPercent * 10.0f;
 }
@@ -188,8 +189,3 @@ bool ModulePlayer::onCollision(Collider* c1, Collider* c2)
 	LOG("Player Collision");
 	return true;
 }
-
-// TODO 13: Make so is the laser collides, it is removed and create an explosion particle at its position
-// TODO 14: Make so if the player collides, it is removed and create few explosions at its positions
-// then fade away back to the first screen (use the "destroyed" bool already created 
-// You will need to create, update and destroy the collider with the player
