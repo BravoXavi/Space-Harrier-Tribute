@@ -104,6 +104,7 @@ void ModuleParticles::AddParticle(const Particle& particle, float x, float y, fl
 
 	if (colType == E_LASER)
 	{
+		p->position.y += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
 		p->targetOffset.x = (App->player->position.x + (float)App->player->current_animation->GetCurrentFrame().w/2.0f) - p->position.x;
 		p->targetOffset.y = (App->player->position.y + (float)App->player->current_animation->GetCurrentFrame().h/2.0f) - p->position.y;
 		p->targetOffset.z = z;
@@ -164,6 +165,9 @@ void Particle::p_laser_Update()
 	float newHeight = (float)anim.GetCurrentFrame().h * zModifier;
 	float newX = position.x + (((float)anim.GetCurrentFrame().w - newWidth) / 2.0f);
 	float newY = position.y + (((float)anim.GetCurrentFrame().h - newHeight) / 2.0f);
+
+	newWidth *= 0.6;
+	newHeight *= 0.6;
 
 	setResizeRect(newWidth, newHeight);
 	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
