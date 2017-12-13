@@ -6,7 +6,7 @@
 #include "ModuleParticles.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
-
+#include "ModuleTime.h"
 #include "SDL/include/SDL_timer.h"
 
 ModuleEnemy::ModuleEnemy()
@@ -25,8 +25,8 @@ bool ModuleEnemy::Start()
 	alienShip.anim.frames.push_back({ 198, 127, 46, 30 });
 	alienShip.anim.speed = 0.1f;
 	alienShip.position.z = MAX_Z;
-	alienShip.speed = 1;
 	alienShip.colType = ENEMY;
+	alienShip.depthSpeed = 9.0f;
 
 	return true;
 }
@@ -71,7 +71,7 @@ update_status ModuleEnemy::Update()
 
 		App->renderer->depthBuffer[(int)e->rect->z].push_back(*e->rect);
 	}
-
+		
 	return UPDATE_CONTINUE;
 }
 
@@ -81,6 +81,8 @@ void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collis
 	e->position = { x, y, z };
 	e->colType = type;
 	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->position.z, App->enemies);
+	e->moveSet = moveSet;
+	e->uniDimensionalSpeed = (float)e->anim.GetCurrentFrame().w * 3.0f;
 	active.push_back(e);
 }
 
@@ -106,13 +108,76 @@ bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
 	return true;
 }
 
+void ModuleEnemy::enemyWave(const int& selector)
+{
+	switch (selector)
+	{
+		case 1:
+			if (enemyWaveCount < 6)
+			{			
+				AddEnemy(alienShip, (float)-alienShip.anim.GetCurrentFrame().w, (float)SCREEN_HEIGHT / 3.0f, 17.0f, ENEMY, 1);
+				enemyWaveCount++;
+			}
+			else
+			{
+				enemyWaveCount = 0;
+				waveNum++;
+				triggerEnemies = false;
+			}
+			break;
+
+		case 2:
+			if (enemyWaveCount < 3)
+			{
+				switch (enemyWaveCount)
+				{
+					case 0:
+						AddEnemy(alienShip, 3.0f * ((float)SCREEN_WIDTH / 4.0f), (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 17.0f, ENEMY, 2);
+						break;
+					case 1:
+						AddEnemy(alienShip, 2.0f * ((float)SCREEN_WIDTH / 4.0f), (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 17.0f, ENEMY, 2);
+						break;
+					case 2:
+						AddEnemy(alienShip, (float)SCREEN_WIDTH / 4.0f, (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 17.0f, ENEMY, 2);
+						break;
+				}
+				enemyWaveCount++;
+			}
+			else
+			{
+				enemyWaveCount = 0;
+				waveNum++;
+				triggerEnemies = false;
+			}	
+			break;
+
+		case 3:
+			if (enemyWaveCount < 11)
+			{
+				if(enemyWaveCount < 5) AddEnemy(alienShip, (float)-alienShip.anim.GetCurrentFrame().w, (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 2.0f, ENEMY, 3);
+				else AddEnemy(alienShip, (float)(SCREEN_WIDTH + alienShip.anim.GetCurrentFrame().w), (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 2.0f, ENEMY, 3);
+				enemyWaveCount++;
+			}
+			else
+			{
+				enemyWaveCount = 0;
+				waveNum++;
+				triggerEnemies = false;
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
 Enemy::Enemy()
 {}
 
-Enemy::Enemy(const Enemy& p) : anim(p.anim), position(p.position), fxIndex(p.fxIndex), speed(p.speed)
+Enemy::Enemy(const Enemy& e) : anim(e.anim), position(e.position), fxIndex(e.fxIndex), depthSpeed(e.depthSpeed)
 {}
 
 Enemy::~Enemy()
@@ -123,20 +188,22 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-	if (position.z > MAX_Z) to_delete = true;
-	
-	if (attackCharged == 200)
+	if (position.z <= MIN_Z || position.z > MAX_Z)
 	{
-		attackCharged = 0;
-		App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+		collider->to_delete = true;
+		to_delete = true;
 	}
-	else attackCharged++;
 
 	float zModifier = 1.0f - (position.z / (float)MAX_Z);
 	float newWidth = anim.GetCurrentFrame().w * zModifier;
 	float newHeight = anim.GetCurrentFrame().h * zModifier;
-	float newX = position.x - newWidth/2.0f;
-	float newY = position.y - newHeight/2.0f;
+	float newX = position.x - newWidth / 2.0f;
+	float newY = position.y - newHeight / 2.0f;
+
+	//Move the enemy according to its preset movement
+	selectMovementPatron(moveSet);
+
+	newY += (- App->renderer->horizonY + (float)FLOOR_Y_MIN);
 
 	if (collider != nullptr)
 	{
@@ -164,4 +231,76 @@ void Enemy::setResizeRect(const float& w, const float& h) const
 	resizeRect->y = 0;
 	resizeRect->w = (int)w;
 	resizeRect->h = (int)h;
+}
+
+void Enemy::selectMovementPatron(const int& moveSelector)
+{
+	float deltaUniDimensionalSpeed = uniDimensionalSpeed * App->time->getDeltaTime();
+	float deltaDepthSpeed = depthSpeed * App->time->getDeltaTime();
+
+	switch (moveSelector)
+	{
+	case 1:
+		if (position.x < (float)(SCREEN_WIDTH + anim.GetCurrentFrame().w * 2.0f) && position.y == (float)SCREEN_HEIGHT / 3.0f)
+		{
+			if (position.x >(float)SCREEN_WIDTH / 2.0f) position.x += deltaUniDimensionalSpeed*1.5f;
+			else position.x += deltaUniDimensionalSpeed;
+		}
+		else
+		{
+			if (position.y == (float)SCREEN_HEIGHT / 3.0f) position.y = 2.0f * ((float)SCREEN_HEIGHT / 3.0f);
+			position.x += -deltaUniDimensionalSpeed * 1.6f;
+			position.z -= deltaDepthSpeed;
+			position.y += 0.3f;
+			if (position.x < -(float)anim.GetCurrentFrame().w) position.y = (float)SCREEN_HEIGHT / 3.0f;
+		}
+		break;
+
+	case 2:
+		if (position.y > (float)SCREEN_HEIGHT / 3.0f && position.z == 17.0f)
+		{
+			position.y -= deltaUniDimensionalSpeed;
+		}
+		else
+		{
+			if (position.z == 17.0f) App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+			if (position.y < (3.0f * (float)SCREEN_HEIGHT / 4.0f))
+			{
+				position.y += deltaUniDimensionalSpeed;
+				position.z -= deltaDepthSpeed/3.0f;
+			}
+			else 
+			{
+				position.z -= deltaDepthSpeed * 1.2f;
+			}
+			
+		}
+		break;
+
+	case 3:	
+		if (position.x >= (float)(SCREEN_WIDTH + anim.GetCurrentFrame().w))
+		{
+			uniDimensionalSpeed *= -1;
+			deltaUniDimensionalSpeed *= -1;
+		}
+	
+		if (position.x < ((float)SCREEN_WIDTH / 5.0f) && deltaUniDimensionalSpeed < 0.0f)
+		{
+			uniDimensionalSpeed *= -1.0f;
+			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+		}
+		else if (position.x > (4.0f * ((float)SCREEN_WIDTH / 5.0f)) && deltaUniDimensionalSpeed > 0.0f)
+		{
+			uniDimensionalSpeed *= -1.0f;
+			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+		}
+
+		position.x += deltaUniDimensionalSpeed;
+		position.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
+		position.z += deltaDepthSpeed * 0.8f;
+		break;
+
+	default:
+		break;
+	}
 }

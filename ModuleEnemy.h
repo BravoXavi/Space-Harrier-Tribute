@@ -20,15 +20,15 @@ struct Enemy
 	void Update();
 	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
 	void setResizeRect(const float& w, const float& h) const;
+	void selectMovementPatron(const int& moveSelector);
 
-	int speed;
+	float uniDimensionalSpeed = 0.0f;
+	float depthSpeed = 0.0f;
+
 	int moveSet = 0;
 	bool to_delete = false;
 	unsigned int fxIndex;
 	
-	//DEBUG
-	int attackCharged = 0;
-
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;
@@ -50,15 +50,23 @@ public:
 
 	bool onCollision(Collider* c1, Collider* c2);
 	void AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType colType, int moveSet);
+	void enemyWave(const int& selector);
 
 private:
 	std::list<Enemy*> active;
+	Uint32 spawnTimer = 0;
+	int enemyWaveCount = 0;
 
 public:
 	SDL_Texture* graphics = nullptr;
 	Enemy alienShip;
 	Enemy metalFlower;
 	Enemy dragonBoss;
+
+	int waveNum = 1;
+	bool triggerEnemies = false;
+	bool bossEncounter = false;
+	
 };
 
 #endif // __MODULEENEMY_H__
