@@ -37,6 +37,8 @@ bool ModuleSceneSpace::Start()
 	//App->audio->PlayFx(startFx);
 	//App->audio->PlayMusic("assets/Theme.wav", 1.0f);
 
+	enemySpawnTimer = SDL_GetTicks();
+
 	return true;
 }
 
@@ -68,15 +70,15 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 		
-	if (timeCounter < 20) timeCounter++;
-	else 
-	{
-		timeCounter = 0;
-		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
+	//if (timeCounter < 20) timeCounter++;
+	//else 
+	//{
+	//	timeCounter = 0;
+	//	int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	}
+	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+	//	//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
+	//}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -88,12 +90,36 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	//if (timeCounter > 0) timeCounter++;
-	//else
+		//App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 12.0f, ENEMY, 1);
+
+	//if (!App->enemies->aliveWave)
 	//{
-	//	timeCounter++;
-	//	App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 12.0f, ENEMY, 1);
+	//	App->enemies->enemyWave(App->enemies->waveNum);
+	//	App->enemies->aliveWave = true;
 	//}
+
+	Uint32 tickUpdate = SDL_GetTicks();
+
+	if (App->enemies->triggerEnemies)
+	{
+		if (!App->enemies->bossEncounter)
+		{
+			if (tickUpdate - enemySpawnTimer > 300.0f)
+			{
+				enemySpawnTimer = tickUpdate;
+				App->enemies->enemyWave(App->enemies->waveNum);
+			}
+		}
+	}
+	else
+	{
+		if (tickUpdate - enemySpawnTimer > 6000.0f)
+		{
+			App->enemies->triggerEnemies = true;
+			App->enemies->waveNum++;
+			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+		}
+	}
 
 	PrintUI();
 

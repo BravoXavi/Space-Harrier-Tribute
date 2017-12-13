@@ -21,6 +21,7 @@ public:
 
 public:
 	uint startFx;
+	Uint32 enemySpawnTimer = 0;
 
 	int timeCounter = 0;
 	int timeCounter2 = 0;
