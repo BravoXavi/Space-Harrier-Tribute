@@ -121,7 +121,6 @@ void ModuleEnemy::enemyWave(const int& selector)
 			else
 			{
 				enemyWaveCount = 0;
-				waveNum++;
 				triggerEnemies = false;
 			}
 			break;
@@ -146,7 +145,6 @@ void ModuleEnemy::enemyWave(const int& selector)
 			else
 			{
 				enemyWaveCount = 0;
-				waveNum++;
 				triggerEnemies = false;
 			}	
 			break;
@@ -161,7 +159,6 @@ void ModuleEnemy::enemyWave(const int& selector)
 			else
 			{
 				enemyWaveCount = 0;
-				waveNum++;
 				triggerEnemies = false;
 			}
 			break;

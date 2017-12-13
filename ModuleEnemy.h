@@ -63,7 +63,7 @@ public:
 	Enemy metalFlower;
 	Enemy dragonBoss;
 
-	int waveNum = 1;
+	int waveNum = 0;
 	bool triggerEnemies = false;
 	bool bossEncounter = false;
 	
