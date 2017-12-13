@@ -8,6 +8,7 @@
 #include "ModuleFadeToBlack.h"
 #include "ModulePlayer.h"
 #include "ModuleEnemy.h"
+#include "ModuleTime.h"
 
 const float ModulePlayer::playerDepth = 0.0f;
 
@@ -61,7 +62,7 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-	float speed = 3.0f;
+	float speed = 200.0f * App->time->getDeltaTime();
 
 	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
@@ -181,7 +182,7 @@ void ModulePlayer::setCharSpeed()
 	int screenPosition = ((int)position.x + (run.GetCurrentFrame().w / 2)) - (SCREEN_WIDTH / 2);
 	float speedPercent = ((float)screenPosition * 1.0f) / ((float)SCREEN_WIDTH / 2.0f);
 	if (current_animation == &middle) speedPercent = 0.0f;
-	App->renderer->playerSpeed = speedPercent * 10.0f;
+	App->renderer->playerSpeed = (speedPercent * 150.0f) * App->time->getDeltaTime();
 }
 
 bool ModulePlayer::onCollision(Collider* c1, Collider* c2) 

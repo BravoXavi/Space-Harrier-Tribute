@@ -15,7 +15,6 @@ ModuleRender::ModuleRender()
 	for (int i = 0; i < alphaLines; i++)
 	{
 		renderLineValues[i] = 0.0f;
-
 		alphaLinesArray[i].x = 0;
 		alphaLinesArray[i].w = SCREEN_WIDTH * SCREEN_SIZE;
 		lineDivisor += pow(LINE_REDUCTION, i);
@@ -244,6 +243,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section)
 	{
 		increasingExtraPixelsX = 0.0f;
 	}
+
 	increasingExtraPixelsX += playerSpeed;
 
 	float pixelsPerRow = (float)textH / rect.h;
