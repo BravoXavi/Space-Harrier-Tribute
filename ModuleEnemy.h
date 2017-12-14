@@ -8,34 +8,10 @@
 #include "Point.h"
 #include "ModuleCollision.h"
 #include "ModuleRender.h"
+#include "Enemy.h"
+#include "AlienShip.h"
 
 struct SDL_Texture;
-
-struct Enemy
-{
-	Enemy();
-	Enemy(const Enemy& p);
-	~Enemy();
-
-	void Update();
-	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
-	void setResizeRect(const float& w, const float& h) const;
-	void selectMovementPatron(const int& moveSelector);
-
-	float uniDimensionalSpeed = 0.0f;
-	float depthSpeed = 0.0f;
-
-	int moveSet = 0;
-	bool to_delete = false;
-	unsigned int fxIndex;
-	
-	Animation anim;
-	collisionType colType;
-	Collider* collider = nullptr;
-	fPoint position = { 0.0f, 0.0f, 0.0f };
-	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);
-	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });	
-};
 
 class ModuleEnemy : public Module
 {
@@ -59,9 +35,11 @@ private:
 
 public:
 	SDL_Texture* graphics = nullptr;
-	Enemy alienShip;
-	Enemy metalFlower;
-	Enemy dragonBoss;
+
+	AlienShip alienShip;
+	//Enemy alienShip;
+	//Enemy metalFlower;
+	//Enemy dragonBoss;
 
 	int waveNum = 0;
 	bool triggerEnemies = false;
