@@ -10,6 +10,7 @@
 #include "ModuleRender.h"
 #include "Enemy.h"
 #include "AlienShip.h"
+#include "MetalFlower.h"
 
 struct SDL_Texture;
 
@@ -37,9 +38,7 @@ public:
 	SDL_Texture* graphics = nullptr;
 
 	AlienShip alienShip;
-	//Enemy alienShip;
-	//Enemy metalFlower;
-	//Enemy dragonBoss;
+	MetalFlower tomos;
 
 	int waveNum = 0;
 	bool triggerEnemies = false;

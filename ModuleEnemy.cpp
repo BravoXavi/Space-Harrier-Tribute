@@ -20,9 +20,10 @@ ModuleEnemy::~ModuleEnemy()
 bool ModuleEnemy::Start()
 {
 	LOG("Loading enemies");
-	graphics = App->textures->Load("assets/obstacleModels.png");
-	//graphics = App->textures->Load("assets/metalflower.png");
+	//graphics = App->textures->Load("assets/obstacleModels.png");
+	graphics = App->textures->Load("assets/metalflower.png");
 
+	//ALIENSHIP
 	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	alienShip.idle.frames.push_back({ 198, 127, 46, 30 });
 	alienShip.idle.speed = 0.1f;
@@ -32,18 +33,24 @@ bool ModuleEnemy::Start()
 	alienShip.depthSpeed = 9.0f;
 	alienShip.current_animation = &alienShip.idle;
 
-	//metalFlower.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	//metalFlower.anim.frames.push_back({ 3, 2, 44, 44 });
-	//metalFlower.anim.frames.push_back({ 53, 2, 44, 46 });
-	//metalFlower.anim.frames.push_back({ 104, 2, 44, 46 });
-	//metalFlower.anim.frames.push_back({ 1, 53, 56, 56 });
-	//metalFlower.anim.frames.push_back({ 64, 53, 56, 56 });
-	//metalFlower.anim.frames.push_back({ 1, 116, 64, 68 });
-	//metalFlower.anim.frames.push_back({ 78, 116, 64, 68 });
-	//metalFlower.anim.speed = 0.1f;
-	//metalFlower.position.z = MAX_Z;
-	//metalFlower.colType = ENEMY;
-	//metalFlower.depthSpeed = 5.0f;
+	//METALFLOWER
+	tomos.fxIndex = App->audio->LoadFx("rtype/laser.wav");
+	tomos.idle.frames.push_back({ 3, 2, 44, 44 });
+	tomos.idle.speed = 0.1f;
+	tomos.transition.frames.push_back({ 3, 2, 44, 44 });
+	tomos.transition.frames.push_back({ 53, 2, 44, 46 });
+	tomos.transition.frames.push_back({ 104, 2, 44, 46 });
+	tomos.transition.frames.push_back({ 1, 53, 56, 56 });
+	tomos.transition.frames.push_back({ 64, 53, 56, 56 });
+	tomos.transition.frames.push_back({ 1, 116, 64, 68 });
+	tomos.transition.frames.push_back({ 78, 116, 64, 68 });
+	tomos.transition.speed = 0.1f;
+	tomos.position.z = MAX_Z;
+	tomos.colType = ENEMY;
+	tomos.uniDimensionalSpeed = 130.0f;
+	tomos.depthSpeed = 9.0f;
+	tomos.current_animation = &tomos.transition;
+	tomos.current_animation->loop = false;
 
 	return true;
 }
@@ -114,9 +121,16 @@ bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
 			}
 			else if (c1->colType == P_LASER || c2->colType == P_LASER)
 			{
-				(*it)->collider->to_delete = true;
-				(*it)->to_delete = true;
-				LOG("ENEMY HIT!! ENEMY DESTROYED!!");
+				if ((*it)->invulnerable)
+				{
+					LOG("INVULNERABLE STATE!");
+				}
+				else
+				{
+					(*it)->collider->to_delete = true;
+					(*it)->to_delete = true;
+					LOG("ENEMY HIT!! ENEMY DESTROYED!!");
+				}			
 			}
 		}
 	}

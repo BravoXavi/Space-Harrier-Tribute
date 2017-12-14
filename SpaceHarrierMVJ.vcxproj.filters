@@ -88,6 +88,9 @@
     <ClInclude Include="AlienShip.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
+    <ClInclude Include="MetalFlower.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -148,6 +151,9 @@
       <Filter>Game Modules</Filter>
     </ClCompile>
     <ClCompile Include="AlienShip.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="MetalFlower.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>
