@@ -46,15 +46,16 @@ public:
 	fPoint position = { 0.0f, 0.0f, 0.0f };
 
 	Animation* current_animation = nullptr;
-
 	Animation idle;
 	Animation transition;
 
+	Uint32 animationTimer = 0;
 	float uniDimensionalSpeed = 0.0f;
 	float depthSpeed = 0.0f;
 	int moveSet = 0;
 	bool to_delete = false;
 	unsigned int fxIndex;
+	bool invulnerable = false;
 
 };
 
