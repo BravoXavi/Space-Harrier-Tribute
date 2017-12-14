@@ -67,12 +67,6 @@
     <ClInclude Include="ModuleSceneSpace.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleEnemy.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleObstacle.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleTime.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
@@ -81,6 +75,18 @@
     </ClInclude>
     <ClInclude Include="FontManager.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleEnemy.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleObstacle.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="AlienShip.h">
+      <Filter>Game Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -126,12 +132,6 @@
     <ClCompile Include="ModuleSceneSpace.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleEnemy.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleObstacle.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleTime.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
@@ -140,6 +140,15 @@
     </ClCompile>
     <ClCompile Include="FontManager.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleEnemy.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleObstacle.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="AlienShip.cpp">
+      <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
