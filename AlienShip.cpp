@@ -9,12 +9,10 @@ AlienShip::AlienShip()
 {
 }
 
-AlienShip::AlienShip(const Enemy& aS)// : anim(aS.anim), position(aS.position), fxIndex(aS.fxIndex), depthSpeed(aS.depthSpeed)
+AlienShip::AlienShip(const Enemy& aS, const fPoint& pos)
 {
-	idle = aS.idle;
-	transition = aS.transition;
-	current_animation = aS.current_animation;
-	position = aS.position;
+	position = pos;
+	enemyAnimation = aS.enemyAnimation;
 	fxIndex = aS.fxIndex;
 	uniDimensionalSpeed = aS.uniDimensionalSpeed;
 	depthSpeed = aS.depthSpeed;
@@ -36,24 +34,25 @@ void AlienShip::Update()
 	}
 
 	float zModifier = 1.0f - (position.z / (float)MAX_Z);
-	float newWidth = current_animation->GetCurrentFrame().w * zModifier;
-	float newHeight = current_animation->GetCurrentFrame().h * zModifier;
-	float newX = position.x - newWidth / 2.0f;
-	float newY = position.y - newHeight / 2.0f;
+	float newWidth = enemyAnimation.GetCurrentFrame().w * zModifier;
+	float newHeight = enemyAnimation.GetCurrentFrame().h * zModifier;
 
 	//Move the enemy according to its preset movement
 	selectMovementPatron(moveSet);
 
-	newY += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
+	float newPosX = position.x - newWidth / 2.0f;
+	float newPosY = position.y - newHeight / 2.0f;
+
+	newPosY += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
 
 	if (collider != nullptr)
 	{
-		collider->SetPos((int)newX, (int)newY, (int)position.z);
+		collider->SetPos((int)newPosX, (int)newPosY, (int)position.z);
 		collider->SetSize((int)newWidth, (int)newHeight);
 	}
 
 	setResizeRect(newWidth, newHeight);
-	setRect(App->enemies->graphics, newX, newY, position.z, &(current_animation->GetCurrentFrame()), resizeRect);
+	setRect(App->enemies->graphics, newPosX, newPosY, position.z, &(enemyAnimation.GetCurrentFrame()), resizeRect);
 }
 
 //AlienShip movement patrons
@@ -65,7 +64,7 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 	switch (moveSelector)
 	{
 	case 1:
-		if (position.x < (float)(SCREEN_WIDTH + current_animation->GetCurrentFrame().w * 2.0f) && position.y == (float)SCREEN_HEIGHT / 3.0f)
+		if (position.x < (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w * 2.0f) && position.y == (float)SCREEN_HEIGHT / 3.0f)
 		{
 			if (position.x >(float)SCREEN_WIDTH / 2.0f) position.x += deltaUniDimensionalSpeed*1.5f;
 			else position.x += deltaUniDimensionalSpeed;
@@ -76,7 +75,7 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 			position.x += -deltaUniDimensionalSpeed * 1.6f;
 			position.z -= deltaDepthSpeed;
 			position.y += 0.3f;
-			if (position.x < -(float)current_animation->GetCurrentFrame().w) position.y = (float)SCREEN_HEIGHT / 3.0f;
+			if (position.x < -(float)enemyAnimation.GetCurrentFrame().w) position.y = (float)SCREEN_HEIGHT / 3.0f;
 		}
  		break;
 
@@ -102,7 +101,7 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 		break;
 
 	case 3:
-		if (position.x >= (float)(SCREEN_WIDTH + current_animation->GetCurrentFrame().w))
+		if (position.x >= (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w))
 		{
 			uniDimensionalSpeed *= -1;
 			deltaUniDimensionalSpeed *= -1;
@@ -130,8 +129,8 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 }
 
 //Return an instance of AlienShip
-Enemy* AlienShip::createEnemyInstance(const Enemy& e) const
+Enemy* AlienShip::createEnemyInstance(const Enemy& e, const fPoint& pos) const
 {
-	Enemy* instance = new AlienShip(e);
+	Enemy* instance = new AlienShip(e, pos);
 	return instance;
 }

@@ -19,7 +19,7 @@ public:
 	virtual ~Enemy() {}
 
 	virtual void Update() = 0;
-	virtual Enemy* createEnemyInstance(const Enemy& e) const = 0;
+	virtual Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos) const = 0;
 	virtual void selectMovementPatron(const int& moveSelector) = 0;
 	virtual void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
 	{
@@ -45,9 +45,7 @@ public:
 	Collider* collider = nullptr;
 	fPoint position = { 0.0f, 0.0f, 0.0f };
 
-	Animation* current_animation = nullptr;
-	Animation idle;
-	Animation transition;
+	Animation enemyAnimation;
 
 	Uint32 animationTimer = 0;
 	float uniDimensionalSpeed = 0.0f;
