@@ -25,32 +25,28 @@ bool ModuleEnemy::Start()
 
 	//ALIENSHIP
 	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	alienShip.idle.frames.push_back({ 198, 127, 46, 30 });
-	alienShip.idle.speed = 0.1f;
-	alienShip.position.z = MAX_Z;
+	alienShip.enemyAnimation.frames.push_back({ 3, 2, 44, 44 });
+	//alienShip.enemyAnimation.frames.push_back({ 198, 127, 46, 30 });
+	alienShip.enemyAnimation.speed = 0.1f;
+	alienShip.position = { 0, 0, MAX_Z };
 	alienShip.colType = ENEMY;
 	alienShip.uniDimensionalSpeed = 130.0f;
 	alienShip.depthSpeed = 9.0f;
-	alienShip.current_animation = &alienShip.idle;
 
 	//METALFLOWER
-	tomos.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	tomos.idle.frames.push_back({ 3, 2, 44, 44 });
-	tomos.idle.speed = 0.1f;
-	tomos.transition.frames.push_back({ 3, 2, 44, 44 });
-	tomos.transition.frames.push_back({ 53, 2, 44, 46 });
-	tomos.transition.frames.push_back({ 104, 2, 44, 46 });
-	tomos.transition.frames.push_back({ 1, 53, 56, 56 });
-	tomos.transition.frames.push_back({ 64, 53, 56, 56 });
-	tomos.transition.frames.push_back({ 1, 116, 64, 68 });
-	tomos.transition.frames.push_back({ 78, 116, 64, 68 });
-	tomos.transition.speed = 0.1f;
-	tomos.position.z = MAX_Z;
+	tomos.enemyAnimation.frames.push_back({ 3, 2, 44, 44 });
+	tomos.enemyAnimation.frames.push_back({ 53, 2, 44, 46 });
+	tomos.enemyAnimation.frames.push_back({ 104, 2, 44, 46 });
+	tomos.enemyAnimation.frames.push_back({ 1, 53, 56, 56 });
+	tomos.enemyAnimation.frames.push_back({ 64, 53, 56, 56 });
+	tomos.enemyAnimation.frames.push_back({ 1, 116, 64, 68 });
+	tomos.enemyAnimation.frames.push_back({ 78, 116, 64, 68 });
+	tomos.enemyAnimation.speed = 0.1f;
+	tomos.position = { 0, 0, MAX_Z };
 	tomos.colType = ENEMY;
 	tomos.uniDimensionalSpeed = 130.0f;
-	tomos.depthSpeed = 9.0f;
-	tomos.current_animation = &tomos.transition;
-	tomos.current_animation->loop = false;
+	tomos.depthSpeed = 3.0f;
+	tomos.enemyAnimation.loop = false;
 
 	return true;
 }
@@ -101,8 +97,8 @@ update_status ModuleEnemy::Update()
 
 void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType type, int moveSet)
 {	
-	Enemy* e = enemy.createEnemyInstance(enemy);
-	e->position = { x, y, z };
+	fPoint pos = { x, y, z };
+	Enemy* e = enemy.createEnemyInstance(enemy, pos);	
 	e->colType = type;
 	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->position.z, App->enemies);
 	e->moveSet = moveSet;
@@ -145,7 +141,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 		case 1:
 			if (enemyWaveCount < 6)
 			{			
-				AddEnemy(alienShip, (float)-alienShip.current_animation->GetCurrentFrame().w, (float)SCREEN_HEIGHT / 3.0f, 17.0f, ENEMY, 1);
+				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT / 3.0f, 17.0f, ENEMY, 1);
 				enemyWaveCount++;
 			}
 			else
@@ -161,7 +157,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 				switch (enemyWaveCount)
 				{
 					case 0:
-						AddEnemy(alienShip, 3.0f * ((float)SCREEN_WIDTH / 4.0f), (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 17.0f, ENEMY, 2);
+						AddEnemy(alienShip,  3.0f * ((float)SCREEN_WIDTH / 4.0f), (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 17.0f, ENEMY, 2);
 						break;
 					case 1:
 						AddEnemy(alienShip, 2.0f * ((float)SCREEN_WIDTH / 4.0f), (float)SCREEN_HEIGHT - (App->renderer->horizonY / 2.0f), 17.0f, ENEMY, 2);
@@ -182,8 +178,8 @@ void ModuleEnemy::enemyWave(const int& selector)
 		case 3:
 			if (enemyWaveCount < 11)
 			{
-				if(enemyWaveCount < 5) AddEnemy(alienShip, (float)-alienShip.current_animation->GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
-				else AddEnemy(alienShip, (float)(SCREEN_WIDTH + alienShip.current_animation->GetCurrentFrame().w), (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
+				if(enemyWaveCount < 5) AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
+				else AddEnemy(alienShip, (float)(SCREEN_WIDTH + alienShip.enemyAnimation.GetCurrentFrame().w), (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
 				enemyWaveCount++;
 			}
 			else
@@ -192,7 +188,12 @@ void ModuleEnemy::enemyWave(const int& selector)
 				triggerEnemies = false;
 			}
 			break;
-
+		case 4:
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			triggerEnemies = false;
+			break;
 		default:
 			break;
 	}

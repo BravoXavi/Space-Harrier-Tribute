@@ -13,7 +13,6 @@ MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos)
 {
 	animationTimer = SDL_GetTicks();
 
-	fxIndex = aS.fxIndex;
 	position = pos;
 	rotationAngle = pos.x;
 
