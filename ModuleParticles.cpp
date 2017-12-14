@@ -166,8 +166,8 @@ void Particle::p_laser_Update()
 	float newX = position.x + (((float)anim.GetCurrentFrame().w - newWidth) / 2.0f);
 	float newY = position.y + (((float)anim.GetCurrentFrame().h - newHeight) / 2.0f);
 
-	newWidth *= 0.6;
-	newHeight *= 0.6;
+	newWidth *= 0.6f;
+	newHeight *= 0.6f;
 
 	setResizeRect(newWidth, newHeight);
 	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);

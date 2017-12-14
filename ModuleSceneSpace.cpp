@@ -98,6 +98,8 @@ update_status ModuleSceneSpace::Update()
 	//	App->enemies->aliveWave = true;
 	//}
 
+	//------------------------------------------------------------------------------
+
 	Uint32 tickUpdate = SDL_GetTicks();
 
 	if (App->enemies->triggerEnemies)
