@@ -7,6 +7,7 @@ class Animation
 {
 public:
 	bool loop = true;
+	bool reverse = false;
 	float speed = 1.0f;
 	vector<SDL_Rect> frames;
 
@@ -25,12 +26,16 @@ public:
 	{
 		float last_frame = (float) frames.size();
 
-		current_frame += speed;
+		if(!reverse) current_frame += speed;
+		else current_frame -= speed;
+
 		if (current_frame >= last_frame)
 		{
 			current_frame = (loop) ? 0.0f : MAX(last_frame - 1.0f, 0.0f);
 			loops++;
 		} 
+
+		if (current_frame < 0.0f) current_frame = 0.0f;
 
 		return frames[(int)current_frame];
 	}
