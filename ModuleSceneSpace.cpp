@@ -115,10 +115,11 @@ update_status ModuleSceneSpace::Update()
 	}
 	else
 	{
-		if (tickUpdate - enemySpawnTimer > 6000.0f)
+		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
 		{
 			App->enemies->triggerEnemies = true;
 			App->enemies->waveNum++;
+
 			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
 		}
 	}
