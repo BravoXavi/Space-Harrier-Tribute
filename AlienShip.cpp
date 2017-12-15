@@ -64,9 +64,10 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 	switch (moveSelector)
 	{
 	case 1:
+	{
 		if (position.x < (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w * 2.0f) && position.y == (float)SCREEN_HEIGHT / 3.0f)
 		{
-			if (position.x >(float)SCREEN_WIDTH / 2.0f) position.x += deltaUniDimensionalSpeed*1.5f;
+			if (position.x > (float)SCREEN_WIDTH / 2.0f) position.x += deltaUniDimensionalSpeed*1.5f;
 			else position.x += deltaUniDimensionalSpeed;
 		}
 		else
@@ -77,10 +78,11 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 			position.y += 0.3f;
 			if (position.x < -(float)enemyAnimation.GetCurrentFrame().w) position.y = (float)SCREEN_HEIGHT / 3.0f;
 		}
- 		break;
-
+		break;
+	}
 	case 2:
-		if (position.y >(float)SCREEN_HEIGHT / 3.0f && position.z == 17.0f)
+	{
+		if (position.y > (float)SCREEN_HEIGHT / 3.0f && position.z == 17.0f)
 		{
 			position.y -= deltaUniDimensionalSpeed;
 		}
@@ -99,30 +101,83 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 
 		}
 		break;
-
+	}
 	case 3:
-		if (position.x >= (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w))
+	{
+		float angleOffset = cos(oscillationAngle);
+
+		if (position.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;		
+		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
+		if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
 		{
-			uniDimensionalSpeed *= -1;
-			deltaUniDimensionalSpeed *= -1;
+			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+			oscillationAngle = 0.0f;
 		}
 
-		if (position.x < ((float)SCREEN_WIDTH / 5.0f) && deltaUniDimensionalSpeed < 0.0f)
-		{
-			uniDimensionalSpeed *= -1.0f;
-			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
-		}
-		else if (position.x >(4.0f * ((float)SCREEN_WIDTH / 5.0f)) && deltaUniDimensionalSpeed > 0.0f)
-		{
-			uniDimensionalSpeed *= -1.0f;
-			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
-		}
-
-		position.x += deltaUniDimensionalSpeed;
+		position.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+		oscillationAngle += oscillationSpeed;
+		oscillationRadius -= 0.2f;
 		position.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
-		position.z += deltaDepthSpeed * 0.8f;
-		break;
+		position.z += deltaDepthSpeed * 0.6;
 
+		break;
+	}
+	case 4:
+	{
+		float angleOffset = cos(oscillationAngle);
+
+		if (position.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
+		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
+
+		position.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+		oscillationAngle += oscillationSpeed;
+		oscillationRadius -= 0.2f;
+		
+		if (oscillationAngle > (3.0f*M_PI) / 2.0f)
+		{
+			position.z -= deltaDepthSpeed * 0.8f;
+			position.y += deltaUniDimensionalSpeed / 6.0f;
+		}
+		else
+		{
+			position.z += deltaDepthSpeed * 0.8f;
+			position.y -= deltaUniDimensionalSpeed / 6.0f;
+		}
+
+		break;
+	}
+	case 5:
+	{
+		float angleOffset = cos(oscillationAngle);
+
+		if (position.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
+		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
+
+		if (oscillationRadius != 0.0f)
+		{
+			position.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+			oscillationAngle += oscillationSpeed;
+			oscillationRadius -= 0.2f;
+			position.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
+			position.z += deltaDepthSpeed * 0.6;
+		}
+		else
+		{
+			oscillationAngle = 0.0f;
+			if (position.x < (float)SCREEN_WIDTH / 2.0f) position.x -= deltaUniDimensionalSpeed / 4.0f;
+			else position.x += deltaUniDimensionalSpeed / 4.0f;
+			position.z -= deltaDepthSpeed * 1.5f;
+		}
+
+
+		if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
+		{
+			oscillationRadius = 0.0f;
+			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+		}
+
+		break;
+	}
 	default:
 		break;
 	}	
