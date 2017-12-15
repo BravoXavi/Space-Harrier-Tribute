@@ -43,6 +43,7 @@ public:
 	int waveNum = 0;
 	bool triggerEnemies = false;
 	bool bossEncounter = false;
+	bool aliveEnemy = false;
 	
 };
 

@@ -26,7 +26,6 @@ bool ModuleEnemy::Start()
 	//ALIENSHIP
 	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	alienShip.enemyAnimation.frames.push_back({ 3, 2, 44, 44 });
-	//alienShip.enemyAnimation.frames.push_back({ 198, 127, 46, 30 });
 	alienShip.enemyAnimation.speed = 0.1f;
 	alienShip.position = { 0, 0, MAX_Z };
 	alienShip.colType = ENEMY;
@@ -92,6 +91,8 @@ update_status ModuleEnemy::Update()
 		App->renderer->depthBuffer[(int)e->rect->z].push_back(*e->rect);
 	}
 		
+	if (active.empty()) aliveEnemy = false;
+
 	return UPDATE_CONTINUE;
 }
 
@@ -103,6 +104,8 @@ void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collis
 	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->position.z, App->enemies);
 	e->moveSet = moveSet;
 	active.push_back(e);
+
+	aliveEnemy = true;
 }
 
 bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
@@ -178,7 +181,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 		case 3:
 			if (enemyWaveCount < 11)
 			{
-				if(enemyWaveCount < 5) AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
+				if( enemyWaveCount < 5 ) AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
 				else AddEnemy(alienShip, (float)(SCREEN_WIDTH + alienShip.enemyAnimation.GetCurrentFrame().w), (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
 				enemyWaveCount++;
 			}
@@ -193,6 +196,40 @@ void ModuleEnemy::enemyWave(const int& selector)
 			App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
 			App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
 			triggerEnemies = false;
+			break;
+		case 5:
+			if (enemyWaveCount < 7)
+			{
+				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, ((3.0f * (float)SCREEN_HEIGHT) / 4.0f) - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 4);
+				enemyWaveCount++;
+			}
+			else
+			{
+				enemyWaveCount = 0;
+				triggerEnemies = false;
+			}
+			break;
+		case 6:
+			if (enemyWaveCount < 6)
+			{
+				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 5);
+				AddEnemy(alienShip, (float)(SCREEN_WIDTH + alienShip.enemyAnimation.GetCurrentFrame().w), (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 5);
+				enemyWaveCount++;
+			}
+			else
+			{
+				enemyWaveCount = 0;
+				triggerEnemies = false;
+			}
+			break;
+		case 7:
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			triggerEnemies = false;
+			break;
+		case 8:
+			LOG("DRAGON BOSS...");
 			break;
 		default:
 			break;
