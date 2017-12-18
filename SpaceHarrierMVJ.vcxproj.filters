@@ -91,6 +91,9 @@
     <ClInclude Include="MetalFlower.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleSegaIntro.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -154,6 +157,9 @@
       <Filter>Game Modules</Filter>
     </ClCompile>
     <ClCompile Include="MetalFlower.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSegaIntro.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>
