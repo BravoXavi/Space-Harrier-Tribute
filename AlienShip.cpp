@@ -11,7 +11,7 @@ AlienShip::AlienShip()
 
 AlienShip::AlienShip(const Enemy& aS, const fPoint& pos)
 {
-	position = pos;
+	worldPosition = pos;
 	enemyAnimation = aS.enemyAnimation;
 	fxIndex = aS.fxIndex;
 	uniDimensionalSpeed = aS.uniDimensionalSpeed;
@@ -27,32 +27,32 @@ AlienShip::~AlienShip()
 //AlienShip Update
 void AlienShip::Update()
 {
-	if (position.z <= MIN_Z || position.z > MAX_Z)
+	if (worldPosition.z <= MIN_Z || worldPosition.z > MAX_Z)
 	{
 		collider->to_delete = true;
 		to_delete = true;
 	}
 
-	float zModifier = 1.0f - (position.z / (float)MAX_Z);
+	float zModifier = 1.0f - (worldPosition.z / (float)MAX_Z);
 	float newWidth = enemyAnimation.GetCurrentFrame().w * zModifier;
 	float newHeight = enemyAnimation.GetCurrentFrame().h * zModifier;
 
 	//Move the enemy according to its preset movement
 	selectMovementPatron(moveSet);
 
-	float newPosX = position.x - newWidth / 2.0f;
-	float newPosY = position.y - newHeight / 2.0f;
-
-	newPosY += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
+	screenPosition.x = worldPosition.x - newWidth / 2.0f;
+	screenPosition.y = worldPosition.y - newHeight / 2.0f;
+	screenPosition.y += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
+	screenPosition.z = screenPosition.z;
 
 	if (collider != nullptr)
 	{
-		collider->SetPos((int)newPosX, (int)newPosY, (int)position.z);
+		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z);
 		collider->SetSize((int)newWidth, (int)newHeight);
 	}
 
 	setResizeRect(newWidth, newHeight);
-	setRect(App->enemies->graphics, newPosX, newPosY, position.z, &(enemyAnimation.GetCurrentFrame()), resizeRect);
+	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, &(enemyAnimation.GetCurrentFrame()), resizeRect);
 }
 
 //AlienShip movement patrons
@@ -65,38 +65,38 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 	{
 	case 1:
 	{
-		if (position.x < (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w * 2.0f) && position.y == (float)SCREEN_HEIGHT / 3.0f)
+		if (worldPosition.x < (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w * 2.0f) && worldPosition.y == (float)SCREEN_HEIGHT / 3.0f)
 		{
-			if (position.x > (float)SCREEN_WIDTH / 2.0f) position.x += deltaUniDimensionalSpeed*1.5f;
-			else position.x += deltaUniDimensionalSpeed;
+			if (worldPosition.x > (float)SCREEN_WIDTH / 2.0f) worldPosition.x += deltaUniDimensionalSpeed*1.5f;
+			else worldPosition.x += deltaUniDimensionalSpeed;
 		}
 		else
 		{
-			if (position.y == (float)SCREEN_HEIGHT / 3.0f) position.y = 2.0f * ((float)SCREEN_HEIGHT / 3.0f);
-			position.x += -deltaUniDimensionalSpeed * 1.6f;
-			position.z -= deltaDepthSpeed;
-			position.y += 0.3f;
-			if (position.x < -(float)enemyAnimation.GetCurrentFrame().w) position.y = (float)SCREEN_HEIGHT / 3.0f;
+			if (worldPosition.y == (float)SCREEN_HEIGHT / 3.0f) worldPosition.y = 2.0f * ((float)SCREEN_HEIGHT / 3.0f);
+			worldPosition.x += -deltaUniDimensionalSpeed * 1.6f;
+			worldPosition.z -= deltaDepthSpeed;
+			worldPosition.y += 0.3f;
+			if (worldPosition.x < -(float)enemyAnimation.GetCurrentFrame().w) worldPosition.y = (float)SCREEN_HEIGHT / 3.0f;
 		}
 		break;
 	}
 	case 2:
 	{
-		if (position.y > (float)SCREEN_HEIGHT / 3.0f && position.z == 17.0f)
+		if (worldPosition.y > (float)SCREEN_HEIGHT / 3.0f && worldPosition.z == 17.0f)
 		{
-			position.y -= deltaUniDimensionalSpeed;
+			worldPosition.y -= deltaUniDimensionalSpeed;
 		}
 		else
 		{
-			if (position.z == 17.0f) App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
-			if (position.y < (3.0f * (float)SCREEN_HEIGHT / 4.0f))
+			if (worldPosition.z == 17.0f) App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
+			if (worldPosition.y < (3.0f * (float)SCREEN_HEIGHT / 4.0f))
 			{
-				position.y += deltaUniDimensionalSpeed;
-				position.z -= deltaDepthSpeed / 3.0f;
+				worldPosition.y += deltaUniDimensionalSpeed;
+				worldPosition.z -= deltaDepthSpeed / 3.0f;
 			}
 			else
 			{
-				position.z -= deltaDepthSpeed * 1.2f;
+				worldPosition.z -= deltaDepthSpeed * 1.2f;
 			}
 
 		}
@@ -106,19 +106,19 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 	{
 		float angleOffset = cos(oscillationAngle);
 
-		if (position.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;		
+		if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
 		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
 		if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
 		{
-			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+			App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
 			oscillationAngle = 0.0f;
 		}
 
-		position.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+		worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
 		oscillationAngle += oscillationSpeed;
 		oscillationRadius -= 0.2f;
-		position.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
-		position.z += deltaDepthSpeed * 0.6;
+		worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
+		worldPosition.z += deltaDepthSpeed * 0.6;
 
 		break;
 	}
@@ -126,22 +126,22 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 	{
 		float angleOffset = cos(oscillationAngle);
 
-		if (position.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
+		if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
 		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
 
-		position.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+		worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
 		oscillationAngle += oscillationSpeed;
 		oscillationRadius -= 0.2f;
 		
 		if (oscillationAngle > (3.0f*M_PI) / 2.0f)
 		{
-			position.z -= deltaDepthSpeed * 0.8f;
-			position.y += deltaUniDimensionalSpeed / 6.0f;
+			worldPosition.z -= deltaDepthSpeed * 0.8f;
+			worldPosition.y += deltaUniDimensionalSpeed / 6.0f;
 		}
 		else
 		{
-			position.z += deltaDepthSpeed * 0.8f;
-			position.y -= deltaUniDimensionalSpeed / 6.0f;
+			worldPosition.z += deltaDepthSpeed * 0.8f;
+			worldPosition.y -= deltaUniDimensionalSpeed / 6.0f;
 		}
 
 		break;
@@ -150,30 +150,30 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 	{
 		float angleOffset = cos(oscillationAngle);
 
-		if (position.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
+		if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
 		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
 
 		if (oscillationRadius != 0.0f)
 		{
-			position.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+			worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
 			oscillationAngle += oscillationSpeed;
 			oscillationRadius -= 0.2f;
-			position.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
-			position.z += deltaDepthSpeed * 0.6;
+			worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
+			worldPosition.z += deltaDepthSpeed * 0.6;
 		}
 		else
 		{
 			oscillationAngle = 0.0f;
-			if (position.x < (float)SCREEN_WIDTH / 2.0f) position.x -= deltaUniDimensionalSpeed / 4.0f;
-			else position.x += deltaUniDimensionalSpeed / 4.0f;
-			position.z -= deltaDepthSpeed * 1.5f;
+			if (worldPosition.x < (float)SCREEN_WIDTH / 2.0f) worldPosition.x -= deltaUniDimensionalSpeed / 4.0f;
+			else worldPosition.x += deltaUniDimensionalSpeed / 4.0f;
+			worldPosition.z -= deltaDepthSpeed * 1.5f;
 		}
 
 
 		if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
 		{
 			oscillationRadius = 0.0f;
-			App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+			App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
 		}
 
 		break;

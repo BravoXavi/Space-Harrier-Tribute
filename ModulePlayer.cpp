@@ -114,7 +114,7 @@ update_status ModulePlayer::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		App->particles->AddParticle(App->particles->p_laser, position.x - (float)current_animation->GetCurrentFrame().w, position.y, 0.0f, P_LASER);
+		App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)current_animation->GetCurrentFrame().w)/2.0f, position.y + (float)current_animation->GetCurrentFrame().h/3.0f , 1.0f, P_LASER);
 	}
 
 	// Draw everything --------------------------------------

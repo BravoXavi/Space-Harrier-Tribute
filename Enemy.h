@@ -43,7 +43,8 @@ public:
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 	collisionType colType;
 	Collider* collider = nullptr;
-	fPoint position = { 0.0f, 0.0f, 0.0f };
+	fPoint worldPosition = { 0.0f, 0.0f, 0.0f };
+	fPoint screenPosition = { 0.0f, 0.0f, 0.0f };
 
 	Animation enemyAnimation;
 

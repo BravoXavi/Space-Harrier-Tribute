@@ -27,7 +27,8 @@ struct Obstacle
 	bool to_delete = false;
 	float xOffset = 0.0f;	
 
-	fPoint position = { 0.0f, 0.0f, 0.0f };
+	fPoint screenPosition = { 0.0f, 0.0f, 0.0f };
+	fPoint worldPosition = { 0.0f, 0.0f, 0.0f };
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;

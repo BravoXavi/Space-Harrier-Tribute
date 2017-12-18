@@ -10,6 +10,7 @@
 #include "ModuleTime.h"
 #include "FontManager.h"
 #include "Font.h"
+#include "ModuleSegaIntro.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneSpace.h"
 #include "ModulePlayer.h"
@@ -30,6 +31,7 @@ Application::Application()
 	fontManager = new FontManager();
 
 	// Game Modules
+	modules.push_back(sega_intro = new ModuleSegaIntro(false));
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_space = new ModuleSceneSpace(false));
 	modules.push_back(obstacles = new ModuleObstacle());
@@ -66,7 +68,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(scene_intro, nullptr, 3.0f);
+	fade->FadeToBlack(scene_space, nullptr, 0.0f);
 
 	return ret;
 }
