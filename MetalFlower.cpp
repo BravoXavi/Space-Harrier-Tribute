@@ -13,7 +13,7 @@ MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos)
 {
 	animationTimer = SDL_GetTicks();
 
-	position = pos;
+	worldPosition = pos;
 	rotationAngle = pos.x;
 
 	enemyAnimation = e.enemyAnimation;
@@ -31,7 +31,7 @@ MetalFlower::~MetalFlower()
 //MetalFlower Update
 void MetalFlower::Update()
 {
-	if (position.z <= MIN_Z || position.z > MAX_Z)
+	if (worldPosition.z <= MIN_Z || worldPosition.z > MAX_Z)
 	{
 		collider->to_delete = true;
 		to_delete = true;
@@ -56,7 +56,7 @@ void MetalFlower::Update()
 				enemyAnimation.reverseAnimation = false;
 			}
 
-			if (!enemyAnimation.reverseAnimation) App->particles->AddParticle(App->particles->e_laser, position.x, position.y, position.z, E_LASER);
+			if (!enemyAnimation.reverseAnimation) App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
 		}
 	}
 	else
@@ -65,26 +65,26 @@ void MetalFlower::Update()
 		invulnerable = true;
 	}
 
-	float zModifier = 1.0f - (position.z / (float)MAX_Z);
+	float zModifier = 1.0f - (worldPosition.z / (float)MAX_Z);
 	float newWidth = (float)enemyAnimation.GetCurrentFrame().w * zModifier;
 	float newHeight = (float)enemyAnimation.GetCurrentFrame().h * zModifier;
 	
 	//Move the enemy according to its preset movement
 	selectMovementPatron(moveSet);
 
-	float newPosX = position.x - newWidth / 2.0f;
-	float newPosY = position.y - newHeight / 2.0f;
-
-	newPosY += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
+	screenPosition.x = worldPosition.x - newWidth / 2.0f;
+	screenPosition.y = worldPosition.y - newHeight / 2.0f;
+	screenPosition.y += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
+	screenPosition.z = worldPosition.z;
 
 	if (collider != nullptr)
 	{
-		collider->SetPos((int)newPosX, (int)newPosY, (int)position.z);
+		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z);
 		collider->SetSize((int)newWidth, (int)newHeight);
 	}
 
 	setResizeRect(newWidth, newHeight);
-	setRect(App->enemies->graphics, newPosX, newPosY, position.z, &(enemyAnimation.GetCurrentFrame()), resizeRect);
+	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, &(enemyAnimation.GetCurrentFrame()), resizeRect);
 }
 
 //MetalFlower movement patrons
@@ -93,8 +93,8 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 	float deltaUniDimensionalSpeed = uniDimensionalSpeed * App->time->getDeltaTime();
 	float deltaDepthSpeed = depthSpeed * App->time->getDeltaTime();
 
-	position.x = ((float)SCREEN_WIDTH / 2.0f) + cos(rotationAngle) * spinRadius;
-	position.y = 1.7f * ((float)SCREEN_HEIGHT / 3.0f) + sin(rotationAngle) * spinRadius;
+	worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + cos(rotationAngle) * spinRadius;
+	worldPosition.y = 1.7f * ((float)SCREEN_HEIGHT / 3.0f) + sin(rotationAngle) * spinRadius;
 	rotationAngle += spinSpeed;
 
 	if (rotationAngle >= 2.0f*M_PI) rotationAngle = 0.0f;
@@ -102,12 +102,12 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 	switch (moveSelector)
 	{
 	case 1:	
-		if (position.z >= 10.0f)
+		if (worldPosition.z >= 10.0f)
 		{
 			if (invulnerable)
 			{
 				spinRadius += 0.1;
-				position.z -= deltaDepthSpeed;
+				worldPosition.z -= deltaDepthSpeed;
 			}
 		}
 		else
@@ -119,7 +119,7 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 	case 2:
 		spinSpeed = 0.05f;
 		if(spinRadius > 0.0f) spinRadius -= 0.8f;
-		position.z += deltaDepthSpeed * 4.0f;
+		worldPosition.z += deltaDepthSpeed * 4.0f;
 
 		break;
 

@@ -5,6 +5,7 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
+#include "ModuleParticles.h"
 
 #include "SDL/include/SDL_timer.h"
 
@@ -23,15 +24,15 @@ bool ModuleObstacle::Start()
 	models = App->textures->Load("assets/obstacleModels.png");
 
 	tree.anim.frames.push_back({ 208, 50, 40, 158 });
-	tree.position.z = MAX_Z;
+	tree.worldPosition.z = MAX_Z;
 	tree.colType = D_OBSTACLE;
 
 	rock.anim.frames.push_back({ 192, 72, 59, 37 });
-	rock.position.z = MAX_Z;
+	rock.worldPosition.z = MAX_Z;
 	rock.colType = D_OBSTACLE;
 
 	bush.anim.frames.push_back({ 193, 8, 59, 41 });
-	bush.position.z = MAX_Z;
+	bush.worldPosition.z = MAX_Z;
 	bush.colType = NOLETHAL_D_OBSTACLE;
 
 	return true;
@@ -86,10 +87,10 @@ update_status ModuleObstacle::Update()
 void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffset, float y, collisionType type)
 {
 	Obstacle* o = new Obstacle(obstacle);
-	o->position = { x, y, (float)MAX_Z};
+	o->worldPosition = { x, y, (float)MAX_Z};
 	o->xOffset = xOffset;
 	o->colType = type;
-	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, (int)o->position.z, App->obstacles);
+	o->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, o->colType, (int)o->worldPosition.z, App->obstacles);
 	o->lineToFollow = App->renderer->nextTopLine;
 	active.push_back(o);
 }
@@ -102,6 +103,8 @@ bool ModuleObstacle::onCollision(Collider* c1, Collider* c2)
 		{
 			(*it)->to_delete = true;
 			(*it)->collider->to_delete = true;
+			if(c1->colType != PLAYER && c2->colType != PLAYER) App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
+			LOG("OBSTACLE EXPLOSION--------------------------------");
 		}
 	}
 
@@ -115,7 +118,7 @@ Obstacle::Obstacle()
 {}
 
 // TODO 3: Fill in a copy constructor
-Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), position(o.position)
+Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), worldPosition(o.worldPosition)
 {}
 
 Obstacle::~Obstacle()
@@ -126,11 +129,13 @@ Obstacle::~Obstacle()
 
 void Obstacle::Update()
 {
-	if (position.z <= MIN_Z)
+	if (worldPosition.z <= MIN_Z + 1)
 	{
 		collider->to_delete = true;
 		to_delete = true;
 	}
+
+	LOG("POSITION Z = %f", worldPosition.z);
 
 	float tempY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
 	float scaleValue = calculateScaleValue(tempY);
@@ -143,16 +148,18 @@ void Obstacle::Update()
 	if (newWidth < 1.0f) newWidth = 1.0f;
 	
 	//Set new projected position values for the obstacle (The projection is added by the scaleValue)
-	xOffset -= App->renderer->playerSpeed;
-	float newX = position.x - (newWidth / 2.0f) + (xOffset * scaleValue);
-	float newY = tempY - newHeight - (position.y * scaleValue);
-	position.z = ((float)SCREEN_HEIGHT - tempY) / (App->renderer->horizonY / (float)MAX_Z);
+	worldPosition.z = ((float)SCREEN_HEIGHT - tempY) / (App->renderer->horizonY / (float)MAX_Z);
 
-	collider->SetPos((int)newX, (int)newY, (int)position.z);
+	xOffset -= App->renderer->playerSpeed;
+	screenPosition.x = worldPosition.x - (newWidth / 2.0f) + (xOffset * scaleValue);
+	screenPosition.y = tempY - newHeight - (worldPosition.y * scaleValue);
+	screenPosition.z = worldPosition.z;
+	
+	collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z);
 	collider->SetSize((int)newWidth, (int)newHeight);
 
 	setResizeRect(newWidth, newHeight);
-	setRect(App->obstacles->models, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
+	setRect(App->obstacles->models, screenPosition.x, screenPosition.y, screenPosition.z, &(anim.GetCurrentFrame()), resizeRect);
 }
 
 float Obstacle::calculateScaleValue(float yRender)
