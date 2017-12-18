@@ -19,7 +19,8 @@ bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
 	//graphics = App->textures->Load("assets/Shoots.png");
-	graphics = App->textures->Load("assets/enemyshot.png");
+	//graphics = App->textures->Load("assets/enemyshot.png");
+	graphics = App->textures->Load("assets/particle_models.png");
 
 	p_laser.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	p_laser.anim.frames.push_back({ 1, 1, 91, 61 });
@@ -32,18 +33,33 @@ bool ModuleParticles::Start()
 	p_laser.colType = P_LASER;
 
 	//e_laser.fxIndex = App->audio->LoadFx("Insert audio path here");
-	e_laser.anim.frames.push_back({ 10, 21, 68, 45});
-	e_laser.anim.frames.push_back({ 93, 17, 62, 53 });
-	e_laser.anim.frames.push_back({ 177, 13, 54, 61 });
-	e_laser.anim.frames.push_back({ 261, 10, 46, 68 });
-	e_laser.anim.frames.push_back({ 21, 90, 46, 68 });
-	e_laser.anim.frames.push_back({ 97, 93, 54, 61 });
-	e_laser.anim.frames.push_back({ 173, 98, 62, 53 });
-	e_laser.anim.frames.push_back({ 250, 101, 68, 45 });
+	e_laser.anim.frames.push_back({ 34, 105, 68, 45});
+	e_laser.anim.frames.push_back({ 117, 101, 62, 53 });
+	e_laser.anim.frames.push_back({ 201, 97, 54, 61 });
+	e_laser.anim.frames.push_back({ 285, 94, 46, 68 });
+	e_laser.anim.frames.push_back({ 45, 174, 46, 68 });
+	e_laser.anim.frames.push_back({ 121, 177, 54, 61 });
+	e_laser.anim.frames.push_back({ 197, 182, 62, 53 });
+	e_laser.anim.frames.push_back({ 274, 185, 68, 45 });
 	e_laser.anim.speed = 0.1f;
 	e_laser.position.z = MAX_Z;
 	e_laser.speed = -0.4f;
 	e_laser.colType = E_LASER;
+
+	explosion.anim.frames.push_back({ 400, 5, 89, 65 });
+	explosion.anim.frames.push_back({ 497, 6, 88, 64 });
+	explosion.anim.frames.push_back({ 595, 6, 90, 70 });
+	explosion.anim.frames.push_back({ 690, 5, 97, 75 });
+	explosion.anim.frames.push_back({ 794, 9, 93, 68 });
+	explosion.anim.frames.push_back({ 895, 13, 93, 65 });
+	explosion.anim.frames.push_back({ 399, 85, 96, 83 });
+	explosion.anim.frames.push_back({ 504, 86, 90, 82 });
+	explosion.anim.frames.push_back({ 599, 92, 95, 77 });
+	explosion.anim.speed = 0.07f;
+	explosion.position.z = MAX_Z;
+	explosion.speed = -1.0f;
+	explosion.anim.loop = false;
+	explosion.colType = EXPLOSION;
 
 	return true;
 }
@@ -86,9 +102,9 @@ update_status ModuleParticles::Update()
 	{
 		Particle* p = *it;
 
-		if(p->colType == P_LASER) p->p_laser_Update();
-		else if (p->colType == E_LASER) p->e_laser_Update();
-		else if (p->colType == EXPLOSION) p->explosion_Update();
+		if(p->colType == P_LASER) p->Update(1);
+		else if (p->colType == E_LASER) p->Update(2);
+		else if (p->colType == EXPLOSION) p->Update(3);
 
 		App->renderer->depthBuffer[(int)p->rect->z].push_back(*p->rect);
 	}
@@ -152,9 +168,9 @@ Particle::~Particle()
 	delete resizeRect;
 }
 
-void Particle::p_laser_Update()
+void Particle::Update(const int& updateSelector)
 {
-	if (position.z > MAX_Z)
+	if (position.z > MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
 	{
 		to_delete = true;
 		if (collider != nullptr) collider->to_delete = true;
@@ -163,12 +179,39 @@ void Particle::p_laser_Update()
 	float zModifier = 1.0f - (position.z / (float)MAX_Z);
 	float newWidth = (float)anim.GetCurrentFrame().w * zModifier;
 	float newHeight = (float)anim.GetCurrentFrame().h * zModifier;
-	float newX = position.x + (((float)anim.GetCurrentFrame().w - newWidth) / 2.0f);
-	float newY = position.y + (((float)anim.GetCurrentFrame().h - newHeight) / 2.0f);
+	float newX = 0.0f;
+	float newY = 0.0f;
 
 	newWidth *= 0.6f;
 	newHeight *= 0.6f;
 
+	switch (updateSelector)
+	{
+		case 1:
+		{
+			newX = position.x - newWidth/2.0f;
+			newY = position.y - newHeight/4.0f;
+			break;
+		}
+		case 2:
+		{
+			float posModifier = 1.0f - (position.z / targetOffset.z);
+			newX = position.x - (newWidth / 2.0f) + (targetOffset.x * posModifier);
+			newY = position.y - (newHeight / 2.0f) + (targetOffset.y * posModifier);		
+			break;
+		}
+		case 3:
+		{
+			position.y += 0.2f;
+			if (position.x <= (float)SCREEN_WIDTH / 2.0f) position.x -= 3.0f;
+			else position.x += 2.0f;
+
+			newX = position.x - (newWidth / 2.0f);
+			newY = position.y - (newHeight / 2.0f);
+			break;
+		}
+	}
+
 	setResizeRect(newWidth, newHeight);
 	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
 
@@ -179,44 +222,6 @@ void Particle::p_laser_Update()
 	}
 
 	position.z += speed;
-}
-
-void Particle::e_laser_Update()
-{
-	if (position.z <= MIN_Z)
-	{
-		to_delete = true;
-		if (collider != nullptr) collider->to_delete = true;
-	}
-
-	float zModifier = 1.0f - (position.z / (float)MAX_Z);
-	float newWidth = (float)anim.GetCurrentFrame().w * zModifier;
-	float newHeight = (float)anim.GetCurrentFrame().h * zModifier;
-
-	//Reescale shot (Sprite is too big)
-	newHeight *= 0.5f;
-	newWidth *= 0.5f;
-
-	setResizeRect(newWidth, newHeight);
-
-	float posModifier = 1.0f - (position.z/targetOffset.z);
-	float newX = position.x - (newWidth / 2.0f) + (targetOffset.x * posModifier);
-	float newY = position.y - (newHeight / 2.0f) + (targetOffset.y * posModifier);
-
-	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
-
-	if (collider != nullptr)
-	{
-		collider->SetPos((int)newX, (int)newY, (int)position.z);
-		collider->SetSize((int)newWidth, (int)newHeight);
-	}
-		
-	position.z += speed;
-}
-
-void Particle::explosion_Update()
-{
-	//TODO: Explosion when enemy or obstacle is destroyed
 }
 
 void Particle::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const

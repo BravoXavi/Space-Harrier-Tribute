@@ -17,9 +17,7 @@ struct Particle
 	Particle(const Particle& p);
 	~Particle();
 
-	void p_laser_Update();
-	void e_laser_Update();
-	void explosion_Update();
+	void Update(const int& updateSelector);
 	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
 	void setResizeRect(const float& w, const float& h) const;
 
