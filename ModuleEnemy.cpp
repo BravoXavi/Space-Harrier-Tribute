@@ -27,7 +27,7 @@ bool ModuleEnemy::Start()
 	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	alienShip.enemyAnimation.frames.push_back({ 3, 2, 44, 44 });
 	alienShip.enemyAnimation.speed = 0.1f;
-	alienShip.position = { 0, 0, MAX_Z };
+	alienShip.worldPosition = { 0, 0, MAX_Z };
 	alienShip.colType = ENEMY;
 	alienShip.uniDimensionalSpeed = 130.0f;
 	alienShip.depthSpeed = 9.0f;
@@ -41,7 +41,7 @@ bool ModuleEnemy::Start()
 	tomos.enemyAnimation.frames.push_back({ 1, 116, 64, 68 });
 	tomos.enemyAnimation.frames.push_back({ 78, 116, 64, 68 });
 	tomos.enemyAnimation.speed = 0.1f;
-	tomos.position = { 0, 0, MAX_Z };
+	tomos.worldPosition = { 0, 0, MAX_Z };
 	tomos.colType = ENEMY;
 	tomos.uniDimensionalSpeed = 130.0f;
 	tomos.depthSpeed = 3.0f;
@@ -101,7 +101,7 @@ void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collis
 	fPoint pos = { x, y, z };
 	Enemy* e = enemy.createEnemyInstance(enemy, pos);	
 	e->colType = type;
-	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->position.z, App->enemies);
+	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->worldPosition.z, App->enemies);
 	e->moveSet = moveSet;
 	active.push_back(e);
 
@@ -128,6 +128,7 @@ bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
 				{
 					(*it)->collider->to_delete = true;
 					(*it)->to_delete = true;
+					App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
 					LOG("ENEMY HIT!! ENEMY DESTROYED!!");
 				}			
 			}

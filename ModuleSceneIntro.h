@@ -17,7 +17,10 @@ public:
 	bool CleanUp();
 
 public:
-	SDL_Texture* background = nullptr;
+	SDL_Texture* menuTexture = nullptr;
+	SDL_Rect backgroundRect;
+	SDL_Rect screenSize;
+
 	uint fx = 0;
 };
 

@@ -70,15 +70,15 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 		
-	//if (timeCounter < 20) timeCounter++;
-	//else 
-	//{
-	//	timeCounter = 0;
-	//	int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
+	if (timeCounter < 20) timeCounter++;
+	else 
+	{
+		timeCounter = 0;
+		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-	//	//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	//}
+		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
+	}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -90,39 +90,40 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	//if (timeCounter < 1)
+	//if (timeCounter2 < 1)
 	//{
-	//	App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
-	//	App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
-	//	App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
-	//	timeCounter++;
+	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), 0.0f, 0.0f, NOLETHAL_D_OBSTACLE);
+	//	//App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
+	//	//App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
+	//	//App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
+	//	timeCounter2++;
 	//}
 
 	//------------------------------------------------------------------------------
 
-	Uint32 tickUpdate = SDL_GetTicks();
+	//Uint32 tickUpdate = SDL_GetTicks();
 
-	if (App->enemies->triggerEnemies)
-	{
-		if (!App->enemies->bossEncounter)
-		{
-			if (tickUpdate - enemySpawnTimer > 300.0f)
-			{
-				enemySpawnTimer = tickUpdate;
-				App->enemies->enemyWave(App->enemies->waveNum);
-			}
-		}
-	}
-	else
-	{
-		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-		{
-			App->enemies->triggerEnemies = true;
-			App->enemies->waveNum++;
+	//if (App->enemies->triggerEnemies)
+	//{
+	//	if (!App->enemies->bossEncounter)
+	//	{
+	//		if (tickUpdate - enemySpawnTimer > 300.0f)
+	//		{
+	//			enemySpawnTimer = tickUpdate;
+	//			App->enemies->enemyWave(App->enemies->waveNum);
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+	//	{
+	//		App->enemies->triggerEnemies = true;
+	//		App->enemies->waveNum++;
 
-			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-		}
-	}
+	//		LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+	//	}
+	//}
 
 	PrintUI();
 
