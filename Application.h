@@ -19,6 +19,7 @@ class FontManager;
 // Game modules ---
 class ModuleEnemy;
 class ModulePlayer;
+class ModuleSegaIntro;
 class ModuleSceneIntro;
 class ModuleSceneSpace;
 class ModuleObstacle;
@@ -50,6 +51,7 @@ public:
 	ModuleObstacle* obstacles;
 	ModuleEnemy* enemies;
 	ModulePlayer* player;
+	ModuleSegaIntro* sega_intro;
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneSpace* scene_space;
 
