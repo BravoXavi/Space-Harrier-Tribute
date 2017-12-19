@@ -20,8 +20,7 @@ struct Obstacle
 	void Update();
 
 	float calculateScaleValue(float yRender);
-	void setResizeRect(const float& w, const float& h) const;
-	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
+	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const;
 
 	int lineToFollow = 0;
 	bool to_delete = false;
@@ -32,8 +31,7 @@ struct Obstacle
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;
-	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);	
-	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
+	BlitTarget* dataToBlit = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);	
 };
 
 class ModuleObstacle : public Module

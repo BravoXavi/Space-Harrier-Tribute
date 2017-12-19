@@ -21,25 +21,19 @@ public:
 	virtual void Update() = 0;
 	virtual Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos) const = 0;
 	virtual void selectMovementPatron(const int& moveSelector) = 0;
-	virtual void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
+	virtual void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 	{
 		rect->x = x;
 		rect->y = y;
 		rect->z = z;
+		rect->newWidth = newWidth;
+		rect->newHeight = newHeight;
 		rect->texture = texture;
 		rect->section = section;
-		rect->resize = resize;
-	}
-	virtual void setResizeRect(const float& w, const float& h) const
-	{
-		resizeRect->x = 0;
-		resizeRect->y = 0;
-		resizeRect->w = (int)w;
-		resizeRect->h = (int)h;
 	}
 
 public:
-	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);
+	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);
 	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
 	collisionType colType;
 	Collider* collider = nullptr;

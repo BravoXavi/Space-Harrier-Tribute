@@ -33,17 +33,13 @@ struct Collider
 		modCallback(callback)
 	{}
 
-	void SetPos(const int& x, const int& y, const int& z)
+	void SetPos(const int& x, const int& y, const int& z, const int& w, const int& h)
 	{
 		rect.x = x * SCREEN_SIZE;
 		rect.y = y * SCREEN_SIZE;
 		depth = z;
-	}
-
-	void SetSize(const int& w, const int& h)
-	{
-		rect.w = w * SCREEN_SIZE;
-		rect.h = h * SCREEN_SIZE;
+		rect.w = w;
+		rect.h = h;
 	}
 
 	bool CheckCollision(const SDL_Rect& r, const int& z) const;

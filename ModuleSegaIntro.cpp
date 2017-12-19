@@ -34,7 +34,7 @@ bool ModuleSegaIntro::CleanUp()
 
 update_status ModuleSegaIntro::Update()
 {
-	App->renderer->Blit(logo, 0, 0, nullptr, nullptr);
+	App->renderer->Blit(logo, 0.0f, 0.0f, nullptr);
 
 	Uint32 tick = SDL_GetTicks();
 	if (tick - segaTimer >= 4000.0f)

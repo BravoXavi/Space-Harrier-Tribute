@@ -9,6 +9,7 @@
 #include "ModulePlayer.h"
 #include "ModuleEnemy.h"
 #include "ModuleTime.h"
+#include "ModuleShadows.h"
 
 const float ModulePlayer::playerDepth = 0.0f;
 
@@ -121,20 +122,23 @@ update_status ModulePlayer::Update()
 	}
 
 	// Draw everything --------------------------------------
-	BlitTarget* temp = new BlitTarget(graphics, position.x, position.y, playerDepth, &(current_animation->GetCurrentFrame()), nullptr);
+	BlitTarget* dataToBlit = new BlitTarget(graphics, position.x, position.y, playerDepth, playerWidth, playerHeight, &(current_animation->GetCurrentFrame()));
 
 	if (destroyed == false)
-		App->renderer->depthBuffer[(int)temp->z].push_back(*temp);
+	{
+		App->shadows->DrawShadow(position.x, position.y, position.z);
+		App->renderer->depthBuffer[(int)dataToBlit->z].push_back(*dataToBlit);
+		
+	}
 
-	delete temp;
+	delete dataToBlit;
 
 	return UPDATE_CONTINUE;
 }
 
 void ModulePlayer::moveCollider() const
 {
-	collider->SetPos((int)position.x, (int)position.y, (int)playerDepth);
-	collider->SetSize(playerWidth, playerHeight);
+	collider->SetPos((int)position.x, (int)position.y, (int)playerDepth, playerWidth, playerHeight);
 }
 
 void ModulePlayer::checkHorizontalAnimation(bool running)

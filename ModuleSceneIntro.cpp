@@ -51,7 +51,7 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	App->renderer->Blit(menuTexture, 0, 0, nullptr, nullptr);//&backgroundRect, &screenSize);
+	App->renderer->Blit(menuTexture, 0.0f, 0.0f, nullptr);//&backgroundRect, &screenSize);
 	App->fontManager->blueFont->printText("PRESS START", (SCREEN_WIDTH/2) - 40, SCREEN_HEIGHT/2 + 16);
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)

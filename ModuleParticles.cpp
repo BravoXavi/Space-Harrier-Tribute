@@ -106,7 +106,7 @@ update_status ModuleParticles::Update()
 		else if (p->colType == E_LASER) p->Update(2);
 		else if (p->colType == EXPLOSION) p->Update(3);
 
-		App->renderer->depthBuffer[(int)p->rect->z].push_back(*p->rect);
+		App->renderer->depthBuffer[(int)p->dataToBlit->z].push_back(*p->dataToBlit);
 	}
 
 	return UPDATE_CONTINUE;
@@ -164,8 +164,7 @@ Particle::Particle(const Particle& p) : anim(p.anim), position(p.position), fxIn
 
 Particle::~Particle()
 {
-	delete rect;
-	delete resizeRect;
+	delete dataToBlit;
 }
 
 void Particle::Update(const int& updateSelector)
@@ -212,32 +211,23 @@ void Particle::Update(const int& updateSelector)
 		}
 	}
 
-	setResizeRect(newWidth, newHeight);
-	setRect(App->particles->graphics, newX, newY, position.z, &(anim.GetCurrentFrame()), resizeRect);
+	setDataToBlit(App->particles->graphics, newX, newY, position.z, newWidth, newHeight, &(anim.GetCurrentFrame()));
 
 	if (collider != nullptr)
 	{
-		collider->SetPos((int)newX, (int)newY, (int)position.z);
-		collider->SetSize((int)newWidth, (int)newHeight);
+		collider->SetPos((int)newX, (int)newY, (int)position.z, (int)newWidth, (int)newHeight);
 	}
 
 	position.z += speed;
 }
 
-void Particle::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
+void Particle::setDataToBlit(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 {
-	rect->x = x;
-	rect->y = y;
-	rect->z = z;
-	rect->texture = texture;
-	rect->section = section;
-	rect->resize = resize;
-}
-
-void Particle::setResizeRect(const float& w, const float& h) const
-{
-	resizeRect->x = 0;
-	resizeRect->y = 0;
-	resizeRect->w = (int)w;
-	resizeRect->h = (int)h;
+	dataToBlit->x = x;
+	dataToBlit->y = y;
+	dataToBlit->z = z;
+	dataToBlit->newWidth = newWidth;
+	dataToBlit->newHeight = newHeight;
+	dataToBlit->texture = texture;
+	dataToBlit->section = section;	
 }

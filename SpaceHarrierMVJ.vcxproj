@@ -92,6 +92,7 @@
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleSceneSpace.h" />
     <ClInclude Include="ModuleSegaIntro.h" />
+    <ClInclude Include="ModuleShadows.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleTime.h" />
     <ClInclude Include="ModuleWindow.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleSceneSpace.cpp" />
     <ClCompile Include="ModuleSegaIntro.cpp" />
+    <ClCompile Include="ModuleShadows.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleTime.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

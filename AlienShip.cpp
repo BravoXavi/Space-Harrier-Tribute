@@ -47,12 +47,10 @@ void AlienShip::Update()
 
 	if (collider != nullptr)
 	{
-		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z);
-		collider->SetSize((int)newWidth, (int)newHeight);
+		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
 	}
 
-	setResizeRect(newWidth, newHeight);
-	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, &(enemyAnimation.GetCurrentFrame()), resizeRect);
+	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(enemyAnimation.GetCurrentFrame()));
 }
 
 //AlienShip movement patrons

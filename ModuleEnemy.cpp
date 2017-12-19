@@ -40,7 +40,7 @@ bool ModuleEnemy::Start()
 	tomos.enemyAnimation.frames.push_back({ 64, 53, 56, 56 });
 	tomos.enemyAnimation.frames.push_back({ 1, 116, 64, 68 });
 	tomos.enemyAnimation.frames.push_back({ 78, 116, 64, 68 });
-	tomos.enemyAnimation.speed = 0.1f;
+	tomos.enemyAnimation.speed = 3.0f;
 	tomos.worldPosition = { 0, 0, MAX_Z };
 	tomos.colType = ENEMY;
 	tomos.uniDimensionalSpeed = 130.0f;

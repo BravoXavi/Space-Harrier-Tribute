@@ -70,7 +70,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(scene_intro, nullptr, 0.0f);
+	fade->FadeToBlack(sega_intro, nullptr, 0.0f);
 
 	return ret;
 }

@@ -18,8 +18,7 @@ struct Particle
 	~Particle();
 
 	void Update(const int& updateSelector);
-	void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const;
-	void setResizeRect(const float& w, const float& h) const;
+	void setDataToBlit(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const;
 
 	bool to_delete = false;
 	float speed;
@@ -31,8 +30,7 @@ struct Particle
 	collisionType colType;
 	Collider* collider = nullptr;
 
-	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, nullptr, nullptr);
-	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
+	BlitTarget* dataToBlit = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);
 };
 
 class ModuleParticles : public Module

@@ -66,7 +66,7 @@ update_status ModuleRender::Update()
 		{
 			for (std::vector<BlitTarget>::iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
 			{
-				Blit(itt->texture, itt->x, itt->y, itt->section, itt->resize);
+				Blit(itt->texture, itt->x, itt->y, itt->section, itt->newWidth, itt->newHeight);
 			}
 		}
 	}
@@ -114,7 +114,7 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, SDL_Rect* resize) const
+bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, const float& newWidth, const float& newHeight) const
 {
 	bool ret = true;
 
@@ -123,10 +123,10 @@ bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* sectio
 	rect.x = (int)(x * SCREEN_SIZE);
 	rect.y = (int)(y * SCREEN_SIZE);
 
-	if (resize != NULL)
+	if (newWidth >= 0.0f && newHeight >= 0.0f)
 	{
-		rect.w = resize->w;
-		rect.h = resize->h;
+		rect.w = newWidth;
+		rect.h = newHeight;
 	}
 	else if(section != NULL)
 	{

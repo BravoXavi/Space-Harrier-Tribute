@@ -78,7 +78,7 @@ update_status ModuleObstacle::Update()
 
 		o->Update();
 
-		App->renderer->depthBuffer[(int)o->rect->z].push_back(*o->rect);
+		App->renderer->depthBuffer[(int)o->dataToBlit->z].push_back(*o->dataToBlit);
 	}
 
 	return UPDATE_CONTINUE;
@@ -123,8 +123,7 @@ Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), worldPosition(o.worldPosit
 
 Obstacle::~Obstacle()
 {
-	delete rect;
-	delete resizeRect;
+	delete dataToBlit;
 }
 
 void Obstacle::Update()
@@ -155,11 +154,8 @@ void Obstacle::Update()
 	screenPosition.y = tempY - newHeight - (worldPosition.y * scaleValue);
 	screenPosition.z = worldPosition.z;
 	
-	collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z);
-	collider->SetSize((int)newWidth, (int)newHeight);
-
-	setResizeRect(newWidth, newHeight);
-	setRect(App->obstacles->models, screenPosition.x, screenPosition.y, screenPosition.z, &(anim.GetCurrentFrame()), resizeRect);
+	setRect(App->obstacles->models, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(anim.GetCurrentFrame()));
+	collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
 }
 
 float Obstacle::calculateScaleValue(float yRender)
@@ -172,20 +168,13 @@ float Obstacle::calculateScaleValue(float yRender)
 	return toReturn;
 }
 
-void Obstacle::setResizeRect(const float& w, const float& h) const
+void Obstacle::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 {
-	resizeRect->x = 0;
-	resizeRect->y = 0;
-	resizeRect->w = (int)w;
-	resizeRect->h = (int)h;
-}
-
-void Obstacle::setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, SDL_Rect* section, SDL_Rect* resize) const
-{
-	rect->x = x;
-	rect->y = y;
-	rect->z = z;
-	rect->texture = texture;	
-	rect->section = section;
-	rect->resize = resize;	
+	dataToBlit->x = x;
+	dataToBlit->y = y;
+	dataToBlit->z = z;
+	dataToBlit->newWidth = newWidth;
+	dataToBlit->newHeight = newHeight;
+	dataToBlit->texture = texture;
+	dataToBlit->section = section;
 }
