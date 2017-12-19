@@ -21,7 +21,8 @@ bool ModuleSceneIntro::Start()
 {
 	LOG("Loading space intro");
 	
-	menuTexture = App->textures->Load("assets/MenuLogo.png");	
+	//menuTexture = App->textures->Load("assets/MenuLogo.png");	
+	menuTexture = App->textures->Load("assets/good.png");
 	backgroundRect.x = 10;
 	backgroundRect.y = 601;
 	backgroundRect.w = 400;
@@ -50,8 +51,8 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	App->renderer->Blit(menuTexture, 0, 0, &backgroundRect, &screenSize);
-	App->fontManager->blueFont->printText("FONT MENU TEST", 150, 150);
+	App->renderer->Blit(menuTexture, 0, 0, nullptr, nullptr);//&backgroundRect, &screenSize);
+	App->fontManager->blueFont->printText("PRESS START", (SCREEN_WIDTH/2) - 40, SCREEN_HEIGHT/2 + 16);
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
 	{

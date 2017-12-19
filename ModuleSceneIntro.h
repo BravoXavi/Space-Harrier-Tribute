@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Font.h"
+#include "Animation.h"
 
 struct SDL_Texture;
 
@@ -22,6 +23,12 @@ public:
 	SDL_Rect screenSize;
 
 	uint fx = 0;
+
+private:
+	Animation wavingGuy;
+	Animation robot;
+	Animation eye;
+	Animation title;
 };
 
 #endif // __MODULESCENEINTRO_H__
