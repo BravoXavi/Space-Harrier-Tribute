@@ -22,7 +22,9 @@ class ModulePlayer;
 class ModuleSegaIntro;
 class ModuleSceneIntro;
 class ModuleSceneSpace;
+class ModuleShadows;
 class ModuleObstacle;
+
 
 class Application
 {
@@ -49,6 +51,7 @@ public:
 
 	// Game modules ---
 	ModuleObstacle* obstacles;
+	ModuleShadows* shadows;
 	ModuleEnemy* enemies;
 	ModulePlayer* player;
 	ModuleSegaIntro* sega_intro;

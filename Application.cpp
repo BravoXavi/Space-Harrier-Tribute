@@ -8,14 +8,15 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleTime.h"
-#include "FontManager.h"
-#include "Font.h"
 #include "ModuleSegaIntro.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneSpace.h"
 #include "ModulePlayer.h"
 #include "ModuleEnemy.h"
 #include "ModuleObstacle.h"
+#include "ModuleShadows.h"
+#include "FontManager.h"
+#include "Font.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ Application::Application()
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_space = new ModuleSceneSpace(false));
 	modules.push_back(obstacles = new ModuleObstacle());
+	modules.push_back(shadows = new ModuleShadows());
 	modules.push_back(enemies = new ModuleEnemy());
 	modules.push_back(player = new ModulePlayer(false));
 	
@@ -68,7 +70,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(scene_space, nullptr, 0.0f);
+	fade->FadeToBlack(scene_intro, nullptr, 0.0f);
 
 	return ret;
 }
