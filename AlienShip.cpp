@@ -43,7 +43,7 @@ void AlienShip::Update()
 	screenPosition.x = worldPosition.x - newWidth / 2.0f;
 	screenPosition.y = worldPosition.y - newHeight / 2.0f;
 	screenPosition.y += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
-	screenPosition.z = screenPosition.z;
+	screenPosition.z = worldPosition.z;
 
 	if (collider != nullptr)
 	{
@@ -178,8 +178,6 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 
 		break;
 	}
-	default:
-		break;
 	}	
 }
 
