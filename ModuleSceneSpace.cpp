@@ -101,29 +101,29 @@ update_status ModuleSceneSpace::Update()
 
 	//------------------------------------------------------------------------------
 
-	Uint32 tickUpdate = SDL_GetTicks();
+	//Uint32 tickUpdate = SDL_GetTicks();
 
-	if (App->enemies->triggerEnemies)
-	{
-		if (!App->enemies->bossEncounter)
-		{
-			if (tickUpdate - enemySpawnTimer > 300.0f)
-			{
-				enemySpawnTimer = tickUpdate;
-				App->enemies->enemyWave(App->enemies->waveNum);
-			}
-		}
-	}
-	else
-	{
-		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-		{
-			App->enemies->triggerEnemies = true;
-			App->enemies->waveNum++;
+	//if (App->enemies->triggerEnemies)
+	//{
+	//	if (!App->enemies->bossEncounter)
+	//	{
+	//		if (tickUpdate - enemySpawnTimer > 300.0f)
+	//		{
+	//			enemySpawnTimer = tickUpdate;
+	//			App->enemies->enemyWave(App->enemies->waveNum);
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+	//	{
+	//		App->enemies->triggerEnemies = true;
+	//		App->enemies->waveNum++;
 
-			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-		}
-	}
+	//		LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+	//	}
+	//}
 
 	PrintUI();
 
