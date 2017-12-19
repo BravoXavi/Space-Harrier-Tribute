@@ -33,10 +33,10 @@ bool ModuleShadows::CleanUp()
 	return true;
 }
 
-void ModuleShadows::DrawShadow(const float&x, const float& y, const float& z)
+void ModuleShadows::DrawShadow(const float&x, const float& y, const float& z, const float& width, const float& height)
 {
-	//BlitTarget* temp = new BlitTarget(graphics, x, y, z, &shadowPosition, nullptr);
+	BlitTarget* temp = new BlitTarget(graphics, x, y, z, width, height, &shadowPosition);
+	App->renderer->depthBuffer[(int)temp->z].push_back(*temp);
 
-	//App->renderer->Blit(graphics, x, SCREEN_HEIGHT / 2, &shadowPosition, nullptr);
-	//App->renderer->depthBuffer[(int)temp->z].push_back(*temp);
+	delete temp;
 }
