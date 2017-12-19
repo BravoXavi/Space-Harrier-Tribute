@@ -26,8 +26,8 @@ bool ModuleSceneSpace::Start()
 	LOG("Loading space scene");
 	
 	floor = App->textures->Load("assets/Floor.png");
-	background = App->textures->Load("assets/Background3Scaled.png");
-	backgroundFront = App->textures->Load("assets/backgroundFront.png");
+	background = App->textures->Load("assets/backgroundlvl1.png");
+	backgroundFront = App->textures->Load("assets/backgroundlvl2.png");
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
 	App->player->Enable();
@@ -70,15 +70,15 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 		
-	if (timeCounter < 20) timeCounter++;
-	else 
-	{
-		timeCounter = 0;
-		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
+	//if (timeCounter < 20) timeCounter++;
+	//else 
+	//{
+	//	timeCounter = 0;
+	//	int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	}
+	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+	//	//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
+	//}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -101,29 +101,29 @@ update_status ModuleSceneSpace::Update()
 
 	//------------------------------------------------------------------------------
 
-	//Uint32 tickUpdate = SDL_GetTicks();
+	Uint32 tickUpdate = SDL_GetTicks();
 
-	//if (App->enemies->triggerEnemies)
-	//{
-	//	if (!App->enemies->bossEncounter)
-	//	{
-	//		if (tickUpdate - enemySpawnTimer > 300.0f)
-	//		{
-	//			enemySpawnTimer = tickUpdate;
-	//			App->enemies->enemyWave(App->enemies->waveNum);
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-	//	{
-	//		App->enemies->triggerEnemies = true;
-	//		App->enemies->waveNum++;
+	if (App->enemies->triggerEnemies)
+	{
+		if (!App->enemies->bossEncounter)
+		{
+			if (tickUpdate - enemySpawnTimer > 300.0f)
+			{
+				enemySpawnTimer = tickUpdate;
+				App->enemies->enemyWave(App->enemies->waveNum);
+			}
+		}
+	}
+	else
+	{
+		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+		{
+			App->enemies->triggerEnemies = true;
+			App->enemies->waveNum++;
 
-	//		LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-	//	}
-	//}
+			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+		}
+	}
 
 	PrintUI();
 
