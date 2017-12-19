@@ -18,7 +18,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	run.frames.push_back({ 25, 4, 20, 47 });
 	run.frames.push_back({ 49, 2, 25, 49 });
 	run.frames.push_back({ 75, 3, 21, 47 });
-	run.speed = 0.15f;
+	run.speed = 2.0f;
 
 	middle.frames.push_back({ 108,2,26,49 });
 
@@ -64,6 +64,9 @@ update_status ModulePlayer::Update()
 {
 	float speed = 200.0f * App->time->getDeltaTime();
 
+	playerWidth = current_animation->GetCurrentFrame().w;
+	playerHeight = current_animation->GetCurrentFrame().h;
+
 	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		if (position.x > 0.0f) position.x -= speed;
@@ -75,7 +78,7 @@ update_status ModulePlayer::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		if (position.x + (float)current_animation->GetCurrentFrame().w < (float)SCREEN_WIDTH) position.x += speed;
+		if (position.x + (float)playerWidth < (float)SCREEN_WIDTH) position.x += speed;
 		if (current_animation == &run) checkHorizontalAnimation(true);
 		else checkHorizontalAnimation();
 
@@ -84,17 +87,17 @@ update_status ModulePlayer::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{		
-		if (position.y < SCREEN_HEIGHT - current_animation->GetCurrentFrame().h)
+		if (position.y < SCREEN_HEIGHT - playerHeight)
 		{
 			position.y += speed;
 			modifyHorizonY();
 		}
 		else
 		{
-			current_animation = &run;			
+			current_animation = &run;
 		}
 		
-		moveCollider();
+		if(current_animation != &run) moveCollider();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
@@ -114,7 +117,7 @@ update_status ModulePlayer::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)current_animation->GetCurrentFrame().w)/2.0f, position.y + (float)current_animation->GetCurrentFrame().h/3.0f , 1.0f, P_LASER);
+		App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth)/2.0f, position.y + (float)playerHeight/3.0f , 1.0f, P_LASER);
 	}
 
 	// Draw everything --------------------------------------
@@ -131,7 +134,7 @@ update_status ModulePlayer::Update()
 void ModulePlayer::moveCollider() const
 {
 	collider->SetPos((int)position.x, (int)position.y, (int)playerDepth);
-	collider->SetSize(current_animation->GetCurrentFrame().w, current_animation->GetCurrentFrame().h);
+	collider->SetSize(playerWidth, playerHeight);
 }
 
 void ModulePlayer::checkHorizontalAnimation(bool running)
@@ -172,7 +175,7 @@ void ModulePlayer::checkHorizontalAnimation(bool running)
 
 void ModulePlayer::modifyHorizonY() const
 {
-	float offsetValue = (float)SCREEN_HEIGHT - (float)current_animation->GetCurrentFrame().h;
+	float offsetValue = (float)SCREEN_HEIGHT - (float)playerHeight;
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	App->renderer->horizonY = (temp * ((float)FLOOR_Y_MAX - (float)FLOOR_Y_MIN)) + (float)FLOOR_Y_MIN;
 }

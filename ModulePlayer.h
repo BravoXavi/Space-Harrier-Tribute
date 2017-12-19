@@ -33,6 +33,8 @@ public:
 	Collider* collider = nullptr;
 
 	fPoint position = { 0.0f, 0.0f, 0.0f };
+
+	int playerWidth, playerHeight = 0;
 	
 
 private:

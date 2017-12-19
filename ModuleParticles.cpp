@@ -27,7 +27,7 @@ bool ModuleParticles::Start()
 	p_laser.anim.frames.push_back({ 95, 0, 91, 61 });
 	p_laser.anim.frames.push_back({ 188, 1, 91, 61 });
 	p_laser.anim.frames.push_back({ 284, 0, 91, 61 });
-	p_laser.anim.speed = 0.1f;
+	p_laser.anim.speed = 8.0f;
 	p_laser.position.z = 1;
 	p_laser.speed = 1;
 	p_laser.colType = P_LASER;
@@ -41,7 +41,7 @@ bool ModuleParticles::Start()
 	e_laser.anim.frames.push_back({ 121, 177, 54, 61 });
 	e_laser.anim.frames.push_back({ 197, 182, 62, 53 });
 	e_laser.anim.frames.push_back({ 274, 185, 68, 45 });
-	e_laser.anim.speed = 0.1f;
+	e_laser.anim.speed = 8.0f;
 	e_laser.position.z = MAX_Z;
 	e_laser.speed = -0.4f;
 	e_laser.colType = E_LASER;
@@ -55,7 +55,7 @@ bool ModuleParticles::Start()
 	explosion.anim.frames.push_back({ 399, 85, 96, 83 });
 	explosion.anim.frames.push_back({ 504, 86, 90, 82 });
 	explosion.anim.frames.push_back({ 599, 92, 95, 77 });
-	explosion.anim.speed = 0.07f;
+	explosion.anim.speed = 10.0f;
 	explosion.position.z = MAX_Z;
 	explosion.speed = -1.0f;
 	explosion.anim.loop = false;

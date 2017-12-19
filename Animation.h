@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include "ModuleTime.h"
+#include "Application.h"
 
 using namespace std;
 
@@ -27,11 +29,12 @@ public:
 	{
 		float last_frame = (float) frames.size();
 
-		if(!reverseAnimation) current_frame += speed;
-		else current_frame -= speed;
+		if (!reverseAnimation) current_frame += speed*App->time->getDeltaTime();
+		else current_frame -= speed*App->time->getDeltaTime();
 
 		if (current_frame >= last_frame)
 		{
+			LOG("Speed = %f", speed*App->time->getDeltaTime());
 			if (!loop) animationWithoutLoopEnded = true;
 			current_frame = (loop) ? 0.0f : MAX(last_frame - 1.0f, 0.0f);
 			loops++;
