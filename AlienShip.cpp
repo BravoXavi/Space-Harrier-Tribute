@@ -20,8 +20,7 @@ AlienShip::AlienShip(const Enemy& aS, const fPoint& pos)
 
 AlienShip::~AlienShip()
 {
-	delete rect;
-	delete resizeRect;
+	delete dataToBlit;
 }
 
 //AlienShip Update
@@ -116,7 +115,7 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 		oscillationAngle += oscillationSpeed;
 		oscillationRadius -= 0.2f;
 		worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
-		worldPosition.z += deltaDepthSpeed * 0.6;
+		worldPosition.z += deltaDepthSpeed * 0.6f;
 
 		break;
 	}
@@ -157,7 +156,7 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 			oscillationAngle += oscillationSpeed;
 			oscillationRadius -= 0.2f;
 			worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
-			worldPosition.z += deltaDepthSpeed * 0.6;
+			worldPosition.z += deltaDepthSpeed * 0.6f;
 		}
 		else
 		{

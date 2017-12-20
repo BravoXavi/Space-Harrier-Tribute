@@ -23,18 +23,17 @@ public:
 	virtual void selectMovementPatron(const int& moveSelector) = 0;
 	virtual void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 	{
-		rect->x = x;
-		rect->y = y;
-		rect->z = z;
-		rect->newWidth = newWidth;
-		rect->newHeight = newHeight;
-		rect->texture = texture;
-		rect->section = section;
+		dataToBlit->x = x;
+		dataToBlit->y = y;
+		dataToBlit->z = z;
+		dataToBlit->newWidth = newWidth;
+		dataToBlit->newHeight = newHeight;
+		dataToBlit->texture = texture;
+		dataToBlit->section = section;
 	}
 
 public:
-	BlitTarget* rect = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);
-	SDL_Rect* resizeRect = new SDL_Rect({ 0, 0, 0, 0 });
+	BlitTarget* dataToBlit = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);
 	collisionType colType;
 	Collider* collider = nullptr;
 	fPoint worldPosition = { 0.0f, 0.0f, 0.0f };

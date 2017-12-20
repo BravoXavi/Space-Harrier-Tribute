@@ -8,6 +8,7 @@
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "ModuleTime.h"
+#include "ModuleShadows.h"
 #include "SDL/include/SDL_timer.h"
 
 ModuleEnemy::ModuleEnemy()
@@ -88,7 +89,8 @@ update_status ModuleEnemy::Update()
 
 		e->Update();
 
-		App->renderer->depthBuffer[(int)e->rect->z].push_back(*e->rect);
+		App->renderer->depthBuffer[(int)e->dataToBlit->z].push_back(*e->dataToBlit);
+		App->shadows->DrawShadow(e->screenPosition.x, 0, e->screenPosition.z, e->dataToBlit->newWidth);
 	}
 		
 	if (active.empty()) aliveEnemy = false;
@@ -194,8 +196,8 @@ void ModuleEnemy::enemyWave(const int& selector)
 			break;
 		case 4:
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (2.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (4.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
 			triggerEnemies = false;
 			break;
 		case 5:
@@ -225,8 +227,8 @@ void ModuleEnemy::enemyWave(const int& selector)
 			break;
 		case 7:
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (2.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			App->enemies->AddEnemy(App->enemies->tomos, (4.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
 			triggerEnemies = false;
 			break;
 		case 8:

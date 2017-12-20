@@ -24,8 +24,7 @@ MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos)
 
 MetalFlower::~MetalFlower()
 {
-	delete rect;
-	delete resizeRect;
+	delete dataToBlit;
 }
 
 //MetalFlower Update
@@ -104,7 +103,7 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 		{
 			if (invulnerable)
 			{
-				spinRadius += 0.1;
+				spinRadius += 0.1f;
 				worldPosition.z -= deltaDepthSpeed;
 			}
 		}
