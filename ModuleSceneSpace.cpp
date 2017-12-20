@@ -12,8 +12,6 @@
 #include "ModuleEnemy.h"
 #include "FontManager.h"
 
-// Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
-
 ModuleSceneSpace::ModuleSceneSpace(bool active) : Module(active)
 {}
 
@@ -92,8 +90,8 @@ update_status ModuleSceneSpace::Update()
 
 	//if (timeCounter2 < 1)
 	//{
-	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), 0.0f, 0.0f, NOLETHAL_D_OBSTACLE);
-	//	//App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
+	//	//App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), 0.0f, 0.0f, NOLETHAL_D_OBSTACLE);
+	//	App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
 	//	//App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
 	//	//App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
 	//	timeCounter2++;

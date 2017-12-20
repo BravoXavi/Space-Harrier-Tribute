@@ -38,8 +38,8 @@ struct Collider
 		rect.x = x * SCREEN_SIZE;
 		rect.y = y * SCREEN_SIZE;
 		depth = z;
-		rect.w = w;
-		rect.h = h;
+		rect.w = w * SCREEN_SIZE;
+		rect.h = h * SCREEN_SIZE;
 	}
 
 	bool CheckCollision(const SDL_Rect& r, const int& z) const;

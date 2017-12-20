@@ -122,13 +122,12 @@ update_status ModulePlayer::Update()
 	}
 
 	// Draw everything --------------------------------------
-	BlitTarget* dataToBlit = new BlitTarget(graphics, position.x, position.y, playerDepth, playerWidth, playerHeight, &(current_animation->GetCurrentFrame()));
+	BlitTarget* dataToBlit = new BlitTarget(graphics, position.x, position.y, playerDepth, (float)playerWidth, (float)playerHeight, &(current_animation->GetCurrentFrame()));
 
 	if (destroyed == false)
 	{
-		App->shadows->DrawShadow(position.x, position.y, position.z);
+		App->shadows->DrawShadow(position.x, position.y, position.z, (float)playerWidth);
 		App->renderer->depthBuffer[(int)dataToBlit->z].push_back(*dataToBlit);
-		
 	}
 
 	delete dataToBlit;

@@ -125,8 +125,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* sectio
 
 	if (newWidth >= 0.0f && newHeight >= 0.0f)
 	{
-		rect.w = newWidth;
-		rect.h = newHeight;
+		rect.w = (int)newWidth;
+		rect.h = (int)newHeight;
 	}
 	else if(section != NULL)
 	{
