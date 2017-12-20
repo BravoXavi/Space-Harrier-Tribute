@@ -15,7 +15,7 @@ public:
 	update_status PreUpdate();
 	bool CleanUp();
 
-	void DrawShadow(const float& x, const float& y, const float& z, const float& width = -1.0f, const float& height = -1.0f);
+	void DrawShadow(const float& x, const float& y, const float& z, const float& playerWidth);
 
 private:
 	SDL_Texture* graphics = nullptr;
