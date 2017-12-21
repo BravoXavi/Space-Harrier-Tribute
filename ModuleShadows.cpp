@@ -36,15 +36,18 @@ bool ModuleShadows::CleanUp()
 void ModuleShadows::DrawShadow(const float&x, const float& y, const float& z, const float& ownerWidth)
 {
 	float scaleValue = 1.0f - (z / (float)MAX_Z);
+	if (scaleValue < 0.0f) scaleValue = 0.0f;
+
 	float scaledWidth = shadowPosition.w * scaleValue;
 	float scaledHeight = shadowPosition.h * scaleValue;
+
 	float xOwnerOffset = (x + (ownerWidth / 2.0f));
 	float scaledX = xOwnerOffset - (scaledWidth / 2.0f);
+
 	float minPosition = (float)SCREEN_HEIGHT - App->renderer->horizonY;
 	float scaledY = (scaleValue * ((float)SCREEN_HEIGHT - minPosition)) + minPosition;
 
 	BlitTarget* temp = new BlitTarget(graphics, scaledX, scaledY - scaledHeight/2.0f, z, scaledWidth, scaledHeight, &shadowPosition);
-
 	App->renderer->depthBuffer[(int)temp->z].push_back(*temp);
 
 	delete temp;

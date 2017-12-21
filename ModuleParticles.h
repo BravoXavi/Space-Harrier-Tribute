@@ -21,6 +21,7 @@ struct Particle
 	void setDataToBlit(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const;
 
 	bool to_delete = false;
+	bool repelled = false;
 	float speed;
 	unsigned int fxIndex;
 		
@@ -29,7 +30,6 @@ struct Particle
 	Animation anim;
 	collisionType colType;
 	Collider* collider = nullptr;
-
 	BlitTarget* dataToBlit = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);
 };
 

@@ -68,15 +68,15 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 		
-	//if (timeCounter < 20) timeCounter++;
-	//else 
-	//{
-	//	timeCounter = 0;
-	//	int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
+	if (timeCounter < 20) timeCounter++;
+	else 
+	{
+		timeCounter = 0;
+		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-	//	App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-	//	//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	//}
+		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
+		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
+	}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -91,7 +91,7 @@ update_status ModuleSceneSpace::Update()
 	//if (timeCounter2 < 1)
 	//{
 	//	//App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), 0.0f, 0.0f, NOLETHAL_D_OBSTACLE);
-	//	App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
+	//	//App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
 	//	//App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
 	//	//App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
 	//	timeCounter2++;

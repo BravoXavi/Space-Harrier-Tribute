@@ -28,8 +28,8 @@ bool ModuleParticles::Start()
 	p_laser.anim.frames.push_back({ 188, 1, 91, 61 });
 	p_laser.anim.frames.push_back({ 284, 0, 91, 61 });
 	p_laser.anim.speed = 8.0f;
-	p_laser.position.z = 1;
-	p_laser.speed = 1;
+	p_laser.position.z = 1.0f;
+	p_laser.speed = 1.0f;
 	p_laser.colType = P_LASER;
 
 	//e_laser.fxIndex = App->audio->LoadFx("Insert audio path here");
@@ -57,7 +57,7 @@ bool ModuleParticles::Start()
 	explosion.anim.frames.push_back({ 599, 92, 95, 77 });
 	explosion.anim.speed = 10.0f;
 	explosion.position.z = MAX_Z;
-	explosion.speed = -1.0f;
+	explosion.speed = -0.5f;
 	explosion.anim.loop = false;
 	explosion.colType = EXPLOSION;
 
@@ -131,21 +131,22 @@ void ModuleParticles::AddParticle(const Particle& particle, float x, float y, fl
 	App->audio->PlayFx(p->fxIndex, 0);
 }
 
-bool ModuleParticles::onCollision(Collider* c1, Collider* c2)
+bool ModuleParticles::onCollision(Collider* moduleOwner, Collider* otherCollider)
 {
 	for (std::list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
 	{
-		if ((*it)->collider == c1 || (*it)->collider == c2)
+		if ((*it)->collider == moduleOwner || (*it)->collider == otherCollider)
 		{
-			if (c1->colType == D_OBSTACLE || c2->colType == D_OBSTACLE || c1->colType == NOLETHAL_D_OBSTACLE || c2->colType == NOLETHAL_D_OBSTACLE || c1->colType == ENEMY || c2->colType == ENEMY)
+			if (otherCollider->colType == D_OBSTACLE || otherCollider->colType == NOLETHAL_D_OBSTACLE || otherCollider->colType == ENEMY)
 			{
+				//Bullet gets destroyed with the other object
 				(*it)->to_delete = true;
 				(*it)->collider->to_delete = true;
-				LOG("OBSTACLE/ENEMY GETS DESTROYED AND BULLET TOO");
 			}
-			else if (c1->colType == ND_OBSTACLE || c2->colType == ND_OBSTACLE)
+			else if (otherCollider->colType == ND_ENEMY)
 			{
-				LOG("OBSTACLE REMAINS UNAFFECTED AND BULLET BOUNCES");
+				//Bullet gets repelled and the enemy remains unmodified
+				(*it)->repelled = true;
 			}
 		}
 	}
@@ -184,31 +185,39 @@ void Particle::Update(const int& updateSelector)
 	newWidth *= 0.6f;
 	newHeight *= 0.6f;
 
-	switch (updateSelector)
+	if (!repelled)
 	{
-		case 1:
+		switch (updateSelector)
 		{
-			newX = position.x - newWidth/2.0f;
-			newY = position.y - newHeight/4.0f;
-			break;
-		}
-		case 2:
-		{
-			float posModifier = 1.0f - (position.z / targetOffset.z);
-			newX = position.x - (newWidth / 2.0f) + (targetOffset.x * posModifier);
-			newY = position.y - (newHeight / 2.0f) + (targetOffset.y * posModifier);		
-			break;
-		}
-		case 3:
-		{
-			position.y += 0.2f;
-			if (position.x <= (float)SCREEN_WIDTH / 2.0f) position.x -= 3.0f;
-			else position.x += 2.0f;
+			case 1: //Player bullet
+			{
+				newX = position.x - (newWidth / 2.0f);
+				newY = position.y - (newHeight / 4.0f);
+				break;
+			}
+			case 2: //Enemy bullet
+			{
+				float posModifier = 1.0f - (position.z / targetOffset.z);
+				newX = position.x - (newWidth / 2.0f) + (targetOffset.x * posModifier);
+				newY = position.y - (newHeight / 2.0f) + (targetOffset.y * posModifier);
+				break;
+			}
+			case 3: //Explosion
+			{
+				position.y += 0.5f;
 
-			newX = position.x - (newWidth / 2.0f);
-			newY = position.y - (newHeight / 2.0f);
-			break;
+				newX = position.x - (newWidth / 2.0f);
+				newY = position.y - (newHeight / 2.0f);
+				break;
+			}
 		}
+	}
+	else
+	{
+		position.x += 3.0f;
+		position.y -= 3.0f;
+		newX = position.x - newWidth / 2.0f;
+		newY = position.y - newHeight / 4.0f;
 	}
 
 	setDataToBlit(App->particles->graphics, newX, newY, position.z, newWidth, newHeight, &(anim.GetCurrentFrame()));

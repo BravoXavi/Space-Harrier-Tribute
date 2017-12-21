@@ -15,24 +15,24 @@ ModuleCollision::ModuleCollision()
 	collisionMatrix[ENEMY][E_LASER] = false;
 	collisionMatrix[ENEMY][D_OBSTACLE] = false;
 	collisionMatrix[ENEMY][NOLETHAL_D_OBSTACLE] = false;
-	collisionMatrix[ENEMY][ND_OBSTACLE] = false;
+	collisionMatrix[ENEMY][ND_ENEMY] = false;
 
 	collisionMatrix[P_LASER][P_LASER] = false;
 	collisionMatrix[P_LASER][E_LASER] = false;
 
 	collisionMatrix[E_LASER][E_LASER] = false;
 	collisionMatrix[E_LASER][D_OBSTACLE] = false;
-	collisionMatrix[E_LASER][ND_OBSTACLE] = false;
+	collisionMatrix[E_LASER][ND_ENEMY] = false;
 	collisionMatrix[E_LASER][NOLETHAL_D_OBSTACLE] = false;
 
 	collisionMatrix[D_OBSTACLE][D_OBSTACLE] = false;
-	collisionMatrix[D_OBSTACLE][ND_OBSTACLE] = false;
+	collisionMatrix[D_OBSTACLE][ND_ENEMY] = false;
 	collisionMatrix[D_OBSTACLE][NOLETHAL_D_OBSTACLE] = false;
 
 	collisionMatrix[NOLETHAL_D_OBSTACLE][NOLETHAL_D_OBSTACLE] = false;
-	collisionMatrix[NOLETHAL_D_OBSTACLE][ND_OBSTACLE] = false;
+	collisionMatrix[NOLETHAL_D_OBSTACLE][ND_ENEMY] = false;
 
-	collisionMatrix[ND_OBSTACLE][ND_OBSTACLE] = false;
+	collisionMatrix[ND_ENEMY][ND_ENEMY] = false;
 }
 
 // Destructor
@@ -64,12 +64,12 @@ update_status ModuleCollision::Update()
 	{
 		for (list<Collider*>::const_iterator it2 = next(it, 1); it2 != end; it2++)
 		{
-			if (collisionMatrix[(*it)->colType][(*it2)->colType]) 
+			if (collisionMatrix[(*it)->colType][(*it2)->colType] && collisionMatrix[(*it2)->colType][(*it)->colType])
 			{
 				if ((*it)->CheckCollision((*it2)->rect, (*it2)->depth))
 				{
 					(*it)->modCallback->onCollision((*it), (*it2));
-					(*it2)->modCallback->onCollision((*it), (*it2));
+					(*it2)->modCallback->onCollision((*it2), (*it));
 
 					collisionDone = true;
 					break;

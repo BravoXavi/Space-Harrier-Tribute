@@ -21,12 +21,11 @@ ModuleEnemy::~ModuleEnemy()
 bool ModuleEnemy::Start()
 {
 	LOG("Loading enemies");
-	//graphics = App->textures->Load("assets/obstacleModels.png");
-	graphics = App->textures->Load("assets/metalflower.png");
+	graphics = App->textures->Load("assets/enemiesobstacles.png");
 
 	//ALIENSHIP
 	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
-	alienShip.enemyAnimation.frames.push_back({ 3, 2, 44, 44 });
+	alienShip.enemyAnimation.frames.push_back({ 198, 127, 46, 30 });
 	alienShip.enemyAnimation.speed = 0.1f;
 	alienShip.worldPosition = { 0, 0, MAX_Z };
 	alienShip.colType = ENEMY;
@@ -34,13 +33,13 @@ bool ModuleEnemy::Start()
 	alienShip.depthSpeed = 9.0f;
 
 	//METALFLOWER
-	tomos.enemyAnimation.frames.push_back({ 3, 2, 44, 44 });
-	tomos.enemyAnimation.frames.push_back({ 53, 2, 44, 46 });
-	tomos.enemyAnimation.frames.push_back({ 104, 2, 44, 46 });
-	tomos.enemyAnimation.frames.push_back({ 1, 53, 56, 56 });
-	tomos.enemyAnimation.frames.push_back({ 64, 53, 56, 56 });
-	tomos.enemyAnimation.frames.push_back({ 1, 116, 64, 68 });
-	tomos.enemyAnimation.frames.push_back({ 78, 116, 64, 68 });
+	tomos.enemyAnimation.frames.push_back({ 7, 228, 44, 44 });
+	tomos.enemyAnimation.frames.push_back({ 57, 228, 46, 46 });
+	tomos.enemyAnimation.frames.push_back({ 108, 228, 46, 46 });
+	tomos.enemyAnimation.frames.push_back({ 5, 279, 56, 56 });
+	tomos.enemyAnimation.frames.push_back({ 68, 279, 56, 56 });
+	tomos.enemyAnimation.frames.push_back({ 5, 342, 64, 68 });
+	tomos.enemyAnimation.frames.push_back({ 82, 342, 64, 68 });
 	tomos.enemyAnimation.speed = 3.0f;
 	tomos.worldPosition = { 0, 0, MAX_Z };
 	tomos.colType = ENEMY;
@@ -110,28 +109,24 @@ void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collis
 	aliveEnemy = true;
 }
 
-bool ModuleEnemy::onCollision(Collider* c1, Collider* c2)
+bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollider)
 {
 	for (std::list<Enemy*>::iterator it = active.begin(); it != active.end(); ++it)
 	{
-		if ((*it)->collider == c1 || (*it)->collider == c2)
+		if ((*it)->collider == moduleOwner)
 		{
-			if (c1->colType == PLAYER || c2->colType == PLAYER)
+			if (otherCollider->colType == PLAYER)
 			{
 				LOG("ENEMY COLLIDED WITH PLAYER - PLAYER LOSES ONE LIVE");
 			}
-			else if (c1->colType == P_LASER || c2->colType == P_LASER)
+			else if (otherCollider->colType == P_LASER)
 			{
-				if ((*it)->invulnerable)
+				if (moduleOwner->colType != ND_ENEMY)
 				{
-					LOG("INVULNERABLE STATE!");
-				}
-				else
-				{
+					//Enemy gets hit and destroyed
 					(*it)->collider->to_delete = true;
 					(*it)->to_delete = true;
 					App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
-					LOG("ENEMY HIT!! ENEMY DESTROYED!!");
 				}			
 			}
 		}

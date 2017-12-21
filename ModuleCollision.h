@@ -5,6 +5,10 @@
 #include <vector>
 #include "Module.h"
 
+//P -> Player
+//E -> Enemy
+//D -> Destructible
+//ND -> Non-destructible
 enum collisionType {
 	PLAYER,
 	ENEMY,
@@ -12,7 +16,7 @@ enum collisionType {
 	E_LASER,
 	D_OBSTACLE,
 	NOLETHAL_D_OBSTACLE,
-	ND_OBSTACLE,
+	ND_ENEMY,
 	EXPLOSION,
 	MAXIMUM
 };

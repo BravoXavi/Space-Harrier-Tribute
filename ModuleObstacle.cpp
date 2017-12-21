@@ -20,10 +20,9 @@ ModuleObstacle::~ModuleObstacle()
 bool ModuleObstacle::Start()
 {
 	LOG("Loading obstacles");
-	graphics = App->textures->Load("assets/Arboles.png");
-	models = App->textures->Load("assets/obstacleModels.png");
+	graphics = App->textures->Load("assets/enemiesobstacles.png");
 
-	tree.anim.frames.push_back({ 208, 50, 40, 158 });
+	tree.anim.frames.push_back({ 206, 378, 40, 158 });
 	tree.worldPosition.z = MAX_Z;
 	tree.colType = D_OBSTACLE;
 
@@ -95,16 +94,19 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 	active.push_back(o);
 }
 
-bool ModuleObstacle::onCollision(Collider* c1, Collider* c2)
+bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
 	for (std::list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)
 	{
-		if ((*it)->collider == c1 || (*it)->collider == c2)
+		if ((*it)->collider == moduleOwner)
 		{
-			(*it)->to_delete = true;
-			(*it)->collider->to_delete = true;
-			if(c1->colType != PLAYER && c2->colType != PLAYER) App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
-			LOG("OBSTACLE EXPLOSION--------------------------------");
+			if (otherCollider->colType != PLAYER)
+			{
+				//Obstacle gets destroyed
+				(*it)->to_delete = true;
+				(*it)->collider->to_delete = true;
+				if (otherCollider->colType != PLAYER) App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
+			}
 		}
 	}
 
@@ -134,8 +136,6 @@ void Obstacle::Update()
 		to_delete = true;
 	}
 
-	LOG("POSITION Z = %f", worldPosition.z);
-
 	float tempY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
 	float scaleValue = calculateScaleValue(tempY);
 
@@ -154,7 +154,7 @@ void Obstacle::Update()
 	screenPosition.y = tempY - newHeight - (worldPosition.y * scaleValue);
 	screenPosition.z = worldPosition.z;
 	
-	setRect(App->obstacles->models, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(anim.GetCurrentFrame()));
+	setRect(App->obstacles->graphics, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(anim.GetCurrentFrame()));
 	collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
 }
 
