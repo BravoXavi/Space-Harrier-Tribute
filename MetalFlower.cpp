@@ -38,19 +38,19 @@ void MetalFlower::Update()
 
 	Uint32 actualTicks = SDL_GetTicks();
 
-	if (enemyAnimation.GetCurrentFrame().x == 3) invulnerable = true;
-	else invulnerable = false;
+	if (enemyAnimation.GetCurrentFrame().x == 7) collider->colType = ND_ENEMY;
+	else collider->colType = ENEMY;
 
 	if (moveSet == 1)
 	{
 		if (actualTicks - animationTimer > 1000.0f)
 		{
 			animationTimer = actualTicks;
-			if (enemyAnimation.GetCurrentFrame().x == 78)
+			if (enemyAnimation.GetCurrentFrame().x == 82)
 			{
 				enemyAnimation.reverseAnimation = true;
 			}
-			else if (enemyAnimation.GetCurrentFrame().x == 3)
+			else if (enemyAnimation.GetCurrentFrame().x == 7)
 			{
 				enemyAnimation.reverseAnimation = false;
 			}
@@ -61,7 +61,7 @@ void MetalFlower::Update()
 	else
 	{
 		enemyAnimation.reverseAnimation = true;
-		invulnerable = true;
+		collider->colType = ND_ENEMY;
 	}
 
 	float zModifier = 1.0f - (worldPosition.z / (float)MAX_Z);
@@ -101,7 +101,7 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 	case 1:	
 		if (worldPosition.z >= 10.0f)
 		{
-			if (invulnerable)
+			if (collider->colType == ND_ENEMY)
 			{
 				spinRadius += 0.1f;
 				worldPosition.z -= deltaDepthSpeed;
