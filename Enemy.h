@@ -47,7 +47,6 @@ public:
 	int moveSet = 0;
 	bool to_delete = false;
 	unsigned int fxIndex;
-	bool invulnerable = false;
 
 };
 
