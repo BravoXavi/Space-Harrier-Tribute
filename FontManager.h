@@ -15,6 +15,8 @@ public:
 
 public:
 	Font* blueFont;
+	Font* redFont;
+	Font* greenFont;
 
 };
 

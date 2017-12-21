@@ -46,11 +46,13 @@ void Font::printText(const char* textToWrite, const float& x, const float& y, fl
 
 		if (resize != 1.0f)
 		{
-			App->renderer->Blit(fontPNG, x + ((float)i * 8.0f), y, &simbolSize, (float)simbolSize.w * resize, (float)simbolSize.h * resize);
+			int resizedWidth = simbolSize.w * resize;
+			int resizedHeight = simbolSize.h * resize;
+			App->renderer->Blit(fontPNG, x + ((float)i * resizedWidth), y, &simbolSize, (float)resizedWidth, (float)resizedHeight);
 		}
 		else
 		{
-			App->renderer->Blit(fontPNG, x + ((float)i * 8.0f), y, &simbolSize);
+			App->renderer->Blit(fontPNG, x + ((float)i * simbolSize.w), y, &simbolSize);
 		}
 	}
 }
