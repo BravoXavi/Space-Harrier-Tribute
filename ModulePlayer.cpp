@@ -193,6 +193,19 @@ void ModulePlayer::setCharSpeed()
 
 bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
-	LOG("Player Collision");
+	LoseOneLive();
 	return true;
+}
+
+void ModulePlayer::LoseOneLive()
+{
+	lives -= 1;
+	if (lives <= 0)
+	{
+		LOG("Player died!!");
+	}
+	else
+	{
+		LOG("Player lost one live!!");
+	}
 }

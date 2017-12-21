@@ -47,7 +47,7 @@ public:
 	void DrawPauseScreen() const;
 	void AlphaVerticalLinesMove();
 
-	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, const float& newWidth = -1.0f, const float& newHeight = -1.0f) const;
+	bool Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, const float& newWidth = -1.0f, const float& newHeight = -1.0f);
 	bool FloorBlit(SDL_Texture* texture, SDL_Rect* section);
 	void BackgroundBlit(SDL_Texture* texture, float speed, int backgroundPlane);	
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true) const;

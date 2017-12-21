@@ -19,7 +19,6 @@ public:
 	bool CleanUp();
 
 public:
-
 	SDL_Texture* graphics = nullptr;
 	Animation* current_animation = nullptr;
 
@@ -31,15 +30,17 @@ public:
 	Animation right2;
 
 	Collider* collider = nullptr;
+	fPoint position = { 0.0f, 0.0f, 0.0f };	
+	
+	int lives = 3;
 
-	fPoint position = { 0.0f, 0.0f, 0.0f };
+private:
+	void LoseOneLive();
+
+	const static float playerDepth;
 
 	int playerWidth, playerHeight = 0;
 	
-
-private:
-	const static float playerDepth;
-
 	bool destroyed;
 	void checkHorizontalAnimation(bool running = false);
 	bool onCollision(Collider* c1, Collider* c2);

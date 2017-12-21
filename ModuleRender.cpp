@@ -114,7 +114,7 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, const float& newWidth, const float& newHeight) const
+bool ModuleRender::Blit(SDL_Texture* texture, float x, float y, SDL_Rect* section, const float& newWidth, const float& newHeight)
 {
 	bool ret = true;
 
