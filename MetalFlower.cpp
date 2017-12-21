@@ -43,15 +43,17 @@ void MetalFlower::Update()
 
 	if (moveSet == 1)
 	{
-		if (actualTicks - animationTimer > 1000.0f)
+		if (actualTicks - animationTimer > 2000.0f)
 		{
 			animationTimer = actualTicks;
 			if (enemyAnimation.GetCurrentFrame().x == 82)
 			{
+				collider->colType = ND_ENEMY;
 				enemyAnimation.reverseAnimation = true;
 			}
 			else if (enemyAnimation.GetCurrentFrame().x == 7)
 			{
+				collider->colType = ENEMY;
 				enemyAnimation.reverseAnimation = false;
 			}
 
