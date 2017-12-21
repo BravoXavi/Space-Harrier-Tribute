@@ -78,15 +78,7 @@ update_status ModuleSceneSpace::Update()
 {
 	// Draw everything --------------------------------------
 		
-	if (timeCounter < 20) timeCounter++;
-	else 
-	{
-		timeCounter = 0;
-		int randNumX2 = rand() % (300 - (-300) + 1) + (-300);
 
-		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, NOLETHAL_D_OBSTACLE);
-		//App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX2, 0.0f, D_OBSTACLE);
-	}
 
 	//if (timeCounter2 < 50) timeCounter2++;
 	//else
@@ -112,6 +104,7 @@ update_status ModuleSceneSpace::Update()
 	tickUpdate = SDL_GetTicks();
 
 	actualScore += 0.2;
+	if ((int)actualScore > topScore) topScore = actualScore;
 
 	if (App->enemies->triggerEnemies)
 	{
@@ -135,6 +128,7 @@ update_status ModuleSceneSpace::Update()
 		}
 	}
 
+	GenerateObstacles();
 	PrintUI();
 
 	return UPDATE_CONTINUE;
@@ -180,4 +174,29 @@ void ModuleSceneSpace::PrintUI()
 	{
 		App->renderer->Blit(gui, 4 + (i * resizedWidth), SCREEN_HEIGHT - resizedHeight - 2, &liveIcon, resizedWidth, resizedHeight);
 	}
+}
+
+void ModuleSceneSpace::GenerateObstacles()
+{
+	int randX, randY = 0;
+
+	if (obstacleTimer1 < 20) obstacleTimer1++;
+	else
+	{
+		obstacleTimer1 = 0;
+		randX = rand() % (350 - (-350) + 1) + (-350);
+		
+		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
+	}
+
+	if (obstacleTimer2 < 50) obstacleTimer2++;
+	else
+	{
+		obstacleTimer2 = 0;
+		randX = rand() % (350 - (-350) + 1) + (-350);
+		randY = rand() % (150 - 80 + 1) + 80;
+		
+		if( App->enemies->waveNum < 4) App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randX, (float)randY, D_OBSTACLE);
+		else App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, D_OBSTACLE);
+	}	
 }

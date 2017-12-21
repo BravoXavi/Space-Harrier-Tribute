@@ -18,14 +18,15 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void PrintUI();
+	void GenerateObstacles();
 
 public:
 	uint startFx;
 	Uint32 enemySpawnTimer = 0;
 	Uint32 tickUpdate = 0;
 
-	int timeCounter = 0;
-	int timeCounter2 = 0;
+	int obstacleTimer1 = 0;
+	int obstacleTimer2 = 0;
 
 private:
 	Uint32 UITimer = 0;
