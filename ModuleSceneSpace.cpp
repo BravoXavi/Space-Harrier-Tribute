@@ -26,6 +26,16 @@ bool ModuleSceneSpace::Start()
 	floor = App->textures->Load("assets/Floor.png");
 	background = App->textures->Load("assets/backgroundlvl1.png");
 	backgroundFront = App->textures->Load("assets/backgroundlvl2.png");
+	gui = App->textures->Load("assets/GUI.png");
+
+	actualScoreBanner.x = 1;
+	actualScoreBanner.y = 0;
+	actualScoreBanner.w = 48;
+	actualScoreBanner.h = 14;
+
+	topScoreBanner = { 9, 15, 32, 14 };
+	liveIcon = { 20, 31, 10, 16 };
+
 	startFx = App->audio->LoadFx("assets/initVoice.wav");
 
 	App->player->Enable();
@@ -99,7 +109,9 @@ update_status ModuleSceneSpace::Update()
 
 	//------------------------------------------------------------------------------
 
-	Uint32 tickUpdate = SDL_GetTicks();
+	tickUpdate = SDL_GetTicks();
+
+	actualScore += 0.2;
 
 	if (App->enemies->triggerEnemies)
 	{
@@ -128,7 +140,44 @@ update_status ModuleSceneSpace::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneSpace::PrintUI() const
+void ModuleSceneSpace::PrintUI()
 {
-	App->fontManager->blueFont->printText("STAGE 1", SCREEN_WIDTH - 57, SCREEN_HEIGHT - 9, 0.8f);
+	string stage = "STAGE " + to_string(stageNumber);
+	int charWidth = App->fontManager->blueFont->characterWidth;
+	int charHeight = App->fontManager->blueFont->characterHeight;
+
+	if (App->enemies->waveNum == 0 && (tickUpdate - enemySpawnTimer < 3000.0f))
+	{
+		App->fontManager->blueFont->printText(stage.c_str(), (SCREEN_WIDTH/2) - (stage.length()*charWidth/2), SCREEN_HEIGHT/2);
+		App->fontManager->blueFont->printText(stageName, (SCREEN_WIDTH / 2) - (strlen(stageName)*charWidth/2), SCREEN_HEIGHT/2 + charHeight + 2);
+	}
+
+	//Stage number
+	App->fontManager->blueFont->printText(stage.c_str(), SCREEN_WIDTH - stage.length()*charWidth, SCREEN_HEIGHT - charHeight, 0.8f);
+
+	//Top Score info
+	int xPos = 0;
+	int resizedWidth = topScoreBanner.w / 1.5;
+	int resizedHeight = topScoreBanner.h / 1.5;
+	App->renderer->Blit(gui, xPos, resizedHeight/2, &topScoreBanner, topScoreBanner.w / 1.5, topScoreBanner.h / 1.5);
+
+	xPos += resizedWidth + 4;
+	App->fontManager->redFont->printText(to_string(topScore).c_str(), xPos, 6, 0.8f);
+
+	//Actual Score info
+	resizedWidth = actualScoreBanner.w / 1.5;
+	resizedHeight = actualScoreBanner.h / 1.5;
+	xPos = 2.5*SCREEN_WIDTH/4;
+	App->renderer->Blit(gui, xPos, resizedHeight / 2, &actualScoreBanner, actualScoreBanner.w / 1.5, actualScoreBanner.h / 1.5);
+
+	xPos += resizedWidth + 4;
+	App->fontManager->greenFont->printText(to_string((int)actualScore).c_str(), xPos, 6, 0.8f);
+
+	//Lives info
+	resizedWidth = liveIcon.w / 2;
+	resizedHeight = liveIcon.h / 2;
+	for (int i = 0; i < App->player->lives; i++)
+	{
+		App->renderer->Blit(gui, 4 + (i * resizedWidth), SCREEN_HEIGHT - resizedHeight - 2, &liveIcon, resizedWidth, resizedHeight);
+	}
 }

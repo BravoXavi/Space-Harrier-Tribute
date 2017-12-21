@@ -17,19 +17,32 @@ public:
 	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
-	void PrintUI() const;
+	void PrintUI();
 
 public:
 	uint startFx;
 	Uint32 enemySpawnTimer = 0;
+	Uint32 tickUpdate = 0;
 
 	int timeCounter = 0;
 	int timeCounter2 = 0;
 
 private:
+	Uint32 UITimer = 0;
+
 	SDL_Texture* floor = nullptr;
 	SDL_Texture* background = nullptr;
 	SDL_Texture* backgroundFront = nullptr;
+	SDL_Texture* gui = nullptr;
+
+	SDL_Rect topScoreBanner;
+	SDL_Rect actualScoreBanner;
+	SDL_Rect liveIcon;
+
+	const static int stageNumber = 1;
+	const char* stageName = "MOOT";
+	int topScore = 1000000;
+	float actualScore = 0.0f;
 };
 
 #endif // __MODULESCENESPACE_H__
