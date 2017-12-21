@@ -34,7 +34,6 @@ public:
 
 		if (current_frame >= last_frame)
 		{
-			LOG("Speed = %f", speed*App->time->getDeltaTime());
 			if (!loop) animationWithoutLoopEnded = true;
 			current_frame = (loop) ? 0.0f : MAX(last_frame - 1.0f, 0.0f);
 			loops++;
