@@ -24,6 +24,7 @@ struct Obstacle
 
 	int lineToFollow = 0;
 	bool to_delete = false;
+	bool shadowCast = false;
 	float xOffset = 0.0f;	
 
 	fPoint screenPosition = { 0.0f, 0.0f, 0.0f };

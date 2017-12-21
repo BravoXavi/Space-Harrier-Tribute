@@ -6,6 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
+#include "ModuleShadows.h"
 
 #include "SDL/include/SDL_timer.h"
 
@@ -29,6 +30,7 @@ bool ModuleObstacle::Start()
 	rock.anim.frames.push_back({ 192, 72, 59, 37 });
 	rock.worldPosition.z = MAX_Z;
 	rock.colType = D_OBSTACLE;
+	rock.shadowCast = true;
 
 	bush.anim.frames.push_back({ 193, 8, 59, 41 });
 	bush.worldPosition.z = MAX_Z;
@@ -77,6 +79,7 @@ update_status ModuleObstacle::Update()
 
 		o->Update();
 
+		if (o->shadowCast) App->shadows->DrawShadow(o->screenPosition.x, o->screenPosition.y, o->screenPosition.z, o->dataToBlit->newWidth);
 		App->renderer->depthBuffer[(int)o->dataToBlit->z].push_back(*o->dataToBlit);
 	}
 
@@ -120,7 +123,7 @@ Obstacle::Obstacle()
 {}
 
 // TODO 3: Fill in a copy constructor
-Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), worldPosition(o.worldPosition)
+Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), worldPosition(o.worldPosition), shadowCast(o.shadowCast)
 {}
 
 Obstacle::~Obstacle()
