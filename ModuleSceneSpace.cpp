@@ -90,46 +90,44 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	//if (timeCounter2 < 1)
-	//{
-	//	//App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), 0.0f, 0.0f, NOLETHAL_D_OBSTACLE);
-	//	//App->enemies->AddEnemy(App->enemies->alienShip, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
-	//	//App->enemies->AddEnemy(App->enemies->tomos, (2.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
-	//	//App->enemies->AddEnemy(App->enemies->tomos, (4.0f*M_PI)/3.0f, 0.0f, 20.0f, ENEMY, 1);
-	//	timeCounter2++;
-	//}
+	if (debugTimer < 1)
+	{
+		App->enemies->AddModularEnemy(App->enemies->dragonHead, App->enemies->dragonBody, App->enemies->dragonTail, 100.f, 100.0f, 26.0f, 1, 7);
+		//App->enemies->AddEnemy(App->enemies->dragonHead, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
+		debugTimer++;
+	}
 
 	//------------------------------------------------------------------------------
 
-	tickUpdate = SDL_GetTicks();
+	//tickUpdate = SDL_GetTicks();
 
-	actualScore += 0.2;
-	if ((int)actualScore > topScore) topScore = actualScore;
+	//actualScore += 0.2;
+	//if ((int)actualScore > topScore) topScore = actualScore;
 
-	if (App->enemies->triggerEnemies)
-	{
-		if (!App->enemies->bossEncounter)
-		{
-			if (tickUpdate - enemySpawnTimer > 300.0f)
-			{
-				enemySpawnTimer = tickUpdate;
-				App->enemies->enemyWave(App->enemies->waveNum);
-			}
-		}
-	}
-	else
-	{
-		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-		{
-			App->enemies->triggerEnemies = true;
-			App->enemies->waveNum++;
+	//if (App->enemies->triggerEnemies)
+	//{
+	//	if (!App->enemies->bossEncounter)
+	//	{
+	//		if (tickUpdate - enemySpawnTimer > 300.0f)
+	//		{
+	//			enemySpawnTimer = tickUpdate;
+	//			App->enemies->enemyWave(App->enemies->waveNum);
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+	//	{
+	//		App->enemies->triggerEnemies = true;
+	//		App->enemies->waveNum++;
 
-			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-		}
-	}
+	//		LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+	//	}
+	//}
 
-	GenerateObstacles();
-	PrintUI();
+	//GenerateObstacles();
+	//PrintUI();
 
 	return UPDATE_CONTINUE;
 }
@@ -180,7 +178,7 @@ void ModuleSceneSpace::GenerateObstacles()
 {
 	int randX, randY = 0;
 
-	if (obstacleTimer1 < 20) obstacleTimer1++;
+	if (obstacleTimer1 < 10) obstacleTimer1++;
 	else
 	{
 		obstacleTimer1 = 0;
@@ -189,7 +187,7 @@ void ModuleSceneSpace::GenerateObstacles()
 		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
 	}
 
-	if (obstacleTimer2 < 50) obstacleTimer2++;
+	if (obstacleTimer2 < 25) obstacleTimer2++;
 	else
 	{
 		obstacleTimer2 = 0;

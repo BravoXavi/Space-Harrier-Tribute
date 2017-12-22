@@ -25,6 +25,8 @@ public:
 	Uint32 enemySpawnTimer = 0;
 	Uint32 tickUpdate = 0;
 
+	int debugTimer = 0;
+
 	int obstacleTimer1 = 0;
 	int obstacleTimer2 = 0;
 
