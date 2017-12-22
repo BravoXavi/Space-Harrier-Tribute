@@ -19,7 +19,7 @@ public:
 	virtual ~Enemy() {}
 
 	virtual void Update() = 0;
-	virtual Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos) const = 0;
+	virtual Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector) const = 0;
 	virtual void selectMovementPatron(const int& moveSelector) = 0;
 	virtual void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 	{
@@ -33,6 +33,8 @@ public:
 	}
 
 public:
+	Enemy* superiorBodyPart = nullptr;
+
 	BlitTarget* dataToBlit = new BlitTarget(nullptr, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, nullptr);
 	collisionType colType;
 	Collider* collider = nullptr;
@@ -44,7 +46,7 @@ public:
 	Uint32 animationTimer = 0;
 	float uniDimensionalSpeed = 0.0f;
 	float depthSpeed = 0.0f;
-	int moveSet = 0;
+	int moveSet = 1;
 	bool to_delete = false;
 	unsigned int fxIndex;
 

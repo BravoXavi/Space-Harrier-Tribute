@@ -8,12 +8,12 @@ class MetalFlower : public Enemy
 {
 public:
 	MetalFlower();
-	MetalFlower(const Enemy& alienShip, const fPoint& pos);
+	MetalFlower(const Enemy& alienShip, const fPoint& pos, const collisionType& cType, const int& moveSelector);
 	~MetalFlower();
 
 	void Update();
 	void selectMovementPatron(const int& moveSelector);
-	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos) const;
+	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const;
 
 private:
 	float rotationAngle = 0.0f;

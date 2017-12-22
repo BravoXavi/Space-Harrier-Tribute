@@ -9,9 +9,12 @@ AlienShip::AlienShip()
 {
 }
 
-AlienShip::AlienShip(const Enemy& aS, const fPoint& pos)
+AlienShip::AlienShip(const Enemy& aS, const fPoint& pos, const collisionType& cType, const int& moveSelector)
 {
 	worldPosition = pos;
+	colType = cType;
+	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);
+	moveSet = moveSelector;
 	enemyAnimation = aS.enemyAnimation;
 	fxIndex = aS.fxIndex;
 	uniDimensionalSpeed = aS.uniDimensionalSpeed;
@@ -179,8 +182,8 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 }
 
 //Return an instance of AlienShip
-Enemy* AlienShip::createEnemyInstance(const Enemy& e, const fPoint& pos) const
+Enemy* AlienShip::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const
 {
-	Enemy* instance = new AlienShip(e, pos);
+	Enemy* instance = new AlienShip(e, pos, cType, moveSelector);
 	return instance;
 }

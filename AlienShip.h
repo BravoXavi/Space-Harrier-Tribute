@@ -8,12 +8,12 @@ class AlienShip : public Enemy
 {
 public:
 	AlienShip();
-	AlienShip(const Enemy& alienShip, const fPoint& pos);
+	AlienShip(const Enemy& alienShip, const fPoint& pos, const collisionType& cType, const int& moveSelector);
 	~AlienShip();
 
 	void Update();
 	void selectMovementPatron(const int& moveSelector);
-	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos) const;
+	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const;
 
 private:
 	float oscillationAngle = 0.0f;

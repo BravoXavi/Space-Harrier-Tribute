@@ -9,13 +9,15 @@
 MetalFlower::MetalFlower()
 {}
 
-MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos)
+MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector)
 {
 	animationTimer = SDL_GetTicks();
 
 	worldPosition = pos;
+	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);
 	rotationAngle = pos.x;
-
+	moveSet = moveSelector;
+	colType = cType;
 	enemyAnimation = e.enemyAnimation;
 	fxIndex = e.fxIndex;
 	uniDimensionalSpeed = e.uniDimensionalSpeed;
@@ -38,6 +40,7 @@ void MetalFlower::Update()
 
 	Uint32 actualTicks = SDL_GetTicks();
 
+	//MODIFY TO USE CURRENT_FRAME
 	if (enemyAnimation.GetCurrentFrame().x == 7) collider->colType = ND_ENEMY;
 	else collider->colType = ENEMY;
 
@@ -128,8 +131,8 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 }
 
 //Return an instance of MetalFlower
-Enemy* MetalFlower::createEnemyInstance(const Enemy& e, const fPoint& pos) const
+Enemy* MetalFlower::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const
 {
-	Enemy* instance = new MetalFlower(e, pos);
+	Enemy* instance = new MetalFlower(e, pos, cType, moveSelector);
 	return instance;
 }
