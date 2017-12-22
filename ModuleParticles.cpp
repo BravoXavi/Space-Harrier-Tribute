@@ -173,7 +173,7 @@ void Particle::Update(const int& updateSelector)
 	if (position.z > MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
 	{
 		to_delete = true;
-		if (collider != nullptr) collider->to_delete = true;
+		if(collider != nullptr) collider->to_delete = true;
 	}
 
 	float zModifier = 1.0f - (position.z / (float)MAX_Z);
@@ -214,6 +214,12 @@ void Particle::Update(const int& updateSelector)
 	}
 	else
 	{
+		if (collider != nullptr)
+		{
+			collider->to_delete = true;
+			collider = nullptr;
+		}
+
 		position.x += 3.0f;
 		position.y -= 3.0f;
 		newX = position.x - newWidth / 2.0f;
