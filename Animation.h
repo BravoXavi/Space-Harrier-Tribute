@@ -13,9 +13,9 @@ public:
 	bool reverseAnimation = false;
 	float speed = 1.0f;
 	vector<SDL_Rect> frames;
-
-private:
 	float current_frame = 0.0f;
+private:
+	
 	int loops = 0;
 
 public:
