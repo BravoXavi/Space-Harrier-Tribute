@@ -47,6 +47,34 @@ bool ModuleEnemy::Start()
 	tomos.depthSpeed = 3.0f;
 	tomos.enemyAnimation.loop = false;
 
+	//DRAGON - Head
+	dragonHead.enemyAnimation.frames.push_back({ 347, 49, 65, 104 });
+	dragonHead.enemyAnimation.frames.push_back({ 268, 48, 69, 108 });
+	dragonHead.enemyAnimation.speed = 0.0f;
+	dragonHead.worldPosition = { 0, 0, MAX_Z };
+	dragonHead.colType = ENEMY;
+	dragonHead.uniDimensionalSpeed = 130.0f;
+	dragonHead.depthSpeed = -5.0f;
+	dragonHead.enemyAnimation.loop = false;
+
+	//DRAGON - Body
+	dragonBody.enemyAnimation.frames.push_back({ 429, 68, 111, 71 });
+	dragonBody.enemyAnimation.speed = 0.0f;
+	dragonBody.colType = ND_ENEMY;
+	dragonBody.uniDimensionalSpeed = 130.0f;
+	dragonBody.depthSpeed = -5.0f;
+	dragonBody.worldPosition = { 0, 0, MAX_Z };
+	dragonBody.colType = ENEMY;
+
+	//DRAGON - Tail
+	dragonTail.enemyAnimation.frames.push_back({ 552, 60, 94, 89 });
+	dragonTail.enemyAnimation.speed = 0.0f;
+	dragonTail.colType = ND_ENEMY;
+	dragonTail.uniDimensionalSpeed = 130.0f;
+	dragonTail.depthSpeed = -5.0f;
+	dragonTail.worldPosition = { 0, 0, MAX_Z };
+	dragonTail.colType = ENEMY;
+
 	return true;
 }
 
@@ -100,11 +128,34 @@ update_status ModuleEnemy::Update()
 void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType type, int moveSet)
 {	
 	fPoint pos = { x, y, z };
-	Enemy* e = enemy.createEnemyInstance(enemy, pos);	
-	e->colType = type;
-	e->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, e->colType, (int)e->worldPosition.z, App->enemies);
-	e->moveSet = moveSet;
+	Enemy* e = enemy.createEnemyInstance(enemy, pos, type, moveSet);	
 	active.push_back(e);
+
+	aliveEnemy = true;
+}
+
+void ModuleEnemy::AddModularEnemy(const Enemy& head, const Enemy& body, const Enemy& tail, float x, float y, float z, const int& moveSet, const int& bodySize)
+{
+	fPoint pos = { x, y, z };
+	Enemy* h = head.createEnemyInstance(head, pos, ENEMY, moveSet);
+	active.push_back(h);
+
+	Enemy* previous = h;
+	Enemy* b = nullptr;
+	for (int i = 1; i <= bodySize; i++)
+	{
+		pos = { x + (i*10), y, z + i };
+		b = body.createEnemyInstance(body, pos, ND_ENEMY, moveSet+1);
+		b->superiorBodyPart = previous;
+		active.push_back(b);
+
+		previous = b;
+	}
+
+	pos = { x + ((bodySize + 1) * 10), y, z + bodySize+1 };
+	Enemy* t = tail.createEnemyInstance(tail, pos, ND_ENEMY, moveSet+1);
+	t->superiorBodyPart = previous;
+	active.push_back(t);
 
 	aliveEnemy = true;
 }

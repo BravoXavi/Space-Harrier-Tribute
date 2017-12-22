@@ -11,6 +11,7 @@
 #include "Enemy.h"
 #include "AlienShip.h"
 #include "MetalFlower.h"
+#include "DragonPart.h"
 
 struct SDL_Texture;
 
@@ -27,6 +28,7 @@ public:
 
 	bool onCollision(Collider* c1, Collider* c2);
 	void AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType colType, int moveSet);
+	void AddModularEnemy(const Enemy& head, const Enemy& body, const Enemy& tail, float x, float y, float z, const int& moveSet, const int& bodySize);
 	void enemyWave(const int& selector);
 
 private:
@@ -39,6 +41,9 @@ public:
 
 	AlienShip alienShip;
 	MetalFlower tomos;
+	DragonPart dragonHead;
+	DragonPart dragonBody;
+	DragonPart dragonTail;
 
 	int waveNum = 0;
 	bool triggerEnemies = false;
