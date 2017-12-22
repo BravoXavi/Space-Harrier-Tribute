@@ -1,0 +1,129 @@
+<xml version="1.0" encoding="utf-8"?>
+ <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   <ItemGroup Label="ProjectConfigurations">
+     <ProjectConfiguration Include="Debug|Win32">
+       <Configuration>Debug</Configuration>
+       <Platform>Win32</Platform>
+     </ProjectConfiguration>
+     <ProjectConfiguration Include="Release|Win32">
+       <Configuration>Release</Configuration>
+       <Platform>Win32</Platform>
+     </ProjectConfiguration>
+   </ItemGroup>
+   <PropertyGroup Label="Globals">
+     <ProjectGuid>{746CC4C3-787F-4B0E-AA66-E388FE3FF4F6}</ProjectGuid>
+     <RootNamespace>SpaceHarrierMVJ</RootNamespace>
+     <ProjectName>Space Harrier (MVJ)</ProjectName>
+     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+     <UseDebugLibraries>true</UseDebugLibraries>
+     <PlatformToolset>v140</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+     <UseDebugLibraries>false</UseDebugLibraries>
+     <PlatformToolset>v140</PlatformToolset>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+     <CharacterSet>MultiByte</CharacterSet>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+   <ImportGroup Label="ExtensionSettings">
+   </ImportGroup>
+   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+   </ImportGroup>
+   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+   </ImportGroup>
+   <PropertyGroup Label="UserMacros" />
+   <PropertyGroup />
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+     <ClCompile>
+       <WarningLevel>Level3</WarningLevel>
+       <Optimization>Disabled</Optimization>
+       <SDLCheck>false</SDLCheck>
+       <ExceptionHandling>Sync</ExceptionHandling>
+     </ClCompile>
+     <Link>
+       <GenerateDebugInformation>true</GenerateDebugInformation>
+       <SubSystem>Windows</SubSystem>
+     </Link>
+   </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+     <ClCompile>
+       <WarningLevel>Level3</WarningLevel>
+       <Optimization>MaxSpeed</Optimization>
+       <FunctionLevelLinking>true</FunctionLevelLinking>
+       <IntrinsicFunctions>true</IntrinsicFunctions>
+       <SDLCheck>false</SDLCheck>
+       <ExceptionHandling>Sync</ExceptionHandling>
+     </ClCompile>
+     <Link>
+       <GenerateDebugInformation>false</GenerateDebugInformation>
+       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+       <OptimizeReferences>true</OptimizeReferences>
+       <SubSystem>Windows</SubSystem>
+     </Link>
+   </ItemDefinitionGroup>
+   <ItemGroup>
+     <ClInclude Include="AlienShip.h" />
+     <ClInclude Include="Animation.h" />
+     <ClInclude Include="Application.h" />
+     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Font.h" />
+     <ClInclude Include="FontManager.h" />
+     <ClInclude Include="Globals.h" />
+     <ClInclude Include="MemLeaks.h" />
+     <ClInclude Include="MetalFlower.h" />
+     <ClInclude Include="Module.h" />
+     <ClInclude Include="ModuleAudio.h" />
+     <ClInclude Include="ModuleCollision.h" />
+     <ClInclude Include="ModuleEnemy.h" />
+     <ClInclude Include="ModuleFadeToBlack.h" />
+     <ClInclude Include="ModuleInput.h" />
+     <ClInclude Include="ModuleObstacle.h" />
+     <ClInclude Include="ModuleParticles.h" />
+     <ClInclude Include="ModulePlayer.h" />
+     <ClInclude Include="ModuleRender.h" />
+     <ClInclude Include="ModuleSceneIntro.h" />
+     <ClInclude Include="ModuleSceneSpace.h" />
+     <ClInclude Include="ModuleSegaIntro.h" />
+     <ClInclude Include="ModuleShadows.h" />
+     <ClInclude Include="ModuleTextures.h" />
+     <ClInclude Include="ModuleTime.h" />
+     <ClInclude Include="ModuleWindow.h" />
+     <ClInclude Include="Point.h" />
+   </ItemGroup>
+   <ItemGroup>
+     <ClCompile Include="AlienShip.cpp" />
+     <ClCompile Include="Application.cpp" />
+     <ClCompile Include="Font.cpp" />
+     <ClCompile Include="FontManager.cpp" />
+     <ClCompile Include="Log.cpp" />
+     <ClCompile Include="Main.cpp" />
+     <ClCompile Include="MetalFlower.cpp" />
+     <ClCompile Include="ModuleAudio.cpp" />
+     <ClCompile Include="ModuleCollision.cpp" />
+     <ClCompile Include="ModuleEnemy.cpp" />
+     <ClCompile Include="ModuleFadeToBlack.cpp" />
+     <ClCompile Include="ModuleInput.cpp" />
+     <ClCompile Include="ModuleObstacle.cpp" />
+     <ClCompile Include="ModuleParticles.cpp" />
+     <ClCompile Include="ModulePlayer.cpp" />
+     <ClCompile Include="ModuleRender.cpp" />
+     <ClCompile Include="ModuleSceneIntro.cpp" />
+     <ClCompile Include="ModuleSceneSpace.cpp" />
+     <ClCompile Include="ModuleSegaIntro.cpp" />
+     <ClCompile Include="ModuleShadows.cpp" />
+     <ClCompile Include="ModuleTextures.cpp" />
+     <ClCompile Include="ModuleTime.cpp" />
+     <ClCompile Include="ModuleWindow.cpp" />
+   </ItemGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+   <ImportGroup Label="ExtensionTargets">
+   </ImportGroup>
+ </Project>
