@@ -27,8 +27,8 @@ public:
 	bool CleanUp();
 
 	bool onCollision(Collider* c1, Collider* c2);
-	void AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType colType, int moveSet);
-	void AddModularEnemy(const Enemy& head, const Enemy& body, const Enemy& tail, float x, float y, float z, const int& moveSet, const int& bodySize);
+	void AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType colType, int moveSet, const float& oscillationAngle = 0.0f);
+	void AddModularEnemy(const Enemy& head, const Enemy& body, const Enemy& tail, float x, float y, float z, const int& moveSet, const int& bodySize, const float& oscillationAngle = 0.0f);
 	void enemyWave(const int& selector);
 
 private:

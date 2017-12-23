@@ -50,28 +50,42 @@ bool ModuleEnemy::Start()
 	//DRAGON - Head
 	dragonHead.enemyAnimation.frames.push_back({ 347, 49, 65, 104 });
 	dragonHead.enemyAnimation.frames.push_back({ 268, 48, 69, 108 });
+	//dragonHead.damaged.frames.push_back({ 347, 165, 65, 104 });
+	//dragonHead.damaged.frames.push_back({ 268, 164, 69, 108 });
+	//dragonHead.damaged2.frames.push_back({ 347, 281, 65, 104 });
+	//dragonHead.damaged2.frames.push_back({ 268, 280, 69, 108 });
+	//dragonHead.damaged3.frames.push_back({ 347, 397, 65, 104 });
+	//dragonHead.damaged3.frames.push_back({ 268, 396, 69, 108 });
+
 	dragonHead.enemyAnimation.speed = 0.0f;
 	dragonHead.worldPosition = { 0, 0, MAX_Z };
 	dragonHead.colType = ENEMY;
 	dragonHead.uniDimensionalSpeed = 130.0f;
-	dragonHead.depthSpeed = -5.0f;
+	dragonHead.depthSpeed = -6.0f;
 	dragonHead.enemyAnimation.loop = false;
+	dragonHead.lifePoints = 8;
 
 	//DRAGON - Body
 	dragonBody.enemyAnimation.frames.push_back({ 429, 68, 111, 71 });
+	//dragonBody.damaged.frames.push_back({ 429, 184, 111, 71 });
+	//dragonBody.damaged2.frames.push_back({ 429, 300, 111, 71 });
+	//dragonBody.damaged3.frames.push_back({ 429, 416, 111, 71 });
 	dragonBody.enemyAnimation.speed = 0.0f;
 	dragonBody.colType = ND_ENEMY;
 	dragonBody.uniDimensionalSpeed = 130.0f;
-	dragonBody.depthSpeed = -5.0f;
+	dragonBody.depthSpeed = -6.0f;
 	dragonBody.worldPosition = { 0, 0, MAX_Z };
 	dragonBody.colType = ENEMY;
 
 	//DRAGON - Tail
 	dragonTail.enemyAnimation.frames.push_back({ 552, 60, 94, 89 });
+	//dragonTail.damaged.frames.push_back({ 552, 176, 94, 89 });
+	//dragonTail.damaged2.frames.push_back({ 552, 292, 94, 89 });
+	//dragonTail.damaged3.frames.push_back({ 552, 408, 94, 89 });
 	dragonTail.enemyAnimation.speed = 0.0f;
 	dragonTail.colType = ND_ENEMY;
 	dragonTail.uniDimensionalSpeed = 130.0f;
-	dragonTail.depthSpeed = -5.0f;
+	dragonTail.depthSpeed = -6.0f;
 	dragonTail.worldPosition = { 0, 0, MAX_Z };
 	dragonTail.colType = ENEMY;
 
@@ -125,36 +139,38 @@ update_status ModuleEnemy::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType type, int moveSet)
+void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType type, int moveSet, const float& oscillationAngle)
 {	
 	fPoint pos = { x, y, z };
-	Enemy* e = enemy.createEnemyInstance(enemy, pos, type, moveSet);	
+	Enemy* e = enemy.createEnemyInstance(enemy, pos, type, moveSet, oscillationAngle);	
 	active.push_back(e);
 
 	aliveEnemy = true;
 }
 
-void ModuleEnemy::AddModularEnemy(const Enemy& head, const Enemy& body, const Enemy& tail, float x, float y, float z, const int& moveSet, const int& bodySize)
+void ModuleEnemy::AddModularEnemy(const Enemy& head, const Enemy& body, const Enemy& tail, float x, float y, float z, const int& moveSet, const int& bodySize, const float& oscillationAngle)
 {
 	fPoint pos = { x, y, z };
-	Enemy* h = head.createEnemyInstance(head, pos, ENEMY, moveSet);
+	Enemy* h = head.createEnemyInstance(head, pos, ENEMY, moveSet, oscillationAngle);
 	active.push_back(h);
 
 	Enemy* previous = h;
 	Enemy* b = nullptr;
 	for (int i = 1; i <= bodySize; i++)
 	{
-		pos = { x + (i*10), y, z + i };
-		b = body.createEnemyInstance(body, pos, ND_ENEMY, moveSet+1);
+		pos.z = z + (i+2);
+		b = body.createEnemyInstance(body, pos, ND_ENEMY, moveSet+1, previous->oscillationAngle - 0.1f);
 		b->superiorBodyPart = previous;
+		b->lifePoints = h->lifePoints;
 		active.push_back(b);
 
 		previous = b;
 	}
 
-	pos = { x + ((bodySize + 1) * 10), y, z + bodySize+1 };
-	Enemy* t = tail.createEnemyInstance(tail, pos, ND_ENEMY, moveSet+1);
+	pos.z = z + (bodySize + 3);
+	Enemy* t = tail.createEnemyInstance(tail, pos, ND_ENEMY, moveSet+1, previous->oscillationAngle - 0.1f);
 	t->superiorBodyPart = previous;
+	t->lifePoints = h->lifePoints;
 	active.push_back(t);
 
 	aliveEnemy = true;
@@ -174,10 +190,15 @@ bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollider)
 			{
 				if (moduleOwner->colType != ND_ENEMY)
 				{
-					//Enemy gets hit and destroyed
-					(*it)->collider->to_delete = true;
-					(*it)->to_delete = true;
-					App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
+					(*it)->lifePoints -= 1;
+					LOG("LIFE POINT LOST");
+					if ((*it)->lifePoints <= 0)
+					{
+						//Enemy is dead
+						(*it)->collider->to_delete = true;
+						(*it)->to_delete = true;
+						App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
+					}
 				}			
 			}
 		}
@@ -241,9 +262,10 @@ void ModuleEnemy::enemyWave(const int& selector)
 			}
 			break;
 		case 4:
-			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (2.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (4.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			//METALFLOWER wave needs a certain oscillation angle for some of the enemies
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, 0.0f);
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (2.0f * (float)M_PI) / 3.0f);
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (4.0f * (float)M_PI) / 3.0f);
 			triggerEnemies = false;
 			break;
 		case 5:
@@ -272,13 +294,15 @@ void ModuleEnemy::enemyWave(const int& selector)
 			}
 			break;
 		case 7:
-			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (2.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
-			App->enemies->AddEnemy(App->enemies->tomos, (4.0f * (float)M_PI) / 3.0f, 0.0f, 20.0f, ENEMY, 1);
+			//METALFLOWER wave needs a certain oscillation angle for some of the enemies
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, 0.0f);
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (2.0f * (float)M_PI) / 3.0f);
+			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (4.0f * (float)M_PI) / 3.0f);
 			triggerEnemies = false;
 			break;
 		case 8:
-			LOG("DRAGON BOSS...");
+			App->enemies->AddModularEnemy(App->enemies->dragonHead, App->enemies->dragonBody, App->enemies->dragonTail, 100.f, 100.0f, 15.0f, 1, 5);
+			triggerEnemies = false;
 			break;
 		default:
 			break;
