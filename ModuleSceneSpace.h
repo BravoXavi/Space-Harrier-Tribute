@@ -46,6 +46,8 @@ private:
 	const char* stageName = "MOOT";
 	int topScore = 1000000;
 	float actualScore = 0.0f;
+
+	bool bossActive = false;
 };
 
 #endif // __MODULESCENESPACE_H__
