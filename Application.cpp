@@ -109,6 +109,7 @@ update_status Application::Update()
 	else
 	{
 		ret = input->PreUpdate();
+		time->PreUpdate();
 		if (ret == UPDATE_CONTINUE)
 		{
 			ret = input->Update();
