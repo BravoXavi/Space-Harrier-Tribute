@@ -18,10 +18,9 @@ ModuleParticles::~ModuleParticles()
 bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
-	//graphics = App->textures->Load("assets/Shoots.png");
-	//graphics = App->textures->Load("assets/enemyshot.png");
 	graphics = App->textures->Load("assets/particle_models.png");
 
+	//PlayerLaser particle (Main attack)
 	p_laser.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	p_laser.anim.frames.push_back({ 1, 1, 91, 61 });
 	p_laser.anim.frames.push_back({ 95, 0, 91, 61 });
@@ -32,6 +31,7 @@ bool ModuleParticles::Start()
 	p_laser.speed = 1.0f;
 	p_laser.colType = P_LASER;
 
+	//EnemyLaser particle. The behaviour is the same as PlayerLaser but reversed and with a certain target
 	//e_laser.fxIndex = App->audio->LoadFx("Insert audio path here");
 	e_laser.anim.frames.push_back({ 34, 105, 68, 45});
 	e_laser.anim.frames.push_back({ 117, 101, 62, 53 });
@@ -46,6 +46,16 @@ bool ModuleParticles::Start()
 	e_laser.speed = -0.4f;
 	e_laser.colType = E_LASER;
 
+	//FireBall particle has the same behaviour as EnemyLaser particle
+	fireBall.anim.frames.push_back({ 6, 280, 75, 69 });
+	fireBall.anim.frames.push_back({ 90, 282, 71, 64 });
+	fireBall.anim.frames.push_back({ 172, 278, 74, 71 });
+	fireBall.anim.speed = 8.0f;
+	fireBall.position.z = MAX_Z;
+	fireBall.speed = -0.2f;
+	fireBall.colType = E_LASER;
+
+	//Explosion particle works completely different from other particles (is not an attack)
 	explosion.anim.frames.push_back({ 400, 5, 89, 65 });
 	explosion.anim.frames.push_back({ 497, 6, 88, 64 });
 	explosion.anim.frames.push_back({ 595, 6, 90, 70 });

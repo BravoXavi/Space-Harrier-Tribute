@@ -55,6 +55,7 @@ public:
 	Particle p_laser;
 	Particle e_laser;
 	Particle explosion;
+	Particle fireBall;
 };
 
 #endif // __MODULEPARTICLES_H__
