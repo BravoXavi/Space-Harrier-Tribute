@@ -9,6 +9,7 @@
 #include "ModuleParticles.h"
 #include "ModuleSceneSpace.h"
 #include "ModuleObstacle.h"
+#include "ModuleFadeToBlack.h"
 #include "ModuleEnemy.h"
 #include "FontManager.h"
 
@@ -90,44 +91,48 @@ update_status ModuleSceneSpace::Update()
 	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
 	//}
 
-	if (debugTimer < 1)
-	{
-		App->enemies->AddModularEnemy(App->enemies->dragonHead, App->enemies->dragonBody, App->enemies->dragonTail, 100.f, 100.0f, 26.0f, 1, 7);
-		//App->enemies->AddEnemy(App->enemies->dragonHead, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
-		debugTimer++;
-	}
+	//if (debugTimer < 1)
+	//{
+	//	App->enemies->AddModularEnemy(App->enemies->dragonHead, App->enemies->dragonBody, App->enemies->dragonTail, 100.f, 100.0f, 15.0f, 1, 5);
+	//	//App->enemies->AddEnemy(App->enemies->dragonHead, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
+	//	debugTimer++;
+	//}
 
 	//------------------------------------------------------------------------------
 
-	//tickUpdate = SDL_GetTicks();
+	tickUpdate = SDL_GetTicks();
 
-	//actualScore += 0.2;
-	//if ((int)actualScore > topScore) topScore = actualScore;
+	actualScore += 0.2;
+	if ((int)actualScore > topScore) topScore = actualScore;
 
-	//if (App->enemies->triggerEnemies)
-	//{
-	//	if (!App->enemies->bossEncounter)
-	//	{
-	//		if (tickUpdate - enemySpawnTimer > 300.0f)
-	//		{
-	//			enemySpawnTimer = tickUpdate;
-	//			App->enemies->enemyWave(App->enemies->waveNum);
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-	//	{
-	//		App->enemies->triggerEnemies = true;
-	//		App->enemies->waveNum++;
+	if (!App->enemies->bossEncounter)
+	{
+		if (App->enemies->triggerEnemies)
+		{
+			if (tickUpdate - enemySpawnTimer > 300.0f)
+			{
+				enemySpawnTimer = tickUpdate;
+				App->enemies->enemyWave(App->enemies->waveNum);
+				if (App->enemies->waveNum == 8) App->enemies->bossEncounter = true;
+			}
+		}
+		else
+		{
+			if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+			{
+				App->enemies->triggerEnemies = true;
+				App->enemies->waveNum++;
+				LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+			}
+		}
+	}
+	else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
+	{
+		LOG("ENDING ------------------------------");
+	}
 
-	//		LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-	//	}
-	//}
-
-	//GenerateObstacles();
-	//PrintUI();
+	GenerateObstacles();
+	PrintUI();
 
 	return UPDATE_CONTINUE;
 }
@@ -178,23 +183,26 @@ void ModuleSceneSpace::GenerateObstacles()
 {
 	int randX, randY = 0;
 
-	if (obstacleTimer1 < 10) obstacleTimer1++;
-	else
+	if (!bossActive)
 	{
-		obstacleTimer1 = 0;
-		randX = rand() % (350 - (-350) + 1) + (-350);
-		
-		App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
-	}
+		if (obstacleTimer1 < 10) obstacleTimer1++;
+		else
+		{
+			obstacleTimer1 = 0;
+			randX = rand() % (350 - (-350) + 1) + (-350);
 
-	if (obstacleTimer2 < 25) obstacleTimer2++;
-	else
-	{
-		obstacleTimer2 = 0;
-		randX = rand() % (350 - (-350) + 1) + (-350);
-		randY = rand() % (150 - 80 + 1) + 80;
-		
-		if( App->enemies->waveNum < 4) App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randX, (float)randY, D_OBSTACLE);
-		else App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, D_OBSTACLE);
-	}	
+			App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
+		}
+
+		if (obstacleTimer2 < 25) obstacleTimer2++;
+		else
+		{
+			obstacleTimer2 = 0;
+			randX = rand() % (350 - (-350) + 1) + (-350);
+			randY = rand() % (150 - 80 + 1) + 80;
+
+			if (App->enemies->waveNum < 4) App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randX, (float)randY, D_OBSTACLE);
+			else App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, D_OBSTACLE);
+		}
+	}
 }
