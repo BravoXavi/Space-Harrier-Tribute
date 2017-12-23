@@ -9,19 +9,21 @@
 MetalFlower::MetalFlower()
 {}
 
-MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector)
+MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oAngle)
 {
 	animationTimer = SDL_GetTicks();
-
 	worldPosition = pos;
-	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);
-	rotationAngle = pos.x;
+	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);	
 	moveSet = moveSelector;
 	colType = cType;
 	enemyAnimation = e.enemyAnimation;
 	fxIndex = e.fxIndex;
 	uniDimensionalSpeed = e.uniDimensionalSpeed;
 	depthSpeed = e.depthSpeed;
+
+	oscillationAngle = oAngle;
+	oscillationSpeed = 0.015f;
+	oscillationRadius = 40.0f;
 }
 
 MetalFlower::~MetalFlower()
@@ -95,11 +97,11 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 	float deltaUniDimensionalSpeed = uniDimensionalSpeed * App->time->getDeltaTime();
 	float deltaDepthSpeed = depthSpeed * App->time->getDeltaTime();
 
-	worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + cos(rotationAngle) * spinRadius;
-	worldPosition.y = 1.7f * ((float)SCREEN_HEIGHT / 3.0f) + sin(rotationAngle) * spinRadius;
-	rotationAngle += spinSpeed;
+	worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + cos(oscillationAngle) * oscillationRadius;
+	worldPosition.y = 1.7f * ((float)SCREEN_HEIGHT / 3.0f) + sin(oscillationAngle) * oscillationRadius;
+	oscillationAngle += oscillationSpeed;
 
-	if (rotationAngle >= 2.0f*M_PI) rotationAngle = 0.0f;
+	if (oscillationAngle >= 2.0f*M_PI) oscillationAngle = 0.0f;
 
 	switch (moveSelector)
 	{
@@ -108,7 +110,7 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 		{
 			if (collider->colType == ND_ENEMY)
 			{
-				spinRadius += 0.1f;
+				oscillationRadius += 0.1f;
 				worldPosition.z -= deltaDepthSpeed;
 			}
 		}
@@ -119,8 +121,8 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 		break;
 
 	case 2:
-		spinSpeed = 0.05f;
-		if(spinRadius > 0.0f) spinRadius -= 0.8f;
+		oscillationSpeed = 0.05f;
+		if(oscillationRadius > 0.0f) oscillationRadius -= 0.8f;
 		worldPosition.z += deltaDepthSpeed * 4.0f;
 
 		break;
@@ -131,8 +133,8 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 }
 
 //Return an instance of MetalFlower
-Enemy* MetalFlower::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const
+Enemy* MetalFlower::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oscillationAngle) const
 {
-	Enemy* instance = new MetalFlower(e, pos, cType, moveSelector);
+	Enemy* instance = new MetalFlower(e, pos, cType, moveSelector, oscillationAngle);
 	return instance;
 }

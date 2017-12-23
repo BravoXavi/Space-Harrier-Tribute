@@ -9,7 +9,7 @@ AlienShip::AlienShip()
 {
 }
 
-AlienShip::AlienShip(const Enemy& aS, const fPoint& pos, const collisionType& cType, const int& moveSelector)
+AlienShip::AlienShip(const Enemy& aS, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oAngle)
 {
 	worldPosition = pos;
 	colType = cType;
@@ -19,6 +19,10 @@ AlienShip::AlienShip(const Enemy& aS, const fPoint& pos, const collisionType& cT
 	fxIndex = aS.fxIndex;
 	uniDimensionalSpeed = aS.uniDimensionalSpeed;
 	depthSpeed = aS.depthSpeed;
+
+	oscillationAngle = oAngle;
+	oscillationRadius = (float)SCREEN_WIDTH / 2.0f;
+	oscillationSpeed = 0.03f;
 }
 
 AlienShip::~AlienShip()
@@ -182,8 +186,8 @@ void AlienShip::selectMovementPatron(const int& moveSelector)
 }
 
 //Return an instance of AlienShip
-Enemy* AlienShip::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const
+Enemy* AlienShip::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oscillationAngle) const
 {
-	Enemy* instance = new AlienShip(e, pos, cType, moveSelector);
+	Enemy* instance = new AlienShip(e, pos, cType, moveSelector, oscillationAngle);
 	return instance;
 }

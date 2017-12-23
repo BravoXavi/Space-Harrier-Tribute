@@ -8,17 +8,12 @@ class MetalFlower : public Enemy
 {
 public:
 	MetalFlower();
-	MetalFlower(const Enemy& alienShip, const fPoint& pos, const collisionType& cType, const int& moveSelector);
+	MetalFlower(const Enemy& alienShip, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oscillationAngle);
 	~MetalFlower();
 
 	void Update();
 	void selectMovementPatron(const int& moveSelector);
-	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector) const;
-
-private:
-	float rotationAngle = 0.0f;
-	float spinSpeed = 0.015f;
-	float spinRadius = 40.0f;
+	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oscillationAngle) const;
 };
 
 #endif // __METALFLOWER_H__

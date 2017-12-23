@@ -19,7 +19,7 @@ public:
 	virtual ~Enemy() {}
 
 	virtual void Update() = 0;
-	virtual Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector) const = 0;
+	virtual Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector, const float& oscillationAngle) const = 0;
 	virtual void selectMovementPatron(const int& moveSelector) = 0;
 	virtual void setRect(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 	{
@@ -49,6 +49,12 @@ public:
 	int moveSet = 1;
 	bool to_delete = false;
 	unsigned int fxIndex;
+
+	float oscillationAngle = 0.0f;
+	float oscillationRadius = 0.0f;
+	float oscillationSpeed = 0.0f;
+
+	int lifePoints = 1;
 
 };
 
