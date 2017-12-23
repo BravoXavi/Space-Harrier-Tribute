@@ -9,7 +9,7 @@
 DragonPart::DragonPart()
 {}
 
-DragonPart::DragonPart(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector)
+DragonPart::DragonPart(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oAngle)
 {
 	worldPosition = pos;
 	colType = cType;
@@ -19,6 +19,13 @@ DragonPart::DragonPart(const Enemy& e, const fPoint& pos, const collisionType& c
 	fxIndex = e.fxIndex;
 	uniDimensionalSpeed = e.uniDimensionalSpeed;
 	depthSpeed = e.depthSpeed;
+
+	oscillationAngle = oAngle;
+	oscillationX = oAngle;
+	oscillationY = oAngle;
+	oscillationSpeed = 0.02f;
+
+	lifePoints = 8;
 }
 
 DragonPart::~DragonPart()
@@ -32,7 +39,13 @@ void DragonPart::Update()
 	if (superiorBodyPart != nullptr && superiorBodyPart->to_delete)
 	{
 		collider->to_delete = true;
-		to_delete = true;	
+		to_delete = true;
+		App->particles->AddParticle(App->particles->explosion, screenPosition.x, screenPosition.y, screenPosition.z, EXPLOSION);
+	}
+
+	if (superiorBodyPart != nullptr)
+	{
+		lifePoints = superiorBodyPart->lifePoints;
 	}
 
 	float zModifier = 1.0f - (worldPosition.z / (float)MAX_Z);
@@ -65,12 +78,12 @@ void DragonPart::selectMovementPatron(const int& moveSelector)
 
 	if (worldPosition.z > 20.0f && !forward)
 	{
-		enemyAnimation.current_frame = 0;
 		forward = true;
+		enemyAnimation.current_frame = 0;
 		worldPosition.z = 20.0f;
 		depthSpeed *= -1;
 	}
-	else if (worldPosition.z < 5.0f && forward)
+	else if (worldPosition.z < 3.0f && forward)
 	{
 		forward = false;
 		enemyAnimation.current_frame = 1;
@@ -78,16 +91,28 @@ void DragonPart::selectMovementPatron(const int& moveSelector)
 		depthSpeed *= -1;
 	}
 
-	switch (moveSelector)
+	worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + cos(oscillationX) * (float)SCREEN_WIDTH / 2;
+	worldPosition.y = ((float)SCREEN_HEIGHT / 2.0f) + cos(oscillationY) * 50.0f;
+
+	oscillationX += oscillationSpeed/2;
+	oscillationY += oscillationSpeed;
+
+	if (oscillationAngle >= 2.0f*M_PI) oscillationAngle = 0.0f;
+
+	Uint32 shotCheck = SDL_GetTicks();
+
+	if (superiorBodyPart == nullptr && worldPosition.z > 10.0f && shotCheck - fireBallTimer > 3000.0f)
 	{
-		case 1:	
-		break;
+		fireBallTimer = shotCheck;
+		App->particles->AddParticle(App->particles->fireBall, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
+		App->particles->AddParticle(App->particles->fireBall, worldPosition.x, worldPosition.y + 15, worldPosition.z, E_LASER);
+		App->particles->AddParticle(App->particles->fireBall, worldPosition.x + 15, worldPosition.y, worldPosition.z, E_LASER);
 	}
 }
 
 //Return an instance of DragonHead
-Enemy* DragonPart::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector) const
+Enemy* DragonPart::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector, const float& oscillationAngle) const
 {
-	Enemy* instance = new DragonPart(e, pos, colType, moveSelector);
+	Enemy* instance = new DragonPart(e, pos, colType, moveSelector, oscillationAngle);
 	return instance;
 }
