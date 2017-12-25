@@ -33,8 +33,11 @@ public:
 	fPoint position = { 0.0f, 0.0f, 0.0f };	
 	
 	int lives = 3;
+	float playerScore = 0.0f;
 
 private:
+	Uint32 initAnimationTimer = 0;
+
 	void LoseOneLive();
 
 	const static float playerDepth;

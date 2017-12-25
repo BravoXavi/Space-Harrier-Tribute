@@ -47,6 +47,11 @@ bool ModulePlayer::Start()
 
 	collider = App->collision->AddCollider({ (int)position.x * SCREEN_SIZE, (int)position.y * SCREEN_SIZE, current_animation->GetCurrentFrame().w * SCREEN_SIZE, current_animation->GetCurrentFrame().h * SCREEN_SIZE }, PLAYER, (int)playerDepth, App->player);
 
+	if (App->renderer->horizonY != (float)FLOOR_Y_MIN) App->renderer->horizonY = (float)FLOOR_Y_MIN;
+	current_animation = &run;
+
+	initAnimationTimer = SDL_GetTicks();
+
 	return true;
 }
 
@@ -63,62 +68,80 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
+
 	float speed = 200.0f * App->time->getDeltaTime();
 
 	playerWidth = current_animation->GetCurrentFrame().w;
 	playerHeight = current_animation->GetCurrentFrame().h;
 
-	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	Uint32 tickCheck = SDL_GetTicks();
+
+	if (tickCheck - initAnimationTimer > 3000.0f)
 	{
-		if (position.x > 0.0f) position.x -= speed;
-		if (current_animation == &run) checkHorizontalAnimation(true);
-		else checkHorizontalAnimation();
-
-		moveCollider();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-	{
-		if (position.x + (float)playerWidth < (float)SCREEN_WIDTH) position.x += speed;
-		if (current_animation == &run) checkHorizontalAnimation(true);
-		else checkHorizontalAnimation();
-
-		moveCollider();
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-	{		
-		if (position.y < SCREEN_HEIGHT - playerHeight)
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			position.y += speed;
-			modifyHorizonY();
-		}
-		else
-		{
-			current_animation = &run;
-		}
-		
-		if(current_animation != &run) moveCollider();
-	}
+			if (position.x > 0.0f) position.x -= speed;
+			if (current_animation == &run) checkHorizontalAnimation(true);
+			else checkHorizontalAnimation();
 
-	if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-	{
-		if (position.y > 0)
-		{
-			position.y -= speed;
-			modifyHorizonY();
-		}
-		if (current_animation == &run)
-		{
-			checkHorizontalAnimation();
+			moveCollider();
 		}
 
-		moveCollider();
-	}
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		{
+			if (position.x + (float)playerWidth < (float)SCREEN_WIDTH) position.x += speed;
+			if (current_animation == &run) checkHorizontalAnimation(true);
+			else checkHorizontalAnimation();
 
-	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+			moveCollider();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		{
+			if (position.y < SCREEN_HEIGHT - playerHeight)
+			{
+				position.y += speed;
+				modifyHorizonY();
+			}
+			else
+			{
+				current_animation = &run;
+			}
+
+			if (current_animation != &run) moveCollider();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		{
+			if (position.y > 0)
+			{
+				position.y -= speed;
+				modifyHorizonY();
+			}
+			if (current_animation == &run)
+			{
+				checkHorizontalAnimation();
+			}
+
+			moveCollider();
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+		{
+			App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
+		}
+	}
+	else
 	{
-		App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth)/2.0f, position.y + (float)playerHeight/3.0f , 1.0f, P_LASER);
+		if (tickCheck - initAnimationTimer > 2000.f)
+		{
+			if (position.y > (float)SCREEN_HEIGHT / 2)
+			{
+				position.y -= speed;
+				modifyHorizonY();
+				checkHorizontalAnimation();
+			}
+		}
 	}
 
 	// Draw everything --------------------------------------
