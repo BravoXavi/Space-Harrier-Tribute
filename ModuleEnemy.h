@@ -18,7 +18,7 @@ struct SDL_Texture;
 class ModuleEnemy : public Module
 {
 public:
-	ModuleEnemy();
+	ModuleEnemy(bool active = false);
 	~ModuleEnemy();
 
 	bool Start();
@@ -33,8 +33,8 @@ public:
 
 private:
 	std::list<Enemy*> active;
-	Uint32 spawnTimer = 0;
-	int enemyWaveCount = 0;
+	Uint32 spawnTimer;
+	int enemyWaveCount;
 
 public:
 	SDL_Texture* graphics = nullptr;
@@ -45,7 +45,7 @@ public:
 	DragonPart dragonBody;
 	DragonPart dragonTail;
 
-	int waveNum = 0;
+	int waveNum;
 	bool triggerEnemies = false;
 	bool bossEncounter = false;
 	bool aliveEnemy = false;

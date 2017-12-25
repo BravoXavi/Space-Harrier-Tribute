@@ -38,7 +38,7 @@ struct Obstacle
 class ModuleObstacle : public Module
 {
 public:
-	ModuleObstacle();
+	ModuleObstacle(bool active = false);
 	~ModuleObstacle();
 
 	bool Start();

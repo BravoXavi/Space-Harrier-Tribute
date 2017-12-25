@@ -45,7 +45,6 @@ private:
 	const static int stageNumber = 1;
 	const char* stageName = "MOOT";
 	int topScore = 1000000;
-	float actualScore = 0.0f;
 
 	bool bossActive = false;
 };

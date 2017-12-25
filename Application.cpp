@@ -35,9 +35,9 @@ Application::Application()
 	modules.push_back(sega_intro = new ModuleSegaIntro(false));
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_space = new ModuleSceneSpace(false));
-	modules.push_back(obstacles = new ModuleObstacle());
-	modules.push_back(shadows = new ModuleShadows());
-	modules.push_back(enemies = new ModuleEnemy());
+	modules.push_back(obstacles = new ModuleObstacle(false));
+	modules.push_back(shadows = new ModuleShadows(false));
+	modules.push_back(enemies = new ModuleEnemy(false));
 	modules.push_back(player = new ModulePlayer(false));
 	
 	// Modules to draw on top of game logic

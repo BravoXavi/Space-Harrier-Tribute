@@ -9,6 +9,7 @@
 #include "ModuleParticles.h"
 #include "ModuleSceneSpace.h"
 #include "ModuleObstacle.h"
+#include "ModuleShadows.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleEnemy.h"
 #include "FontManager.h"
@@ -42,6 +43,9 @@ bool ModuleSceneSpace::Start()
 	App->player->Enable();
 	App->particles->Enable();
 	App->collision->Enable();
+	App->enemies->Enable();
+	App->obstacles->Enable();
+	App->shadows->Enable();
 
 	//App->audio->PlayFx(startFx);
 	//App->audio->PlayMusic("assets/Theme.wav", 1.0f);
@@ -57,9 +61,14 @@ bool ModuleSceneSpace::CleanUp()
 	LOG("Unloading space scene");
 
  	App->textures->Unload(floor);
+	App->textures->Unload(background);
+	App->textures->Unload(backgroundFront);
+	App->textures->Unload(gui);
 	App->player->Disable();
 	App->collision->Disable();
 	App->particles->Disable();
+	App->enemies->Disable();
+	App->obstacles->Disable();
 
 	return true;
 }
@@ -102,8 +111,8 @@ update_status ModuleSceneSpace::Update()
 
 	tickUpdate = SDL_GetTicks();
 
-	actualScore += 0.2;
-	if ((int)actualScore > topScore) topScore = actualScore;
+	App->player->playerScore += 0.2;
+	if ((int)App->player->playerScore > topScore) topScore = App->player->playerScore;
 
 	if (!App->enemies->bossEncounter)
 	{
@@ -129,6 +138,11 @@ update_status ModuleSceneSpace::Update()
 	else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
 	{
 		LOG("ENDING ------------------------------");
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
+	{
+		App->fade->FadeToBlack((Module*)App->scene_intro, this, 0.5f);
 	}
 
 	GenerateObstacles();
@@ -168,7 +182,7 @@ void ModuleSceneSpace::PrintUI()
 	App->renderer->Blit(gui, xPos, resizedHeight / 2, &actualScoreBanner, actualScoreBanner.w / 1.5, actualScoreBanner.h / 1.5);
 
 	xPos += resizedWidth + 4;
-	App->fontManager->greenFont->printText(to_string((int)actualScore).c_str(), xPos, 6, 0.8f);
+	App->fontManager->greenFont->printText(to_string((int)App->player->playerScore).c_str(), xPos, 6, 0.8f);
 
 	//Lives info
 	resizedWidth = liveIcon.w / 2;

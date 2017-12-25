@@ -11,7 +11,7 @@
 #include "ModuleShadows.h"
 #include "SDL/include/SDL_timer.h"
 
-ModuleEnemy::ModuleEnemy()
+ModuleEnemy::ModuleEnemy(bool active) : Module(active)
 {}
 
 ModuleEnemy::~ModuleEnemy()
@@ -88,6 +88,14 @@ bool ModuleEnemy::Start()
 	dragonTail.depthSpeed = -6.0f;
 	dragonTail.worldPosition = { 0, 0, MAX_Z };
 	dragonTail.colType = ENEMY;
+
+
+	spawnTimer = 0;
+	enemyWaveCount = 0;
+	waveNum = 0;
+	triggerEnemies = false;
+	bossEncounter = false;
+	aliveEnemy = false;
 
 	return true;
 }

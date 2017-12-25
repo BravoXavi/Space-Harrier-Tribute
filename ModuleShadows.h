@@ -8,7 +8,7 @@ struct SDL_Texture;
 class ModuleShadows : public Module
 {
 public:
-	ModuleShadows(bool active = true);
+	ModuleShadows(bool active = false);
 	~ModuleShadows();
 
 	bool Start();

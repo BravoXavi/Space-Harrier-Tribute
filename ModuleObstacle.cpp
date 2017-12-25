@@ -10,7 +10,7 @@
 
 #include "SDL/include/SDL_timer.h"
 
-ModuleObstacle::ModuleObstacle()
+ModuleObstacle::ModuleObstacle(bool active) : Module(active)
 {}
 
 ModuleObstacle::~ModuleObstacle()
