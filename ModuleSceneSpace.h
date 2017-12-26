@@ -20,6 +20,10 @@ public:
 	void PrintUI();
 	void GenerateObstacles();
 
+private:
+	void GameOverScreen();
+	void VictoryScreen();
+
 public:
 	uint startFx;
 	Uint32 enemySpawnTimer = 0;

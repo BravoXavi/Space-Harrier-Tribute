@@ -86,66 +86,49 @@ update_status ModuleSceneSpace::PreUpdate()
 // Update: draw background
 update_status ModuleSceneSpace::Update()
 {
-	// Draw everything --------------------------------------
-		
-
-
-	//if (timeCounter2 < 50) timeCounter2++;
-	//else
-	//{
-	//	timeCounter2 = 0;
-	//	int randNumX = rand() % (200 - (-200) + 1) + (-200);
-	//	int randNumY = rand() % (170 - 80 + 1) + 80;
-
-	//	App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randNumX, (float)randNumY, WALL);
-	//}
-
-	//if (debugTimer < 1)
-	//{
-	//	App->enemies->AddModularEnemy(App->enemies->dragonHead, App->enemies->dragonBody, App->enemies->dragonTail, 100.f, 100.0f, 15.0f, 1, 5);
-	//	//App->enemies->AddEnemy(App->enemies->dragonHead, SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f, 15.0f, ENEMY, 1);
-	//	debugTimer++;
-	//}
-
-	//------------------------------------------------------------------------------
-
 	tickUpdate = SDL_GetTicks();
 
 	App->player->playerScore += 0.2;
 	if ((int)App->player->playerScore > topScore) topScore = App->player->playerScore;
 
-	if (!App->enemies->bossEncounter)
+	if (App->player->lives > 0)
 	{
-		if (App->enemies->triggerEnemies)
-		{
-			if (tickUpdate - enemySpawnTimer > 300.0f)
-			{
-				enemySpawnTimer = tickUpdate;
-				App->enemies->enemyWave(App->enemies->waveNum);
-				if (App->enemies->waveNum == 8) App->enemies->bossEncounter = true;
-			}
-		}
-		else
-		{
-			if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-			{
-				App->enemies->triggerEnemies = true;
-				App->enemies->waveNum++;
-				LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-			}
-		}
+		//if (!App->enemies->bossEncounter)
+		//{
+		//	if (App->enemies->triggerEnemies)
+		//	{
+		//		if (tickUpdate - enemySpawnTimer > 300.0f)
+		//		{
+		//			enemySpawnTimer = tickUpdate;
+		//			App->enemies->enemyWave(App->enemies->waveNum);
+		//			if (App->enemies->waveNum == 8) App->enemies->bossEncounter = true;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+		//		{
+		//			App->enemies->triggerEnemies = true;
+		//			App->enemies->waveNum++;
+		//			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
+		//		}
+		//	}
+		//}
+		//else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
+		//{
+		//	Uint32 scoreBoardTimer = SDL_GetTicks();
+		//	if (tickUpdate - scoreBoardTimer > 2000.0f)
+		//	{
+		//		VictoryScreen();
+		//	}
+		//}
 	}
-	else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
+	else
 	{
-		LOG("ENDING ------------------------------");
+		GameOverScreen();
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
-	{
-		App->fade->FadeToBlack((Module*)App->scene_intro, this, 0.5f);
-	}
-
-	GenerateObstacles();
+	//GenerateObstacles();
 	PrintUI();
 
 	return UPDATE_CONTINUE;
@@ -219,4 +202,19 @@ void ModuleSceneSpace::GenerateObstacles()
 			else App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, D_OBSTACLE);
 		}
 	}
+}
+
+void ModuleSceneSpace::GameOverScreen()
+{
+	string end = "GAME OVER";
+	int charWidth = App->fontManager->redFont->characterWidth;
+	int charHeight = App->fontManager->redFont->characterHeight;
+	App->fontManager->redFont->printText(end.c_str(), (SCREEN_WIDTH / 2) - (end.length()*charWidth / 2), SCREEN_HEIGHT / 2);
+	
+	if (App->fade->isFading() == false) App->fade->FadeToBlack((Module*)App->scene_intro, this, 4.0f);
+}
+
+void ModuleSceneSpace::VictoryScreen()
+{
+
 }
