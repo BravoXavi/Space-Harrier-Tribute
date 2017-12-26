@@ -19,7 +19,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	run.frames.push_back({ 25, 4, 20, 47 });
 	run.frames.push_back({ 49, 2, 25, 49 });
 	run.frames.push_back({ 75, 3, 21, 47 });
-	run.speed = 2.0f;
+	run.speed = 4.0f;
 
 	middle.frames.push_back({ 108,2,26,49 });
 
@@ -28,6 +28,20 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 
 	right2.frames.push_back({ 197,3,20,48 });
 	right1.frames.push_back({ 221,2,22,50 });
+
+	tripping.frames.push_back({ 6, 118, 22, 38 });
+	tripping.frames.push_back({ 45, 120, 20, 33 });
+	tripping.frames.push_back({ 83, 123, 24, 29 });
+	tripping.speed = 2.0f;
+	tripping.loop = false;
+
+	hit.frames.push_back({ 6, 61, 22, 39 });
+	hit.frames.push_back({ 34, 61, 26, 40 });
+	hit.frames.push_back({ 73, 70, 26, 22 });
+	hit.frames.push_back({ 113, 74, 27, 20 });
+	hit.frames.push_back({ 158, 65, 26, 31 });
+	hit.speed = 0.5f;
+	hit.loop = false;
 
 	current_animation = &run;
 }
@@ -68,7 +82,6 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-
 	float speed = 200.0f * App->time->getDeltaTime();
 
 	playerWidth = current_animation->GetCurrentFrame().w;
@@ -76,7 +89,7 @@ update_status ModulePlayer::Update()
 
 	Uint32 tickCheck = SDL_GetTicks();
 
-	if (tickCheck - initAnimationTimer > 3000.0f)
+	if (tickCheck - initAnimationTimer > 2500.0f && !gotTrip && !gotHit)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
@@ -128,13 +141,49 @@ update_status ModulePlayer::Update()
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 		{
-			App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
+			gotHit = true;
+			LoseOneLive();
+			//App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
 		}
 	}
 	else
 	{
-		if (tickCheck - initAnimationTimer > 2000.f)
+		if (gotTrip)
 		{
+			current_animation = &tripping;
+			if (current_animation->animationWithoutLoopEnded)
+			{
+				current_animation->animationWithoutLoopEnded = false;
+				current_animation->Reset();
+				gotTrip = false;
+				checkHorizontalAnimation();
+			}
+		}
+		else if (gotHit)
+		{
+			current_animation = &hit;
+			if (position.y < (float)SCREEN_HEIGHT - current_animation->GetCurrentFrame().h)
+			{
+				position.y += speed / 1.5f;
+				modifyHorizonY();
+			}
+
+			if (current_animation->animationWithoutLoopEnded)
+			{
+				if (lives > 0)
+				{
+					current_animation->animationWithoutLoopEnded = false;
+					current_animation->Reset();
+					gotHit = false;
+					current_animation = &run;
+					position.y = (float)SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
+				}
+			}
+		}
+		else if (tickCheck - initAnimationTimer > 1000.f)
+		{
+			run.speed = 2.0f;
+
 			if (position.y > (float)SCREEN_HEIGHT / 2)
 			{
 				position.y -= speed;
@@ -203,7 +252,9 @@ void ModulePlayer::modifyHorizonY() const
 {
 	float offsetValue = (float)SCREEN_HEIGHT - (float)playerHeight;
 	float temp = (offsetValue - (float)position.y) / offsetValue;
-	App->renderer->horizonY = (temp * ((float)FLOOR_Y_MAX - (float)FLOOR_Y_MIN)) + (float)FLOOR_Y_MIN;
+	float newHorizonValue = (temp * ((float)FLOOR_Y_MAX - (float)FLOOR_Y_MIN)) + (float)FLOOR_Y_MIN;
+
+	App->renderer->horizonY = newHorizonValue;
 }
 
 void ModulePlayer::setCharSpeed()
@@ -216,7 +267,18 @@ void ModulePlayer::setCharSpeed()
 
 bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
-	LoseOneLive();
+	if (otherCollider->colType == NOLETHAL_D_OBSTACLE)
+	{
+		gotTrip = true;
+	}
+	else
+	{
+		if (!gotHit)
+		{
+			gotHit = true;
+			LoseOneLive();
+		}
+	}
 	return true;
 }
 

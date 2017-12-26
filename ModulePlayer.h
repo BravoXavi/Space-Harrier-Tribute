@@ -28,12 +28,17 @@ public:
 	Animation left2;
 	Animation right1;
 	Animation right2;
+	Animation tripping;
+	Animation hit;
 
 	Collider* collider = nullptr;
 	fPoint position = { 0.0f, 0.0f, 0.0f };	
 	
-	int lives = 3;
+	int lives = 1;
 	float playerScore = 0.0f;
+
+	bool gotHit = false;
+	bool gotTrip = false;
 
 private:
 	Uint32 initAnimationTimer = 0;
