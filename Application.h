@@ -58,7 +58,7 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneSpace* scene_space;
 
-	bool paused = false;
+	bool totalPause = false;
 
 private:
 

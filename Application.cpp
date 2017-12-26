@@ -81,18 +81,18 @@ update_status Application::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 	{
-		if (App->paused == false)
+		if (App->totalPause == false)
 		{
 			App->renderer->DrawPauseScreen();
-			App->paused = true;
+			App->totalPause = true;
 		}
-		else if (App->paused == true)
+		else if (App->totalPause == true)
 		{
-			App->paused = false;
+			App->totalPause = false;
 		}
 	}
 
-	if (!paused)
+	if (!totalPause)
 	{
 		for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 			if ((*it)->IsEnabled() == true)
@@ -108,8 +108,9 @@ update_status Application::Update()
 	}
 	else
 	{
-		ret = input->PreUpdate();
 		time->PreUpdate();
+		ret = input->PreUpdate();
+
 		if (ret == UPDATE_CONTINUE)
 		{
 			ret = input->Update();
