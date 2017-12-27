@@ -9,6 +9,7 @@
 #include "ModuleCollision.h"
 #include "ModuleTime.h"
 #include "ModuleShadows.h"
+#include "ModulePlayer.h"
 #include "SDL/include/SDL_timer.h"
 
 ModuleEnemy::ModuleEnemy(bool active) : Module(active)
@@ -136,7 +137,7 @@ update_status ModuleEnemy::Update()
 	{
 		Enemy* e = *it;
 
-		e->Update();
+		if(!App->player->gotHit) e->Update();
 
 		App->renderer->depthBuffer[(int)e->dataToBlit->z].push_back(*e->dataToBlit);
 		App->shadows->DrawShadow(e->screenPosition.x, 0, e->screenPosition.z, e->dataToBlit->newWidth);
@@ -199,13 +200,13 @@ bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollider)
 				if (moduleOwner->colType != ND_ENEMY)
 				{
 					(*it)->lifePoints -= 1;
-					LOG("LIFE POINT LOST");
 					if ((*it)->lifePoints <= 0)
 					{
+						App->player->playerScore += 2000.0f;
 						//Enemy is dead
 						(*it)->collider->to_delete = true;
 						(*it)->to_delete = true;
-						App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
+						App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y + (*it)->dataToBlit->newHeight, (*it)->screenPosition.z, EXPLOSION);
 					}
 				}			
 			}

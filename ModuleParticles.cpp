@@ -214,10 +214,10 @@ void Particle::Update(const int& updateSelector)
 			}
 			case 3: //Explosion
 			{
-				position.y += 0.5f;
+				//position.y += 0.5f;
 
 				newX = position.x - (newWidth / 2.0f);
-				newY = position.y - (newHeight / 2.0f);
+				newY = position.y - (newHeight);// / 2.0f);
 				break;
 			}
 		}

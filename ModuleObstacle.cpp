@@ -7,6 +7,7 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleShadows.h"
+#include "ModulePlayer.h"
 
 #include "SDL/include/SDL_timer.h"
 
@@ -77,7 +78,7 @@ update_status ModuleObstacle::Update()
 	{
 		Obstacle* o = *it;
 
-		o->Update();
+		if(!App->player->gotHit) o->Update();
 
 		if (o->shadowCast) App->shadows->DrawShadow(o->screenPosition.x, o->screenPosition.y, o->screenPosition.z, o->dataToBlit->newWidth);
 		App->renderer->depthBuffer[(int)o->dataToBlit->z].push_back(*o->dataToBlit);
@@ -104,11 +105,15 @@ bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCollider)
 		if ((*it)->collider == moduleOwner)
 		{
 			if (otherCollider->colType != PLAYER)
-			{
+			{				
 				//Obstacle gets destroyed
+				App->player->playerScore += 1000.0f;
 				(*it)->to_delete = true;
 				(*it)->collider->to_delete = true;
-				if (otherCollider->colType != PLAYER) App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y, (*it)->screenPosition.z, EXPLOSION);
+				if (otherCollider->colType != PLAYER)
+				{
+					App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y + (*it)->dataToBlit->newHeight, (*it)->screenPosition.z, EXPLOSION);
+				}
 			}
 		}
 	}
