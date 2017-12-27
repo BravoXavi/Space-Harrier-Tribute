@@ -21,8 +21,7 @@ public:
 	void GenerateObstacles();
 
 private:
-	void GameOverScreen();
-	void VictoryScreen();
+	void EndingAndScoreBoard();
 
 public:
 	uint startFx;
@@ -45,6 +44,9 @@ private:
 	SDL_Rect topScoreBanner;
 	SDL_Rect actualScoreBanner;
 	SDL_Rect liveIcon;
+
+	float scoreBoardPosition;
+	std::map< const char*, int > scores;
 
 	const static int stageNumber = 1;
 	const char* stageName = "MOOT";

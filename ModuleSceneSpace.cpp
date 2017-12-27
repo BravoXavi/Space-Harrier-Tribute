@@ -15,7 +15,12 @@
 #include "FontManager.h"
 
 ModuleSceneSpace::ModuleSceneSpace(bool active) : Module(active)
-{}
+{
+	scores["ZELLERYON"] = 999999999;
+	scores["NEIKAR"] = 800000000;
+	scores["PSYHOLIC"] = 700000000;
+	scores["DOGJOE"] = 500000000;
+}
 
 ModuleSceneSpace::~ModuleSceneSpace()
 {}
@@ -51,7 +56,7 @@ bool ModuleSceneSpace::Start()
 	//App->audio->PlayMusic("assets/Theme.wav", 1.0f);
 
 	enemySpawnTimer = SDL_GetTicks();
-
+	scoreBoardPosition = (float)SCREEN_HEIGHT;
 	return true;
 }
 
@@ -86,50 +91,48 @@ update_status ModuleSceneSpace::PreUpdate()
 // Update: draw background
 update_status ModuleSceneSpace::Update()
 {
+	PrintUI();
 	tickUpdate = SDL_GetTicks();
 
-	App->player->playerScore += 0.2;
 	if ((int)App->player->playerScore > topScore) topScore = App->player->playerScore;
 
 	if (App->player->lives > 0)
 	{
-		//if (!App->enemies->bossEncounter)
-		//{
-		//	if (App->enemies->triggerEnemies)
-		//	{
-		//		if (tickUpdate - enemySpawnTimer > 300.0f)
-		//		{
-		//			enemySpawnTimer = tickUpdate;
-		//			App->enemies->enemyWave(App->enemies->waveNum);
-		//			if (App->enemies->waveNum == 8) App->enemies->bossEncounter = true;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
-		//		{
-		//			App->enemies->triggerEnemies = true;
-		//			App->enemies->waveNum++;
-		//			LOG("NEXT WAVE -> Wave %i -------------------", App->enemies->waveNum);
-		//		}
-		//	}
-		//}
-		//else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
-		//{
-		//	Uint32 scoreBoardTimer = SDL_GetTicks();
-		//	if (tickUpdate - scoreBoardTimer > 2000.0f)
-		//	{
-		//		VictoryScreen();
-		//	}
-		//}
+		if (!App->enemies->bossEncounter)
+		{
+			if (App->enemies->triggerEnemies)
+			{
+				if (tickUpdate - enemySpawnTimer > 300.0f)
+				{
+					enemySpawnTimer = tickUpdate;
+					App->enemies->enemyWave(App->enemies->waveNum);
+					if (App->enemies->waveNum == 8) App->enemies->bossEncounter = true;
+				}
+			}
+			else
+			{
+				if (tickUpdate - enemySpawnTimer > 6000.0f && !App->enemies->aliveEnemy)
+				{
+					App->enemies->triggerEnemies = true;
+					App->enemies->waveNum++;
+				}
+			}
+		}
+		else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
+		{
+			Uint32 scoreBoardTimer = SDL_GetTicks();
+			if (tickUpdate - scoreBoardTimer > 2000.0f)
+			{
+				EndingAndScoreBoard();
+			}
+		}
 	}
 	else
 	{
-		GameOverScreen();
+		EndingAndScoreBoard();
 	}
 
-	//GenerateObstacles();
-	PrintUI();
+	if(!App->player->gotHit) GenerateObstacles();
 
 	return UPDATE_CONTINUE;
 }
@@ -182,7 +185,7 @@ void ModuleSceneSpace::GenerateObstacles()
 
 	if (!bossActive)
 	{
-		if (obstacleTimer1 < 10) obstacleTimer1++;
+		if (obstacleTimer1 < 20) obstacleTimer1++;
 		else
 		{
 			obstacleTimer1 = 0;
@@ -191,7 +194,7 @@ void ModuleSceneSpace::GenerateObstacles()
 			App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
 		}
 
-		if (obstacleTimer2 < 25) obstacleTimer2++;
+		if (obstacleTimer2 < 32) obstacleTimer2++;
 		else
 		{
 			obstacleTimer2 = 0;
@@ -204,17 +207,47 @@ void ModuleSceneSpace::GenerateObstacles()
 	}
 }
 
-void ModuleSceneSpace::GameOverScreen()
+void ModuleSceneSpace::EndingAndScoreBoard()
 {
-	string end = "GAME OVER";
+	SDL_Rect fullScreen = { 0, 0, SCREEN_WIDTH*SCREEN_SIZE, SCREEN_HEIGHT*SCREEN_SIZE };
+	App->renderer->DrawQuad(fullScreen, 0, 0, 0, 80);
+
 	int charWidth = App->fontManager->redFont->characterWidth;
 	int charHeight = App->fontManager->redFont->characterHeight;
-	App->fontManager->redFont->printText(end.c_str(), (SCREEN_WIDTH / 2) - (end.length()*charWidth / 2), SCREEN_HEIGHT / 2);
+	string end;
+
+	if (App->player->lives > 0)
+	{
+		end = "YOU WON!";
+		App->fontManager->greenFont->printText(end.c_str(), (SCREEN_WIDTH / 2) - (end.length()*charWidth / 2), 35.0f);
+	}
+	else
+	{
+		end = "GAME OVER";
+		App->fontManager->redFont->printText(end.c_str(), (SCREEN_WIDTH / 2) - (end.length()*charWidth / 2), 35.0f);
+	}
 	
-	if (App->fade->isFading() == false) App->fade->FadeToBlack((Module*)App->scene_intro, this, 4.0f);
-}
+	int counter = 0;
+	for (std::map<const char*, int>::iterator it = scores.begin(); it != scores.end(); ++it)
+	{
+		App->fontManager->redFont->printText(it->first, (SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
+		App->fontManager->redFont->printText(to_string(it->second).c_str(), ((3 * SCREEN_WIDTH) / 5), scoreBoardPosition + (charHeight + 5)*counter);
+		counter++;
+	}
 
-void ModuleSceneSpace::VictoryScreen()
-{
+	string player = "YOU";
+	App->fontManager->redFont->printText(player.c_str(), (SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
+	App->fontManager->redFont->printText(to_string((int)App->player->playerScore).c_str(), ((3 * SCREEN_WIDTH) / 5), scoreBoardPosition + (charHeight + 5)*counter);
+		
+	if (scoreBoardPosition > 80.0f) scoreBoardPosition -= 1.0f;
+	else
+	{
+		string thanks = "THANKS FOR PLAYING";
+		App->fontManager->blueFont->printText(thanks.c_str(), (SCREEN_WIDTH / 2) - (thanks.length()*charWidth / 2), (4*SCREEN_HEIGHT) / 5);
+	}
 
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
+	{
+		App->fade->FadeToBlack((Module*)App->scene_intro, this, 4.0f);
+	}
 }
