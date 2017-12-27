@@ -65,6 +65,7 @@ bool ModulePlayer::Start()
 	current_animation = &run;
 
 	initAnimationTimer = SDL_GetTicks();
+	invulnerableTimer = SDL_GetTicks();
 
 	return true;
 }
@@ -88,6 +89,11 @@ update_status ModulePlayer::Update()
 	playerHeight = current_animation->GetCurrentFrame().h;
 
 	Uint32 tickCheck = SDL_GetTicks();
+
+	if (tickCheck - invulnerableTimer > 2000.0f)
+	{
+		invulnerableState = false;
+	}
 
 	if (tickCheck - initAnimationTimer > 2500.0f && !gotTrip && !gotHit)
 	{
@@ -141,9 +147,7 @@ update_status ModulePlayer::Update()
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 		{
-			gotHit = true;
-			LoseOneLive();
-			//App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
+			App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
 		}
 	}
 	else
@@ -172,6 +176,9 @@ update_status ModulePlayer::Update()
 			{
 				if (lives > 0)
 				{
+					invulnerableState = true;
+					invulnerableTimer = SDL_GetTicks();
+
 					current_animation->animationWithoutLoopEnded = false;
 					current_animation->Reset();
 					gotHit = false;
@@ -179,6 +186,8 @@ update_status ModulePlayer::Update()
 					position.y = (float)SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
 				}
 			}
+
+			moveCollider();
 		}
 		else if (tickCheck - initAnimationTimer > 1000.f)
 		{
@@ -190,10 +199,14 @@ update_status ModulePlayer::Update()
 				modifyHorizonY();
 				checkHorizontalAnimation();
 			}
+
+			moveCollider();
 		}
 	}
 
 	// Draw everything --------------------------------------
+	if (invulnerableState) SDL_SetTextureAlphaMod(graphics, 100);
+	else SDL_SetTextureAlphaMod(graphics, 250);
 	BlitTarget* dataToBlit = new BlitTarget(graphics, position.x, position.y, playerDepth, (float)playerWidth, (float)playerHeight, &(current_animation->GetCurrentFrame()));
 
 	if (destroyed == false)
@@ -254,7 +267,7 @@ void ModulePlayer::modifyHorizonY() const
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	float newHorizonValue = (temp * ((float)FLOOR_Y_MAX - (float)FLOOR_Y_MIN)) + (float)FLOOR_Y_MIN;
 
-	App->renderer->horizonY = newHorizonValue;
+	App->renderer->actualHorizonY = newHorizonValue;
 }
 
 void ModulePlayer::setCharSpeed()
@@ -267,30 +280,26 @@ void ModulePlayer::setCharSpeed()
 
 bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
-	if (otherCollider->colType == NOLETHAL_D_OBSTACLE)
+	if(!invulnerableState)
 	{
-		gotTrip = true;
-	}
-	else
-	{
-		if (!gotHit)
+		if (otherCollider->colType == NOLETHAL_D_OBSTACLE && !gotHit)
 		{
-			gotHit = true;
-			LoseOneLive();
+			gotTrip = true;
+		}
+		else
+		{
+			if (!gotHit)
+			{
+				gotHit = true;
+				LoseOneLive();
+			}
 		}
 	}
+
 	return true;
 }
 
 void ModulePlayer::LoseOneLive()
 {
 	lives -= 1;
-	if (lives <= 0)
-	{
-		LOG("Player died!!");
-	}
-	else
-	{
-		LOG("Player lost one live!!");
-	}
 }

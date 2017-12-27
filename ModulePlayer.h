@@ -42,7 +42,8 @@ public:
 
 private:
 	Uint32 initAnimationTimer = 0;
-
+	Uint32 invulnerableTimer = 0;
+	bool invulnerableState = false;
 	void LoseOneLive();
 
 	const static float playerDepth;
