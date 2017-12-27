@@ -62,6 +62,7 @@ public:
 	int nextTopLine = 0;
 
 	float horizonY;
+	float actualHorizonY;
 	float increasingExtraPixelsX = 0.0f;
 	float playerSpeed = 0.0f;
 	float lineDivisor = 0.0f;

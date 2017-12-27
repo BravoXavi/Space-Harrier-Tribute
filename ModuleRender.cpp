@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModulePlayer.h"
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
@@ -11,6 +12,7 @@ const float ModuleRender::LINE_REDUCTION = 0.60f;
 ModuleRender::ModuleRender()
 {
 	horizonY = (float)FLOOR_Y_MIN;
+	actualHorizonY = (float)FLOOR_Y_MIN;
 
 	for (int i = 0; i < alphaLines; i++)
 	{
@@ -219,9 +221,15 @@ void ModuleRender::BackgroundBlit(SDL_Texture* background, float speed, int back
 bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section)
 {
 	bool ret = true;
-
 	SDL_Rect rect;
 	int textW, textH;
+
+	if (!App->player->gotHit)
+	{
+		if (horizonY > actualHorizonY - 0.3f) horizonY -= 0.3f;
+		else if (horizonY < actualHorizonY + 0.3f) horizonY += 0.3f;
+	}
+
 	SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
 
 	rect.w = SCREEN_WIDTH;
@@ -273,34 +281,36 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section)
 //Function moving the horizontal descending lines - Avoid modifying it unless absolutely necessary!! ( Messy but fast :) )
 void ModuleRender::AlphaVerticalLinesMove()
 {	
-	float baseLineHeight = (float)(horizonY * SCREEN_SIZE) / lineDivisor;
-
-	float startRenderPos = (float)SCREEN_HEIGHT * (float)SCREEN_SIZE - baseLineHeight * (1.0f - firstLinePositionPercentage);
-	float firstLineHeight = baseLineHeight * (1.0f - firstLinePositionPercentage) + baseLineHeight * (1.0f / LINE_REDUCTION) * (firstLinePositionPercentage);
-
-	float currentLineHeight = firstLineHeight;
-	float actualRenderPos = startRenderPos;
-	
-	int actualLineIndex = firstLineIndex;
-
-	if (actualLineIndex == 0) nextTopLine = alphaLines - 1;
-	else nextTopLine = actualLineIndex - 1;
-
-	bool reOrganizeLines = true;
-	while(reOrganizeLines) 
+	if (!App->player->gotHit)
 	{
-		float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
+		float baseLineHeight = (float)(horizonY * SCREEN_SIZE) / lineDivisor;
 
-		alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
-		renderLineValues[actualLineIndex] = actualRenderPos;
-		alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
+		float startRenderPos = (float)SCREEN_HEIGHT * (float)SCREEN_SIZE - baseLineHeight * (1.0f - firstLinePositionPercentage);
+		float firstLineHeight = baseLineHeight * (1.0f - firstLinePositionPercentage) + baseLineHeight * (1.0f / LINE_REDUCTION) * (firstLinePositionPercentage);
 
-		currentLineHeight = currentLineHeight * LINE_REDUCTION;
-		actualRenderPos -= currentLineHeight;
-		actualLineIndex = (actualLineIndex + 1) % alphaLines;
-		reOrganizeLines = !(actualLineIndex == firstLineIndex);
+		float currentLineHeight = firstLineHeight;
+		float actualRenderPos = startRenderPos;
+
+		int actualLineIndex = firstLineIndex;
+
+		if (actualLineIndex == 0) nextTopLine = alphaLines - 1;
+		else nextTopLine = actualLineIndex - 1;
+
+		bool reOrganizeLines = true;
+		while (reOrganizeLines)
+		{
+			float currentSegmentPrintedHeight = currentLineHeight * (1.0f - LINE_REDUCTION);
+
+			alphaLinesArray[actualLineIndex].y = (int)actualRenderPos;
+			renderLineValues[actualLineIndex] = actualRenderPos;
+			alphaLinesArray[actualLineIndex].h = (int)currentSegmentPrintedHeight;
+
+			currentLineHeight = currentLineHeight * LINE_REDUCTION;
+			actualRenderPos -= currentLineHeight;
+			actualLineIndex = (actualLineIndex + 1) % alphaLines;
+			reOrganizeLines = !(actualLineIndex == firstLineIndex);
+		}
 	}
-
 	for (int i = 0; i < alphaLines; i++)
 	{
 		DrawQuad(alphaLinesArray[i], 0, 100, 0, 100);
