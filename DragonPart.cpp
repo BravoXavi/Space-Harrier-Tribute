@@ -5,6 +5,7 @@
 #include "ModuleTime.h"
 #include "ModuleParticles.h"
 #include "ModuleEnemy.h"
+#include "ModulePlayer.h"
 
 DragonPart::DragonPart()
 {}
@@ -41,6 +42,7 @@ void DragonPart::Update()
 		collider->to_delete = true;
 		to_delete = true;
 		App->particles->AddParticle(App->particles->explosion, screenPosition.x, screenPosition.y, screenPosition.z, EXPLOSION);
+		App->player->playerScore += 2000.0f;
 	}
 
 	if (superiorBodyPart != nullptr)
