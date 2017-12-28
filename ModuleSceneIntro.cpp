@@ -30,6 +30,7 @@ bool ModuleSceneIntro::Start()
 	if(fx == 0)
 		fx = App->audio->LoadFx("assets/sfx/SFX_Intro.wav");
 
+	App->audio->StopMusic();
 	App->audio->PlayFx(fx);
 
 	return true;
