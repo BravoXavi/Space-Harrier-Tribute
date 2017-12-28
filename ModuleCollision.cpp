@@ -8,6 +8,7 @@ using namespace std;
 
 ModuleCollision::ModuleCollision()
 {
+	//Create the matrix that will decide if a collision is possible (true) or won't affect to the gameplay (false)
 	collisionMatrix[PLAYER][PLAYER] = false;
 	collisionMatrix[PLAYER][P_LASER] = false;
 
@@ -35,7 +36,6 @@ ModuleCollision::ModuleCollision()
 	collisionMatrix[ND_ENEMY][ND_ENEMY] = false;
 }
 
-// Destructor
 ModuleCollision::~ModuleCollision()
 {}
 
@@ -58,6 +58,7 @@ update_status ModuleCollision::PreUpdate()
 
 update_status ModuleCollision::Update()
 {
+	//Check if any collision is happening and, in case of positive response, call the corresponding module callbacks to react (Minimum possible checks ensured)
 	bool collisionDone = false;
 
 	for (list<Collider*>::const_iterator it = colliders.cbegin(), end = colliders.cend(); it != end; it++)
@@ -93,6 +94,7 @@ update_status ModuleCollision::Update()
 	return UPDATE_CONTINUE;
 }
 
+//Debug draw of colliders (F1 key)
 void ModuleCollision::DebugDraw()
 {
 	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
@@ -112,10 +114,10 @@ bool ModuleCollision::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colType, int zDepth, Module* callback)
+//Add a new collider
+Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colType, const int& zDepth, Module* callback)
 {
 	Collider* ret = new Collider(rect, colType, zDepth, callback);
-
 	colliders.push_back(ret);
 
 	return ret;
@@ -123,6 +125,7 @@ Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colTy
 
 // -----------------------------------------------------
 
+//Check if two certain colliders are generating a collision.
 bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 {
 	bool xColl = true;

@@ -30,7 +30,7 @@ struct Collider
 	int depth = 0;
 	bool to_delete = false;
 	
-	Collider(SDL_Rect rectangle, collisionType colType, int depth, Module* callback) : // expand this call if you need to
+	Collider(SDL_Rect rectangle, collisionType colType, int depth, Module* callback) :
 		rect(rectangle),
 		colType(colType),
 		depth(depth),
@@ -59,7 +59,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void DebugDraw();
-	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, int z, Module* callback);	
+
+	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, const int& z, Module* callback);	
 
 private:
 	std::list<Collider*> colliders;
