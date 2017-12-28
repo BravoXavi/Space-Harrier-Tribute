@@ -16,8 +16,8 @@ ModuleShadows::~ModuleShadows()
 
 bool ModuleShadows::Start()
 {
-	graphics = App->textures->Load("assets/Character_full.png");
-	shadowPosition = { 197, 76, 43, 20 };
+	graphics = App->textures->Load("assets/shadow.png");
+	shadowPosition = { 2, 3, 43, 20 };
 
 	return true;
 }
