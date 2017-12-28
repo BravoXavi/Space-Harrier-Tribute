@@ -1,7 +1,7 @@
 #ifndef __MODULEPARTICLES_H__
 #define __MODULEPARTICLES_H__
 
-#include<list>
+#include <list>
 #include "Globals.h"
 #include "Module.h"
 #include "Animation.h"

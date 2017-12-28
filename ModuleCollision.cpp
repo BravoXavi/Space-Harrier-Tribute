@@ -124,6 +124,7 @@ Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colTy
 }
 
 // -----------------------------------------------------
+// -----------------------------------------------------
 
 //Check if two certain colliders are generating a collision.
 const bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const

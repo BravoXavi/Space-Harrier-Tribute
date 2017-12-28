@@ -30,7 +30,7 @@ struct Collider
 	int depth = 0;
 	bool to_delete = false;
 	
-	Collider(SDL_Rect rectangle, collisionType colType, int depth, Module* callback) :
+	Collider(SDL_Rect rectangle, collisionType colType, const int& depth, Module* callback) :
 		rect(rectangle),
 		colType(colType),
 		depth(depth),
