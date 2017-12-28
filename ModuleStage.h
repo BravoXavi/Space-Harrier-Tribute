@@ -24,7 +24,7 @@ private:
 	void EndingAndScoreBoard();
 
 public:
-	uint startFx;
+	uint introVoiceSFX;
 	Uint32 enemySpawnTimer = 0;
 	Uint32 tickUpdate = 0;
 

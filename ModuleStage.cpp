@@ -43,7 +43,7 @@ bool ModuleStage::Start()
 	topScoreBanner = { 9, 15, 32, 14 };
 	liveIcon = { 20, 31, 10, 16 };
 
-	startFx = App->audio->LoadFx("assets/initVoice.wav");
+	introVoiceSFX = App->audio->LoadFx("assets/sfx/VOICE_Welcome.wav");
 
 	App->player->Enable();
 	App->particles->Enable();
@@ -52,8 +52,8 @@ bool ModuleStage::Start()
 	App->obstacles->Enable();
 	App->shadows->Enable();
 
-	//App->audio->PlayFx(startFx);
-	//App->audio->PlayMusic("assets/Theme.wav", 1.0f);
+	App->audio->PlayFx(introVoiceSFX);
+	App->audio->PlayMusic("assets/music/MOOT_Theme.wav", 1.0f);
 
 	enemySpawnTimer = SDL_GetTicks();
 	scoreBoardPosition = (float)SCREEN_HEIGHT;
@@ -100,6 +100,8 @@ update_status ModuleStage::Update()
 	{
 		if (!App->enemies->bossEncounter)
 		{
+			App->player->playerScore += 0.3f;
+
 			if (App->enemies->triggerEnemies)
 			{
 				if (tickUpdate - enemySpawnTimer > 300.0f)
@@ -115,6 +117,7 @@ update_status ModuleStage::Update()
 				{
 					App->enemies->triggerEnemies = true;
 					App->enemies->waveNum++;
+					if(App->enemies->waveNum == 8) App->audio->PlayMusic("assets/music/MOOT_BossTheme.wav", 0.0f);
 				}
 			}
 		}

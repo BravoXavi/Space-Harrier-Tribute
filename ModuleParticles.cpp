@@ -21,7 +21,7 @@ bool ModuleParticles::Start()
 	graphics = App->textures->Load("assets/particle_models.png");
 
 	//PlayerLaser particle (Main attack)
-	p_laser.fxIndex = App->audio->LoadFx("rtype/laser.wav");
+	p_laser.fxIndex = App->audio->LoadFx("assets/sfx/PLAYER_Shot.wav");
 	p_laser.anim.frames.push_back({ 1, 1, 91, 61 });
 	p_laser.anim.frames.push_back({ 95, 0, 91, 61 });
 	p_laser.anim.frames.push_back({ 188, 1, 91, 61 });
@@ -32,7 +32,6 @@ bool ModuleParticles::Start()
 	p_laser.colType = P_LASER;
 
 	//EnemyLaser particle. The behaviour is the same as PlayerLaser but reversed and with a certain target
-	//e_laser.fxIndex = App->audio->LoadFx("Insert audio path here");
 	e_laser.anim.frames.push_back({ 34, 105, 68, 45});
 	e_laser.anim.frames.push_back({ 117, 101, 62, 53 });
 	e_laser.anim.frames.push_back({ 201, 97, 54, 61 });
@@ -70,6 +69,8 @@ bool ModuleParticles::Start()
 	explosion.speed = -0.5f;
 	explosion.anim.loop = false;
 	explosion.colType = EXPLOSION;
+
+	repelledShotSFX = App->audio->LoadFx("assets/sfx/SFX_RepelledBullet.wav");
 
 	return true;
 }
@@ -156,6 +157,7 @@ bool ModuleParticles::onCollision(Collider* moduleOwner, Collider* otherCollider
 			else if (otherCollider->colType == ND_ENEMY)
 			{
 				//Bullet gets repelled and the enemy remains unmodified
+				App->audio->PlayFx(repelledShotSFX);
 				(*it)->repelled = true;
 			}
 		}

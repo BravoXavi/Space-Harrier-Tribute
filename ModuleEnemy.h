@@ -32,6 +32,9 @@ public:
 	void enemyWave(const int& selector);
 
 private:
+	uint spaceshipSFX;
+	uint tomosSFX;
+
 	std::list<Enemy*> active;
 	Uint32 spawnTimer;
 	int enemyWaveCount;

@@ -48,7 +48,6 @@ public:
 	float depthSpeed = 0.0f;
 	int moveSet = 1;
 	bool to_delete = false;
-	unsigned int fxIndex;
 
 	float oscillationAngle = 0.0f;
 	float oscillationRadius = 0.0f;

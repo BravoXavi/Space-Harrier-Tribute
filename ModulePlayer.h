@@ -34,13 +34,17 @@ public:
 	Collider* collider = nullptr;
 	fPoint position = { 0.0f, 0.0f, 0.0f };	
 	
-	int lives = 1;
+	int lives = 10;
 	float playerScore = 0.0f;
 
 	bool gotHit = false;
 	bool gotTrip = false;
 
 private:
+	uint deathSFX;
+	uint getreadySFX;
+	uint tripSFX;
+
 	Uint32 initAnimationTimer = 0;
 	Uint32 invulnerableTimer = 0;
 	bool invulnerableState = false;

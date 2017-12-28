@@ -48,6 +48,7 @@ public:
 	void AddParticle(const Particle& particle, float x, float y, float z, collisionType colType);
 
 private:
+	uint repelledShotSFX;
 	std::list<Particle*> active;
 
 public:

@@ -10,6 +10,7 @@
 #include "ModuleEnemy.h"
 #include "ModuleTime.h"
 #include "ModuleShadows.h"
+#include "ModuleAudio.h"
 
 const float ModulePlayer::playerDepth = 0.0f;
 
@@ -66,6 +67,10 @@ bool ModulePlayer::Start()
 
 	initAnimationTimer = SDL_GetTicks();
 	invulnerableTimer = SDL_GetTicks();
+
+	deathSFX = App->audio->LoadFx("assets/sfx/VOICE_Death.wav");
+	tripSFX = App->audio->LoadFx("assets/sfx/VOICE_Ouch.wav");
+	getreadySFX = App->audio->LoadFx("assets/sfx/VOICE_GetReady.wav");
 
 	return true;
 }
@@ -178,7 +183,7 @@ update_status ModulePlayer::Update()
 				{
 					invulnerableState = true;
 					invulnerableTimer = SDL_GetTicks();
-
+					App->audio->PlayFx(getreadySFX);
 					current_animation->animationWithoutLoopEnded = false;
 					current_animation->Reset();
 					gotHit = false;
@@ -284,12 +289,17 @@ bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider)
 	{
 		if (otherCollider->colType == NOLETHAL_D_OBSTACLE && !gotHit)
 		{
-			gotTrip = true;
+			if (!gotTrip)
+			{
+				App->audio->PlayFx(tripSFX);
+				gotTrip = true;
+			}
 		}
 		else
 		{
 			if (!gotHit)
 			{
+				App->audio->PlayFx(deathSFX);
 				gotHit = true;
 				LoseOneLive();
 			}

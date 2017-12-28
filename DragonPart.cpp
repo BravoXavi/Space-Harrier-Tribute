@@ -17,7 +17,6 @@ DragonPart::DragonPart(const Enemy& e, const fPoint& pos, const collisionType& c
 	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);
 	moveSet = moveSelector;
 	enemyAnimation = e.enemyAnimation;
-	fxIndex = e.fxIndex;
 	uniDimensionalSpeed = e.uniDimensionalSpeed;
 	depthSpeed = e.depthSpeed;
 

@@ -16,7 +16,6 @@ AlienShip::AlienShip(const Enemy& aS, const fPoint& pos, const collisionType& cT
 	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);
 	moveSet = moveSelector;
 	enemyAnimation = aS.enemyAnimation;
-	fxIndex = aS.fxIndex;
 	uniDimensionalSpeed = aS.uniDimensionalSpeed;
 	depthSpeed = aS.depthSpeed;
 

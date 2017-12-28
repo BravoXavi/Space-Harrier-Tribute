@@ -17,7 +17,6 @@ MetalFlower::MetalFlower(const Enemy& e, const fPoint& pos, const collisionType&
 	moveSet = moveSelector;
 	colType = cType;
 	enemyAnimation = e.enemyAnimation;
-	fxIndex = e.fxIndex;
 	uniDimensionalSpeed = e.uniDimensionalSpeed;
 	depthSpeed = e.depthSpeed;
 

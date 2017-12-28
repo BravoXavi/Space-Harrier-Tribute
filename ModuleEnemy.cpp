@@ -25,7 +25,6 @@ bool ModuleEnemy::Start()
 	graphics = App->textures->Load("assets/enemiesobstacles.png");
 
 	//ALIENSHIP
-	alienShip.fxIndex = App->audio->LoadFx("rtype/laser.wav");
 	alienShip.enemyAnimation.frames.push_back({ 198, 127, 46, 30 });
 	alienShip.enemyAnimation.speed = 0.1f;
 	alienShip.worldPosition = { 0, 0, MAX_Z };
@@ -51,12 +50,6 @@ bool ModuleEnemy::Start()
 	//DRAGON - Head
 	dragonHead.enemyAnimation.frames.push_back({ 347, 49, 65, 104 });
 	dragonHead.enemyAnimation.frames.push_back({ 268, 48, 69, 108 });
-	//dragonHead.damaged.frames.push_back({ 347, 165, 65, 104 });
-	//dragonHead.damaged.frames.push_back({ 268, 164, 69, 108 });
-	//dragonHead.damaged2.frames.push_back({ 347, 281, 65, 104 });
-	//dragonHead.damaged2.frames.push_back({ 268, 280, 69, 108 });
-	//dragonHead.damaged3.frames.push_back({ 347, 397, 65, 104 });
-	//dragonHead.damaged3.frames.push_back({ 268, 396, 69, 108 });
 
 	dragonHead.enemyAnimation.speed = 0.0f;
 	dragonHead.worldPosition = { 0, 0, MAX_Z };
@@ -68,9 +61,6 @@ bool ModuleEnemy::Start()
 
 	//DRAGON - Body
 	dragonBody.enemyAnimation.frames.push_back({ 429, 68, 111, 71 });
-	//dragonBody.damaged.frames.push_back({ 429, 184, 111, 71 });
-	//dragonBody.damaged2.frames.push_back({ 429, 300, 111, 71 });
-	//dragonBody.damaged3.frames.push_back({ 429, 416, 111, 71 });
 	dragonBody.enemyAnimation.speed = 0.0f;
 	dragonBody.colType = ND_ENEMY;
 	dragonBody.uniDimensionalSpeed = 130.0f;
@@ -80,9 +70,6 @@ bool ModuleEnemy::Start()
 
 	//DRAGON - Tail
 	dragonTail.enemyAnimation.frames.push_back({ 552, 60, 94, 89 });
-	//dragonTail.damaged.frames.push_back({ 552, 176, 94, 89 });
-	//dragonTail.damaged2.frames.push_back({ 552, 292, 94, 89 });
-	//dragonTail.damaged3.frames.push_back({ 552, 408, 94, 89 });
 	dragonTail.enemyAnimation.speed = 0.0f;
 	dragonTail.colType = ND_ENEMY;
 	dragonTail.uniDimensionalSpeed = 130.0f;
@@ -90,13 +77,15 @@ bool ModuleEnemy::Start()
 	dragonTail.worldPosition = { 0, 0, MAX_Z };
 	dragonTail.colType = ENEMY;
 
-
 	spawnTimer = 0;
 	enemyWaveCount = 0;
 	waveNum = 0;
 	triggerEnemies = false;
 	bossEncounter = false;
 	aliveEnemy = false;
+
+	spaceshipSFX = App->audio->LoadFx("assets/sfx/ENEMY_Alienship.wav");
+	tomosSFX = App->audio->LoadFx("assets/sfx/ENEMY_Tomos.wav");
 
 	return true;
 }
@@ -221,6 +210,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 	switch (selector)
 	{
 		case 1:
+			if(enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 6)
 			{			
 				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT / 3.0f, 17.0f, ENEMY, 1);
@@ -234,6 +224,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 			break;
 
 		case 2:
+			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 3)
 			{
 				switch (enemyWaveCount)
@@ -258,6 +249,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 			break;
 
 		case 3:
+			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 11)
 			{
 				if( enemyWaveCount < 5 ) AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
@@ -271,6 +263,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 			}
 			break;
 		case 4:
+			if (enemyWaveCount == 0) App->audio->PlayFx(tomosSFX);
 			//METALFLOWER wave needs a certain oscillation angle for some of the enemies
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, 0.0f);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (2.0f * (float)M_PI) / 3.0f);
@@ -278,6 +271,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 			triggerEnemies = false;
 			break;
 		case 5:
+			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 7)
 			{
 				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, ((3.0f * (float)SCREEN_HEIGHT) / 4.0f) - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 4);
@@ -290,6 +284,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 			}
 			break;
 		case 6:
+			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 6)
 			{
 				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 5);
@@ -304,6 +299,7 @@ void ModuleEnemy::enemyWave(const int& selector)
 			break;
 		case 7:
 			//METALFLOWER wave needs a certain oscillation angle for some of the enemies
+			if (enemyWaveCount == 0) App->audio->PlayFx(tomosSFX);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, 0.0f);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (2.0f * (float)M_PI) / 3.0f);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (4.0f * (float)M_PI) / 3.0f);
