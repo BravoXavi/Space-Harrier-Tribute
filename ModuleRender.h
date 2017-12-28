@@ -71,6 +71,8 @@ public:
 	float backgroundOffset_BF = 0.0f;
 	float renderLineValues[alphaLines];
 
+	bool stopUpdating = false;
+
 	std::map<int, std::vector<BlitTarget>> depthBuffer;
 	SDL_Rect alphaLinesArray[alphaLines];
 

@@ -55,10 +55,14 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 
+	lives = PLAYER_LIVES;
+	gotHit = false;
+	gotTrip = false;
+
 	graphics = App->textures->Load("assets/character.png");
 	destroyed = false;
-	position.x = (float)(SCREEN_WIDTH / 2) - (current_animation->GetCurrentFrame().w / 2);
-	position.y = (float)(SCREEN_HEIGHT - current_animation->GetCurrentFrame().h);
+	position.x = (float)(SCREEN_WIDTH / 2) - (run.GetCurrentFrame().w / 2);
+	position.y = (float)(SCREEN_HEIGHT - run.GetCurrentFrame().h);
 
 	collider = App->collision->AddCollider({ (int)position.x * SCREEN_SIZE, (int)position.y * SCREEN_SIZE, current_animation->GetCurrentFrame().w * SCREEN_SIZE, current_animation->GetCurrentFrame().h * SCREEN_SIZE }, PLAYER, (int)playerDepth, App->player);
 
@@ -100,7 +104,7 @@ update_status ModulePlayer::Update()
 		invulnerableState = false;
 	}
 
-	if (tickCheck - initAnimationTimer > 2500.0f && !gotTrip && !gotHit)
+	if (tickCheck - initAnimationTimer > 2500.0f && !gotTrip && !gotHit && !App->renderer->stopUpdating)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
@@ -186,6 +190,7 @@ update_status ModulePlayer::Update()
 					App->audio->PlayFx(getreadySFX);
 					current_animation->animationWithoutLoopEnded = false;
 					current_animation->Reset();
+					App->renderer->stopUpdating = false;
 					gotHit = false;
 					current_animation = &run;
 					position.y = (float)SCREEN_HEIGHT - current_animation->GetCurrentFrame().h;
@@ -300,6 +305,7 @@ bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider)
 			if (!gotHit)
 			{
 				App->audio->PlayFx(deathSFX);
+				App->renderer->stopUpdating = true;
 				gotHit = true;
 				LoseOneLive();
 			}

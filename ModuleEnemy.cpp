@@ -126,7 +126,7 @@ update_status ModuleEnemy::Update()
 	{
 		Enemy* e = *it;
 
-		if(!App->player->gotHit) e->Update();
+		if(!App->renderer->stopUpdating) e->Update();
 
 		App->renderer->depthBuffer[(int)e->dataToBlit->z].push_back(*e->dataToBlit);
 		App->shadows->DrawShadow(e->screenPosition.x, 0, e->screenPosition.z, e->dataToBlit->newWidth);

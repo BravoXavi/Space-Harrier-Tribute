@@ -16,7 +16,6 @@ public:
 	bool isFading() const;
 
 private:
-
 	Uint32 start_time = 0;
 	Uint32 total_time = 0;
 	bool fading_in = true;

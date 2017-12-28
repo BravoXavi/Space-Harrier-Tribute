@@ -59,7 +59,6 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void DebugDraw();
-
 	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, const int& z, Module* callback);	
 
 private:

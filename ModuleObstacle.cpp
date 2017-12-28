@@ -78,7 +78,7 @@ update_status ModuleObstacle::Update()
 	{
 		Obstacle* o = *it;
 
-		if(!App->player->gotHit) o->Update();
+		if(!App->renderer->stopUpdating) o->Update();
 
 		if (o->shadowCast) App->shadows->DrawShadow(o->screenPosition.x, o->screenPosition.y, o->screenPosition.z, o->dataToBlit->newWidth);
 		App->renderer->depthBuffer[(int)o->dataToBlit->z].push_back(*o->dataToBlit);

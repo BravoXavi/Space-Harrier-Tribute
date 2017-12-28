@@ -224,7 +224,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section)
 	SDL_Rect rect;
 	int textW, textH;
 
-	if (!App->player->gotHit)
+	if (!stopUpdating)
 	{
 		if (horizonY > actualHorizonY - 0.3f) horizonY -= 0.3f;
 		else if (horizonY < actualHorizonY + 0.3f) horizonY += 0.3f;
@@ -281,7 +281,7 @@ bool ModuleRender::FloorBlit(SDL_Texture* texture, SDL_Rect* section)
 //Function moving the horizontal descending lines - Avoid modifying it unless absolutely necessary!! ( Messy but fast :) )
 void ModuleRender::AlphaVerticalLinesMove()
 {	
-	if (!App->player->gotHit)
+	if (!stopUpdating)
 	{
 		float baseLineHeight = (float)(horizonY * SCREEN_SIZE) / lineDivisor;
 

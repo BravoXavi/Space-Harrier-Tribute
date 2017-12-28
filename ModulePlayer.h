@@ -34,7 +34,7 @@ public:
 	Collider* collider = nullptr;
 	fPoint position = { 0.0f, 0.0f, 0.0f };	
 	
-	int lives = 10;
+	int lives;
 	float playerScore = 0.0f;
 
 	bool gotHit = false;
