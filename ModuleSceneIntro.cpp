@@ -8,8 +8,6 @@
 #include "ModuleSceneIntro.h"
 #include "FontManager.h"
 
-// Reference at https://www.youtube.com/watch?v=OEhmUuehGOA
-
 ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active)
 {}
 
@@ -30,7 +28,7 @@ bool ModuleSceneIntro::Start()
 	screenSize = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 	if(fx == 0)
-		fx = App->audio->LoadFx("assets/introSound.wav");
+		fx = App->audio->LoadFx("assets/sfx/SFX_Intro.wav");
 
 	App->audio->PlayFx(fx);
 
@@ -40,7 +38,7 @@ bool ModuleSceneIntro::Start()
 // UnLoad assets
 bool ModuleSceneIntro::CleanUp()
 {
-	LOG("Unloading space scene");
+	LOG("Unloading Intro Scene");
 
 	App->textures->Unload(menuTexture);
 
