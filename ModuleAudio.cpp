@@ -151,3 +151,15 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 
 	return ret;
 }
+
+//Stop the currently playing music
+const void ModuleAudio::StopMusic() const
+{
+	Mix_HaltMusic();
+}
+
+//Return true if any music is beeing played
+const bool ModuleAudio::isMusicPlaying() const
+{
+	return (Mix_PlayingMusic() == 1);
+}
