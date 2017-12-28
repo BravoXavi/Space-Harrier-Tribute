@@ -29,13 +29,8 @@ update_status ModuleTime::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
-float ModuleTime::getDeltaTime() const
+//Return the delta value to apply to speed values
+const float ModuleTime::getDeltaTime() const
 {
 	return deltaTime;
-}
-
-// Called before quitting
-bool ModuleTime::CleanUp()
-{
-	return true;
 }

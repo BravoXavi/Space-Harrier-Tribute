@@ -11,14 +11,11 @@ public:
 
 	bool Init();
 	update_status PreUpdate();
-	bool CleanUp();
-
-	float getDeltaTime() const;
+	const float getDeltaTime() const;
 
 private:
 	float deltaTime = 0.0f;
 	float lastDeltaTime = 0.0f;
-
 };
 
 #endif // __MODULETIME_H__
