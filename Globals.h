@@ -51,6 +51,7 @@ typedef unsigned int uint;
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 224
 #define SCREEN_DIVISOR SCREEN_WIDTH/5
+#define PLAYER_LIVES 3
 #define FULLSCREEN false
 #define VSYNC true
 #define TITLE "Space Harrier - Xavier Bravo 2017"
