@@ -20,7 +20,7 @@ private:
 	float oscillationX = 0.0f;
 	float oscillationY = 0.0f;
 
-	Uint32 fireBallTimer = 0.0f;
+	Uint32 fireBallTimer = 0;
 };
 
 #endif // __DRAGONPART_H__

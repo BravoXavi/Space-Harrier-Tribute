@@ -46,8 +46,8 @@ void Font::printText(const char* textToWrite, const float& x, const float& y, fl
 
 		if (resize != 1.0f)
 		{
-			int resizedWidth = simbolSize.w * resize;
-			int resizedHeight = simbolSize.h * resize;
+			int resizedWidth = (int)(simbolSize.w * resize);
+			int resizedHeight = (int)(simbolSize.h * resize);
 			App->renderer->Blit(fontPNG, x + ((float)i * resizedWidth), y, &simbolSize, (float)resizedWidth, (float)resizedHeight);
 		}
 		else

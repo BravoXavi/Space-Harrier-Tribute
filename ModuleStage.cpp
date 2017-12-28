@@ -7,14 +7,14 @@
 #include "ModuleCollision.h"
 #include "ModuleInput.h"
 #include "ModuleParticles.h"
-#include "ModuleSceneSpace.h"
+#include "ModuleStage.h"
 #include "ModuleObstacle.h"
 #include "ModuleShadows.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleEnemy.h"
 #include "FontManager.h"
 
-ModuleSceneSpace::ModuleSceneSpace(bool active) : Module(active)
+ModuleStage::ModuleStage(bool active) : Module(active)
 {
 	scores["ZELLERYON"] = 999999999;
 	scores["NEIKAR"] = 800000000;
@@ -22,11 +22,11 @@ ModuleSceneSpace::ModuleSceneSpace(bool active) : Module(active)
 	scores["DOGJOE"] = 500000000;
 }
 
-ModuleSceneSpace::~ModuleSceneSpace()
+ModuleStage::~ModuleStage()
 {}
 
 // Load assets
-bool ModuleSceneSpace::Start()
+bool ModuleStage::Start()
 {
 	LOG("Loading space scene");
 	
@@ -61,7 +61,7 @@ bool ModuleSceneSpace::Start()
 }
 
 // UnLoad assets
-bool ModuleSceneSpace::CleanUp()
+bool ModuleStage::CleanUp()
 {
 	LOG("Unloading space scene");
 
@@ -79,7 +79,7 @@ bool ModuleSceneSpace::CleanUp()
 }
 
 //Draw Floor, Background, and extras (All this parts will ALWAYS stay in the back of the screen)
-update_status ModuleSceneSpace::PreUpdate()
+update_status ModuleStage::PreUpdate()
 {
 	App->renderer->BackgroundBlit(background, 0.2f, 1);
 	App->renderer->BackgroundBlit(backgroundFront, 0.5f, 2);
@@ -89,12 +89,12 @@ update_status ModuleSceneSpace::PreUpdate()
 }
 
 // Update: draw background
-update_status ModuleSceneSpace::Update()
+update_status ModuleStage::Update()
 {
 	PrintUI();
 	tickUpdate = SDL_GetTicks();
 
-	if ((int)App->player->playerScore > topScore) topScore = App->player->playerScore;
+	if ((int)App->player->playerScore > topScore) topScore = (int)App->player->playerScore;
 
 	if (App->player->lives > 0)
 	{
@@ -137,7 +137,7 @@ update_status ModuleSceneSpace::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleSceneSpace::PrintUI()
+void ModuleStage::PrintUI()
 {
 	string stage = "STAGE " + to_string(stageNumber);
 	int charWidth = App->fontManager->blueFont->characterWidth;
@@ -145,47 +145,47 @@ void ModuleSceneSpace::PrintUI()
 
 	if (App->enemies->waveNum == 0 && (tickUpdate - enemySpawnTimer < 3000.0f))
 	{
-		App->fontManager->blueFont->printText(stage.c_str(), (SCREEN_WIDTH/2) - (stage.length()*charWidth/2), SCREEN_HEIGHT/2);
-		App->fontManager->blueFont->printText(stageName, (SCREEN_WIDTH / 2) - (strlen(stageName)*charWidth/2), SCREEN_HEIGHT/2 + charHeight + 2);
+		App->fontManager->blueFont->printText(stage.c_str(), ((float)SCREEN_WIDTH / 2.0f) - (stage.length()*charWidth/2.0f), (float)SCREEN_HEIGHT/2.0f);
+		App->fontManager->blueFont->printText(stageName, ((float)SCREEN_WIDTH / 2.0f) - (strlen(stageName)*charWidth/2.0f), (float)SCREEN_HEIGHT/2.0f + (float)charHeight + 2.0f);
 	}
 
 	//Stage number
-	App->fontManager->blueFont->printText(stage.c_str(), SCREEN_WIDTH - stage.length()*charWidth, SCREEN_HEIGHT - charHeight, 0.8f);
+	App->fontManager->blueFont->printText(stage.c_str(), (float)(SCREEN_WIDTH - stage.length()*charWidth), (float)(SCREEN_HEIGHT - charHeight), 0.8f);
 
 	//Top Score info
 	int xPos = 0;
-	int resizedWidth = topScoreBanner.w / 1.5;
-	int resizedHeight = topScoreBanner.h / 1.5;
-	App->renderer->Blit(gui, xPos, resizedHeight/2, &topScoreBanner, topScoreBanner.w / 1.5, topScoreBanner.h / 1.5);
+	int resizedWidth = (int)(topScoreBanner.w / 1.5f);
+	int resizedHeight = (int)(topScoreBanner.h / 1.5f);
+	App->renderer->Blit(gui, (float)xPos, (float)(resizedHeight/2), &topScoreBanner, (float)(topScoreBanner.w / 1.5f), (float)(topScoreBanner.h / 1.5f));
 
 	xPos += resizedWidth + 4;
-	App->fontManager->redFont->printText(to_string(topScore).c_str(), xPos, 6, 0.8f);
+	App->fontManager->redFont->printText(to_string(topScore).c_str(), (float)xPos, 6.0f, 0.8f);
 
 	//Actual Score info
-	resizedWidth = actualScoreBanner.w / 1.5;
-	resizedHeight = actualScoreBanner.h / 1.5;
-	xPos = 2.5*SCREEN_WIDTH/4;
-	App->renderer->Blit(gui, xPos, resizedHeight / 2, &actualScoreBanner, actualScoreBanner.w / 1.5, actualScoreBanner.h / 1.5);
+	resizedWidth = (int)(actualScoreBanner.w / 1.5f);
+	resizedHeight = (int)(actualScoreBanner.h / 1.5f);
+	xPos = (int)(2.5*SCREEN_WIDTH/4);
+	App->renderer->Blit(gui, (float)xPos, (float)(resizedHeight / 2), &actualScoreBanner, (float)(actualScoreBanner.w / 1.5f), (float)(actualScoreBanner.h / 1.5f));
 
 	xPos += resizedWidth + 4;
-	App->fontManager->greenFont->printText(to_string((int)App->player->playerScore).c_str(), xPos, 6, 0.8f);
+	App->fontManager->greenFont->printText(to_string((int)App->player->playerScore).c_str(), (float)xPos, 6.0f, 0.8f);
 
 	//Lives info
 	resizedWidth = liveIcon.w / 2;
 	resizedHeight = liveIcon.h / 2;
 	for (int i = 0; i < App->player->lives; i++)
 	{
-		App->renderer->Blit(gui, 4 + (i * resizedWidth), SCREEN_HEIGHT - resizedHeight - 2, &liveIcon, resizedWidth, resizedHeight);
+		App->renderer->Blit(gui, (float)(4 + (i * resizedWidth)), (float)(SCREEN_HEIGHT - resizedHeight - 2), &liveIcon, (float)resizedWidth, (float)resizedHeight);
 	}
 }
 
-void ModuleSceneSpace::GenerateObstacles()
+void ModuleStage::GenerateObstacles()
 {
 	int randX, randY = 0;
 
 	if (!bossActive)
 	{
-		if (obstacleTimer1 < 20) obstacleTimer1++;
+		if (obstacleTimer1 < 15) obstacleTimer1++;
 		else
 		{
 			obstacleTimer1 = 0;
@@ -194,7 +194,7 @@ void ModuleSceneSpace::GenerateObstacles()
 			App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
 		}
 
-		if (obstacleTimer2 < 32) obstacleTimer2++;
+		if (obstacleTimer2 < 25) obstacleTimer2++;
 		else
 		{
 			obstacleTimer2 = 0;
@@ -207,7 +207,7 @@ void ModuleSceneSpace::GenerateObstacles()
 	}
 }
 
-void ModuleSceneSpace::EndingAndScoreBoard()
+void ModuleStage::EndingAndScoreBoard()
 {
 	SDL_Rect fullScreen = { 0, 0, SCREEN_WIDTH*SCREEN_SIZE, SCREEN_HEIGHT*SCREEN_SIZE };
 	App->renderer->DrawQuad(fullScreen, 0, 0, 0, 80);
@@ -219,19 +219,19 @@ void ModuleSceneSpace::EndingAndScoreBoard()
 	if (App->player->lives > 0)
 	{
 		end = "YOU WON!";
-		App->fontManager->greenFont->printText(end.c_str(), (SCREEN_WIDTH / 2) - (end.length()*charWidth / 2), 35.0f);
+		App->fontManager->greenFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
 	}
 	else
 	{
 		end = "GAME OVER";
-		App->fontManager->redFont->printText(end.c_str(), (SCREEN_WIDTH / 2) - (end.length()*charWidth / 2), 35.0f);
+		App->fontManager->redFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
 	}
 	
 	int counter = 0;
 	for (std::map<const char*, int>::iterator it = scores.begin(); it != scores.end(); ++it)
 	{
-		App->fontManager->redFont->printText(it->first, (SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
-		App->fontManager->redFont->printText(to_string(it->second).c_str(), ((3 * SCREEN_WIDTH) / 5), scoreBoardPosition + (charHeight + 5)*counter);
+		App->fontManager->redFont->printText(it->first, (float)(SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
+		App->fontManager->redFont->printText(to_string(it->second).c_str(), (float)((3 * SCREEN_WIDTH) / 5), (float)(scoreBoardPosition + (charHeight + 5)*counter));
 		counter++;
 	}
 
@@ -243,7 +243,7 @@ void ModuleSceneSpace::EndingAndScoreBoard()
 	else
 	{
 		string thanks = "THANKS FOR PLAYING";
-		App->fontManager->blueFont->printText(thanks.c_str(), (SCREEN_WIDTH / 2) - (thanks.length()*charWidth / 2), (4*SCREEN_HEIGHT) / 5);
+		App->fontManager->blueFont->printText(thanks.c_str(), (float)((SCREEN_WIDTH / 2) - (thanks.length()*charWidth / 2)), (float)(4*SCREEN_HEIGHT) / 5);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)

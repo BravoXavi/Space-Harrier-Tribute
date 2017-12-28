@@ -21,7 +21,6 @@ bool ModuleSceneIntro::Start()
 {
 	LOG("Loading space intro");
 	
-	//menuTexture = App->textures->Load("assets/MenuLogo.png");	
 	menuTexture = App->textures->Load("assets/good.png");
 	backgroundRect.x = 10;
 	backgroundRect.y = 601;
@@ -56,7 +55,7 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
 	{
-		App->fade->FadeToBlack((Module*)App->scene_space, this, 0.5f);
+		App->fade->FadeToBlack((Module*)App->scene_stage, this, 0.5f);
 	}
 
 	return UPDATE_CONTINUE;

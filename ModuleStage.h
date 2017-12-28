@@ -1,5 +1,5 @@
-#ifndef __MODULESCENESPACE_H__
-#define __MODULESCENESPACE_H__
+#ifndef __MODULESTAGE_H__
+#define __MODULESTAGE_H__
 
 #include "Module.h"
 #include "Font.h"
@@ -7,11 +7,11 @@
 
 struct SDL_Texture;
 
-class ModuleSceneSpace : public Module
+class ModuleStage : public Module
 {
 public:
-	ModuleSceneSpace(bool active = true);
-	~ModuleSceneSpace();
+	ModuleStage(bool active = true);
+	~ModuleStage();
 
 	bool Start();
 	update_status PreUpdate();
@@ -55,4 +55,4 @@ private:
 	bool bossActive = false;
 };
 
-#endif // __MODULESCENESPACE_H__
+#endif // __MODULESTAGE_H__

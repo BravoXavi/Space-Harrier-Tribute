@@ -21,7 +21,7 @@ class ModuleEnemy;
 class ModulePlayer;
 class ModuleSegaIntro;
 class ModuleSceneIntro;
-class ModuleSceneSpace;
+class ModuleStage;
 class ModuleShadows;
 class ModuleObstacle;
 
@@ -56,7 +56,7 @@ public:
 	ModulePlayer* player;
 	ModuleSegaIntro* sega_intro;
 	ModuleSceneIntro* scene_intro;
-	ModuleSceneSpace* scene_space;
+	ModuleStage* scene_stage;
 
 	bool totalPause = false;
 

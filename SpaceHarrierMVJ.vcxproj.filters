@@ -64,9 +64,6 @@
     <ClInclude Include="ModuleSceneIntro.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleSceneSpace.h">
-      <Filter>Game Modules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleTime.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
@@ -98,6 +95,9 @@
       <Filter>Game Modules</Filter>
     </ClInclude>
     <ClInclude Include="DragonPart.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleStage.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
   </ItemGroup>
@@ -141,9 +141,6 @@
     <ClCompile Include="ModuleSceneIntro.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleSceneSpace.cpp">
-      <Filter>Game Modules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleTime.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
@@ -172,6 +169,9 @@
       <Filter>Game Modules</Filter>
     </ClCompile>
     <ClCompile Include="DragonPart.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleStage.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>
