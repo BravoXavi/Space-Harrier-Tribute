@@ -18,7 +18,11 @@ ModuleParticles::~ModuleParticles()
 bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
+	//Texture
 	graphics = App->textures->Load("assets/particle_models.png");
+
+	//Sounds
+	repelledShotSFX = App->audio->LoadFx("assets/sfx/SFX_RepelledBullet.wav");
 
 	//PlayerLaser particle (Main attack)
 	p_laser.fxIndex = App->audio->LoadFx("assets/sfx/PLAYER_Shot.wav");
@@ -70,8 +74,6 @@ bool ModuleParticles::Start()
 	explosion.anim.loop = false;
 	explosion.colType = EXPLOSION;
 
-	repelledShotSFX = App->audio->LoadFx("assets/sfx/SFX_RepelledBullet.wav");
-
 	return true;
 }
 
@@ -113,9 +115,12 @@ update_status ModuleParticles::Update()
 	{
 		Particle* p = *it;
 
-		if(p->colType == P_LASER) p->Update(1);
-		else if (p->colType == E_LASER) p->Update(2);
-		else if (p->colType == EXPLOSION) p->Update(3);
+		if (p->colType == P_LASER) 
+			p->Update(1);
+		else if (p->colType == E_LASER) 
+			p->Update(2);
+		else if (p->colType == EXPLOSION) 
+			p->Update(3);
 
 		App->renderer->depthBuffer[(int)p->dataToBlit->z].push_back(*p->dataToBlit);
 	}
@@ -123,7 +128,7 @@ update_status ModuleParticles::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleParticles::AddParticle(const Particle& particle, float x, float y, float z, collisionType colType)
+void ModuleParticles::AddParticle(const Particle& particle, const float& x, const float& y, const float& z, collisionType colType)
 {
 	Particle* p = new Particle(particle);
 	p->position = { x, y, z };
@@ -137,12 +142,14 @@ void ModuleParticles::AddParticle(const Particle& particle, float x, float y, fl
 		p->targetOffset.z = z;
 	}
 
-	if( colType == P_LASER || colType == E_LASER) p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)z, App->particles);
-	active.push_back(p);
+	if (colType == P_LASER || colType == E_LASER) 
+		p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)z, App->particles);
+
 	App->audio->PlayFx(p->fxIndex, 0);
+	active.push_back(p);
 }
 
-bool ModuleParticles::onCollision(Collider* moduleOwner, Collider* otherCollider)
+const bool ModuleParticles::onCollision(Collider* moduleOwner, Collider* otherCollider)
 {
 	for (std::list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
 	{
@@ -185,7 +192,9 @@ void Particle::Update(const int& updateSelector)
 	if (position.z > MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
 	{
 		to_delete = true;
-		if(collider != nullptr) collider->to_delete = true;
+
+		if(collider != nullptr) 
+			collider->to_delete = true;
 	}
 
 	float zModifier = 1.0f - (position.z / (float)MAX_Z);
@@ -199,6 +208,7 @@ void Particle::Update(const int& updateSelector)
 
 	if (!repelled)
 	{
+		//The movement behaviour is slightly different in each of the three particles, so we use a switch to choose between them
 		switch (updateSelector)
 		{
 			case 1: //Player bullet
@@ -216,10 +226,8 @@ void Particle::Update(const int& updateSelector)
 			}
 			case 3: //Explosion
 			{
-				//position.y += 0.5f;
-
 				newX = position.x - (newWidth / 2.0f);
-				newY = position.y - (newHeight);// / 2.0f);
+				newY = position.y - newHeight;
 				break;
 			}
 		}
@@ -238,17 +246,15 @@ void Particle::Update(const int& updateSelector)
 		newY = position.y - newHeight / 4.0f;
 	}
 
+	position.z += speed;
+
 	setDataToBlit(App->particles->graphics, newX, newY, position.z, newWidth, newHeight, &(anim.GetCurrentFrame()));
 
 	if (collider != nullptr)
-	{
-		collider->SetPos((int)newX, (int)newY, (int)position.z, (int)newWidth, (int)newHeight);
-	}
-
-	position.z += speed;
+		collider->SetPos((int)newX, (int)newY, (int)position.z, (int)newWidth, (int)newHeight);	
 }
 
-void Particle::setDataToBlit(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
+const void Particle::setDataToBlit(SDL_Texture* texture, const float& x, const float& y, const float& z, const float& newWidth, const float& newHeight, SDL_Rect* section) const
 {
 	dataToBlit->x = x;
 	dataToBlit->y = y;
