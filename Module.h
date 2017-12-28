@@ -66,7 +66,7 @@ public:
 	}
 
 	// Callbacks ---
-	virtual bool onCollision(Collider* moduleOwner, Collider* otherCollider)
+	virtual const bool onCollision(Collider* moduleOwner, Collider* otherCollider)
 	{
 		return true;
 	}

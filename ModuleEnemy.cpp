@@ -174,7 +174,7 @@ void ModuleEnemy::AddModularEnemy(const Enemy& head, const Enemy& body, const En
 	aliveEnemy = true;
 }
 
-bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollider)
+const bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollider)
 {
 	for (std::list<Enemy*>::iterator it = active.begin(); it != active.end(); ++it)
 	{

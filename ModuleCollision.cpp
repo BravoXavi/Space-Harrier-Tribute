@@ -95,7 +95,7 @@ update_status ModuleCollision::Update()
 }
 
 //Debug draw of colliders (F1 key)
-void ModuleCollision::DebugDraw()
+const void ModuleCollision::DebugDraw()
 {
 	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
 		App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 80);
@@ -126,7 +126,7 @@ Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, collisionType colTy
 // -----------------------------------------------------
 
 //Check if two certain colliders are generating a collision.
-bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
+const bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 {
 	bool xColl = true;
 	bool yColl = true;

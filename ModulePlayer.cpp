@@ -288,7 +288,7 @@ void ModulePlayer::setCharSpeed()
 	App->renderer->playerSpeed = (speedPercent * 150.0f) * App->time->getDeltaTime();
 }
 
-bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider) 
+const bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
 	if(!invulnerableState)
 	{

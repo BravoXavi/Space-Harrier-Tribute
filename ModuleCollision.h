@@ -37,7 +37,7 @@ struct Collider
 		modCallback(callback)
 	{}
 
-	void SetPos(const int& x, const int& y, const int& z, const int& w, const int& h)
+	const void SetPos(const int& x, const int& y, const int& z, const int& w, const int& h)
 	{
 		rect.x = x * SCREEN_SIZE;
 		rect.y = y * SCREEN_SIZE;
@@ -46,7 +46,7 @@ struct Collider
 		rect.h = h * SCREEN_SIZE;
 	}
 
-	bool CheckCollision(const SDL_Rect& r, const int& z) const;
+	const bool CheckCollision(const SDL_Rect& r, const int& z) const;
 };
 
 class ModuleCollision : public Module
@@ -58,7 +58,7 @@ public:
 	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
-	void DebugDraw();
+	const void DebugDraw();
 	Collider* AddCollider(const SDL_Rect& rect, collisionType colType, const int& z, Module* callback);	
 
 private:

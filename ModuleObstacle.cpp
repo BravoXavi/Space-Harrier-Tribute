@@ -98,7 +98,7 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 	active.push_back(o);
 }
 
-bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCollider) 
+const bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
 	for (std::list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)
 	{

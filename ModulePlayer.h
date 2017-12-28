@@ -56,7 +56,7 @@ private:
 	
 	bool destroyed;
 	void checkHorizontalAnimation(bool running = false);
-	bool onCollision(Collider* c1, Collider* c2);
+	const bool onCollision(Collider* c1, Collider* c2);
 	void modifyHorizonY() const;
 	void setCharSpeed();
 	void moveCollider() const;
