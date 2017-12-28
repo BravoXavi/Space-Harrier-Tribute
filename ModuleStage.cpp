@@ -30,6 +30,9 @@ bool ModuleStage::Start()
 {
 	LOG("Loading space scene");
 	
+	Ending = false;
+	App->renderer->stopUpdating = false;
+
 	floor = App->textures->Load("assets/Floor.png");
 	background = App->textures->Load("assets/backgroundlvl1.png");
 	backgroundFront = App->textures->Load("assets/backgroundlvl2.png");
@@ -53,7 +56,7 @@ bool ModuleStage::Start()
 	App->shadows->Enable();
 
 	App->audio->PlayFx(introVoiceSFX);
-	App->audio->PlayMusic("assets/music/MOOT_Theme.wav", 1.0f);
+	App->audio->PlayMusic("assets/music/MOOT_Theme.wav", 0.0f);
 
 	enemySpawnTimer = SDL_GetTicks();
 	scoreBoardPosition = (float)SCREEN_HEIGHT;
@@ -93,13 +96,12 @@ update_status ModuleStage::Update()
 {
 	PrintUI();
 	tickUpdate = SDL_GetTicks();
-
 	if ((int)App->player->playerScore > topScore) topScore = (int)App->player->playerScore;
 
 	if (App->player->lives > 0)
 	{
 		if (!App->enemies->bossEncounter)
-		{
+		{		
 			App->player->playerScore += 0.3f;
 
 			if (App->enemies->triggerEnemies)
@@ -108,7 +110,11 @@ update_status ModuleStage::Update()
 				{
 					enemySpawnTimer = tickUpdate;
 					App->enemies->enemyWave(App->enemies->waveNum);
-					if (App->enemies->waveNum == 8) App->enemies->bossEncounter = true;
+					if (App->enemies->waveNum == 8)
+					{
+						App->enemies->bossEncounter = true;
+						App->audio->PlayMusic("assets/music/MOOT_BossTheme.wav", 0.0f);
+					}
 				}
 			}
 			else
@@ -117,17 +123,12 @@ update_status ModuleStage::Update()
 				{
 					App->enemies->triggerEnemies = true;
 					App->enemies->waveNum++;
-					if(App->enemies->waveNum == 8) App->audio->PlayMusic("assets/music/MOOT_BossTheme.wav", 0.0f);
 				}
 			}
 		}
 		else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
 		{
-			Uint32 scoreBoardTimer = SDL_GetTicks();
-			if (tickUpdate - scoreBoardTimer > 2000.0f)
-			{
-				EndingAndScoreBoard();
-			}
+			EndingAndScoreBoard();
 		}
 	}
 	else
@@ -135,7 +136,7 @@ update_status ModuleStage::Update()
 		EndingAndScoreBoard();
 	}
 
-	if(!App->player->gotHit) GenerateObstacles();
+	if(!App->renderer->stopUpdating) GenerateObstacles();
 
 	return UPDATE_CONTINUE;
 }
@@ -212,6 +213,13 @@ void ModuleStage::GenerateObstacles()
 
 void ModuleStage::EndingAndScoreBoard()
 {
+	if (!Ending)
+	{
+		App->audio->StopMusic();
+		App->renderer->stopUpdating = true;
+		Ending = true;
+	}
+
 	SDL_Rect fullScreen = { 0, 0, SCREEN_WIDTH*SCREEN_SIZE, SCREEN_HEIGHT*SCREEN_SIZE };
 	App->renderer->DrawQuad(fullScreen, 0, 0, 0, 80);
 
@@ -221,11 +229,13 @@ void ModuleStage::EndingAndScoreBoard()
 
 	if (App->player->lives > 0)
 	{
+		if( !App->audio->isMusicPlaying()) App->audio->PlayMusic("assets/music/MUSIC_Victory.wav", 0.0f);
 		end = "YOU WON!";
 		App->fontManager->greenFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
 	}
 	else
 	{
+		if (!App->audio->isMusicPlaying()) App->audio->PlayMusic("assets/music/MUSIC_GameOver.wav", 0.0f);
 		end = "GAME OVER";
 		App->fontManager->redFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
 	}

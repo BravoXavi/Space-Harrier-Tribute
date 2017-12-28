@@ -53,6 +53,7 @@ private:
 	int topScore = 1000000;
 
 	bool bossActive = false;
+	bool Ending = false;
 };
 
 #endif // __MODULESTAGE_H__
