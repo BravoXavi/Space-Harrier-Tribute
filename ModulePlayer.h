@@ -18,9 +18,31 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+private:
+	const void checkHorizontalAnimation(bool running = false);
+	const bool onCollision(Collider* c1, Collider* c2);
+	const void modifyHorizonY() const;
+	const void setCharSpeed();
+	const void moveCollider() const;
+	const void LoseOneLive();
+
 public:
+	int lives = 0;
+	bool gotHit = false;
+	bool gotTrip = false;
+	float playerScore = 0.0f;
+
 	SDL_Texture* graphics = nullptr;
 	Animation* current_animation = nullptr;
+	Collider* collider = nullptr;
+	fPoint position = { 0.0f, 0.0f, 0.0f };	
+	
+private:
+	int playerWidth = 0;
+	int playerHeight = 0;
+	bool invulnerableState = false;
+	bool destroyed = false;
+	const static float playerDepth;
 
 	Animation run;
 	Animation middle;
@@ -30,36 +52,12 @@ public:
 	Animation right2;
 	Animation tripping;
 	Animation hit;
-
-	Collider* collider = nullptr;
-	fPoint position = { 0.0f, 0.0f, 0.0f };	
-	
-	int lives;
-	float playerScore = 0.0f;
-
-	bool gotHit = false;
-	bool gotTrip = false;
-
-private:
 	uint deathSFX;
 	uint getreadySFX;
 	uint tripSFX;
-
 	Uint32 initAnimationTimer = 0;
 	Uint32 invulnerableTimer = 0;
-	bool invulnerableState = false;
-	void LoseOneLive();
 
-	const static float playerDepth;
-
-	int playerWidth, playerHeight = 0;
-	
-	bool destroyed;
-	void checkHorizontalAnimation(bool running = false);
-	const bool onCollision(Collider* c1, Collider* c2);
-	void modifyHorizonY() const;
-	void setCharSpeed();
-	void moveCollider() const;
 };
 
 #endif

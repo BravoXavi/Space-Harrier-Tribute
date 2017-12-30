@@ -53,28 +53,29 @@ ModulePlayer::~ModulePlayer()
 // Load assets
 bool ModulePlayer::Start()
 {
-	LOG("Loading player");
-
-	lives = PLAYER_LIVES;
-	gotHit = false;
-	gotTrip = false;
+	LOG("Loading Player");
+	initAnimationTimer = SDL_GetTicks();
+	invulnerableTimer = SDL_GetTicks();
 
 	graphics = App->textures->Load("assets/character.png");
+
+	deathSFX = App->audio->LoadFx("assets/sfx/VOICE_Death.wav");
+	tripSFX = App->audio->LoadFx("assets/sfx/VOICE_Ouch.wav");
+	getreadySFX = App->audio->LoadFx("assets/sfx/VOICE_GetReady.wav");
+
+	gotHit = false;
+	gotTrip = false;
 	destroyed = false;
+	lives = PLAYER_LIVES;
 	position.x = (float)(SCREEN_WIDTH / 2) - (run.GetCurrentFrame().w / 2);
 	position.y = (float)(SCREEN_HEIGHT - run.GetCurrentFrame().h);
 
 	collider = App->collision->AddCollider({ (int)position.x * SCREEN_SIZE, (int)position.y * SCREEN_SIZE, current_animation->GetCurrentFrame().w * SCREEN_SIZE, current_animation->GetCurrentFrame().h * SCREEN_SIZE }, PLAYER, (int)playerDepth, App->player);
 
-	if (App->renderer->horizonY != (float)FLOOR_Y_MIN) App->renderer->horizonY = (float)FLOOR_Y_MIN;
+	if (App->renderer->horizonY != (float)FLOOR_Y_MIN) 
+		App->renderer->horizonY = (float)FLOOR_Y_MIN;
+
 	current_animation = &run;
-
-	initAnimationTimer = SDL_GetTicks();
-	invulnerableTimer = SDL_GetTicks();
-
-	deathSFX = App->audio->LoadFx("assets/sfx/VOICE_Death.wav");
-	tripSFX = App->audio->LoadFx("assets/sfx/VOICE_Ouch.wav");
-	getreadySFX = App->audio->LoadFx("assets/sfx/VOICE_GetReady.wav");
 
 	return true;
 }
@@ -92,34 +93,40 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-	float speed = 200.0f * App->time->getDeltaTime();
-
-	playerWidth = current_animation->GetCurrentFrame().w;
-	playerHeight = current_animation->GetCurrentFrame().h;
-
 	Uint32 tickCheck = SDL_GetTicks();
 
+	float speed = 200.0f * App->time->getDeltaTime();
+	playerWidth = current_animation->GetCurrentFrame().w;
+	playerHeight = current_animation->GetCurrentFrame().h;
+	
 	if (tickCheck - invulnerableTimer > 2000.0f)
-	{
 		invulnerableState = false;
-	}
 
+	//If the Player is able of doign anything (Is not tripping, it isn't hit, it's not the start of the game), it can move around or shoot
 	if (tickCheck - initAnimationTimer > 2500.0f && !gotTrip && !gotHit && !App->renderer->stopUpdating)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			if (position.x > 0.0f) position.x -= speed;
-			if (current_animation == &run) checkHorizontalAnimation(true);
-			else checkHorizontalAnimation();
+			if (position.x > 0.0f) 
+				position.x -= speed;
+
+			if (current_animation == &run) 
+				checkHorizontalAnimation(true);
+			else 
+				checkHorizontalAnimation();
 
 			moveCollider();
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		{
-			if (position.x + (float)playerWidth < (float)SCREEN_WIDTH) position.x += speed;
-			if (current_animation == &run) checkHorizontalAnimation(true);
-			else checkHorizontalAnimation();
+			if (position.x + (float)playerWidth < (float)SCREEN_WIDTH) 
+				position.x += speed;
+
+			if (current_animation == &run) 
+				checkHorizontalAnimation(true);
+			else 
+				checkHorizontalAnimation();
 
 			moveCollider();
 		}
@@ -136,7 +143,8 @@ update_status ModulePlayer::Update()
 				current_animation = &run;
 			}
 
-			if (current_animation != &run) moveCollider();
+			if (current_animation != &run) 
+				moveCollider();
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
@@ -146,18 +154,15 @@ update_status ModulePlayer::Update()
 				position.y -= speed;
 				modifyHorizonY();
 			}
+
 			if (current_animation == &run)
-			{
 				checkHorizontalAnimation();
-			}
 
 			moveCollider();
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-		{
 			App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
-		}
 	}
 	else
 	{
@@ -166,9 +171,9 @@ update_status ModulePlayer::Update()
 			current_animation = &tripping;
 			if (current_animation->animationWithoutLoopEnded)
 			{
-				current_animation->animationWithoutLoopEnded = false;
-				current_animation->Reset();
 				gotTrip = false;
+				current_animation->animationWithoutLoopEnded = false;
+				current_animation->Reset();				
 				checkHorizontalAnimation();
 			}
 		}
@@ -202,7 +207,6 @@ update_status ModulePlayer::Update()
 		else if (tickCheck - initAnimationTimer > 1000.f)
 		{
 			run.speed = 2.0f;
-
 			if (position.y > (float)SCREEN_HEIGHT / 2)
 			{
 				position.y -= speed;
@@ -214,9 +218,12 @@ update_status ModulePlayer::Update()
 		}
 	}
 
-	// Draw everything --------------------------------------
-	if (invulnerableState) SDL_SetTextureAlphaMod(graphics, 100);
-	else SDL_SetTextureAlphaMod(graphics, 250);
+	//If the player is in invulnerable state (just got hit) the sprite will appear with a certain alpha so the user can notice
+	if (invulnerableState) 
+		SDL_SetTextureAlphaMod(graphics, 100);
+	else 
+		SDL_SetTextureAlphaMod(graphics, 250);
+
 	BlitTarget* dataToBlit = new BlitTarget(graphics, position.x, position.y, playerDepth, (float)playerWidth, (float)playerHeight, &(current_animation->GetCurrentFrame()));
 
 	if (destroyed == false)
@@ -230,66 +237,80 @@ update_status ModulePlayer::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModulePlayer::moveCollider() const
+const void ModulePlayer::moveCollider() const
 {
 	collider->SetPos((int)position.x, (int)position.y, (int)playerDepth, playerWidth, playerHeight);
 }
 
-void ModulePlayer::checkHorizontalAnimation(bool running)
+const void ModulePlayer::checkHorizontalAnimation(bool running)
 {
 	int realPosition = (int)position.x + middle.GetCurrentFrame().w / 2;
 	
 	if (realPosition <= SCREEN_DIVISOR)
 	{
-		if(!running) current_animation = &left2;
+		if(!running) 
+			current_animation = &left2;
+
 		setCharSpeed();
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 2))
 	{
-		if (!running) current_animation = &left1;
+		if (!running) 
+			current_animation = &left1;
 		setCharSpeed();
+
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 3))
 	{
-		if (!running) current_animation = &middle;
+		if (!running) 
+			current_animation = &middle;
 		setCharSpeed();
+
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 4))
 	{
-		if (!running) current_animation = &right1;
+		if (!running) 
+			current_animation = &right1;
 		setCharSpeed();
+
 		return;
 	}
 	else if (realPosition <= (SCREEN_DIVISOR * 5))
 	{
-		if (!running) current_animation = &right2;
+		if (!running) 
+			current_animation = &right2;
 		setCharSpeed();
+
 		return;
 	}
 }
 
-void ModulePlayer::modifyHorizonY() const
+const void ModulePlayer::modifyHorizonY() const
 {
 	float offsetValue = (float)SCREEN_HEIGHT - (float)playerHeight;
 	float temp = (offsetValue - (float)position.y) / offsetValue;
 	float newHorizonValue = (temp * ((float)FLOOR_Y_MAX - (float)FLOOR_Y_MIN)) + (float)FLOOR_Y_MIN;
-
 	App->renderer->actualHorizonY = newHorizonValue;
 }
 
-void ModulePlayer::setCharSpeed()
+const void ModulePlayer::setCharSpeed()
 {
 	int screenPosition = ((int)position.x + (run.GetCurrentFrame().w / 2)) - (SCREEN_WIDTH / 2);
 	float speedPercent = ((float)screenPosition * 1.0f) / ((float)SCREEN_WIDTH / 2.0f);
-	if (current_animation == &middle) speedPercent = 0.0f;
+
+	if (current_animation == &middle) 
+		speedPercent = 0.0f;
+
 	App->renderer->playerSpeed = (speedPercent * 150.0f) * App->time->getDeltaTime();
 }
 
 const bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
+	bool ret = true;
+
 	if(!invulnerableState)
 	{
 		if (otherCollider->colType == NOLETHAL_D_OBSTACLE && !gotHit)
@@ -312,10 +333,10 @@ const bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherColli
 		}
 	}
 
-	return true;
+	return ret;
 }
 
-void ModulePlayer::LoseOneLive()
+const void ModulePlayer::LoseOneLive()
 {
 	lives -= 1;
 }

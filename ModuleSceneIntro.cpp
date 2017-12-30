@@ -17,7 +17,7 @@ ModuleSceneIntro::~ModuleSceneIntro()
 // Load assets
 bool ModuleSceneIntro::Start()
 {
-	LOG("Loading space intro");
+	LOG("Loading Menu");
 	
 	menuTexture = App->textures->Load("assets/good.png");
 	backgroundRect.x = 10;
@@ -39,8 +39,7 @@ bool ModuleSceneIntro::Start()
 // UnLoad assets
 bool ModuleSceneIntro::CleanUp()
 {
-	LOG("Unloading Intro Scene");
-
+	LOG("Unloading Menu");
 	App->textures->Unload(menuTexture);
 
 	return true;
@@ -53,9 +52,7 @@ update_status ModuleSceneIntro::Update()
 	App->fontManager->blueFont->printText("PRESS START", (SCREEN_WIDTH/2) - 40, SCREEN_HEIGHT/2 + 16);
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
-	{
 		App->fade->FadeToBlack((Module*)App->scene_stage, this, 0.5f);
-	}
 
 	return UPDATE_CONTINUE;
 }

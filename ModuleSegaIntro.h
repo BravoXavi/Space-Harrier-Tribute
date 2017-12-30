@@ -16,7 +16,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-public:
+private:
 	SDL_Texture* logo = nullptr;
 	Uint32 segaTimer = 0;
 	uint fx = 0;

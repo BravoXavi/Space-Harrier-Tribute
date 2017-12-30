@@ -16,10 +16,10 @@
 
 ModuleStage::ModuleStage(bool active) : Module(active)
 {
-	scores["ZELLERYON"] = 999999999;
-	scores["NEIKAR"] = 800000000;
-	scores["PSYHOLIC"] = 700000000;
-	scores["DOGJOE"] = 500000000;
+	scores["ZELLERYON"] = 10000;
+	scores["NEIKAR"] = 9000;
+	scores["PSYHOLIC"] = 7000;
+	scores["DOGJOE"] = 4000;
 }
 
 ModuleStage::~ModuleStage()
@@ -28,25 +28,7 @@ ModuleStage::~ModuleStage()
 // Load assets
 bool ModuleStage::Start()
 {
-	LOG("Loading space scene");
-	
-	Ending = false;
-	App->renderer->stopUpdating = false;
-
-	floor = App->textures->Load("assets/Floor.png");
-	background = App->textures->Load("assets/backgroundlvl1.png");
-	backgroundFront = App->textures->Load("assets/backgroundlvl2.png");
-	gui = App->textures->Load("assets/GUI.png");
-
-	actualScoreBanner.x = 1;
-	actualScoreBanner.y = 0;
-	actualScoreBanner.w = 48;
-	actualScoreBanner.h = 14;
-
-	topScoreBanner = { 9, 15, 32, 14 };
-	liveIcon = { 20, 31, 10, 16 };
-
-	introVoiceSFX = App->audio->LoadFx("assets/sfx/VOICE_Welcome.wav");
+	LOG("Loading Game Stage");
 
 	App->player->Enable();
 	App->particles->Enable();
@@ -55,18 +37,39 @@ bool ModuleStage::Start()
 	App->obstacles->Enable();
 	App->shadows->Enable();
 
+	enemySpawnTimer = SDL_GetTicks();
+	
+	floor = App->textures->Load("assets/Floor.png");
+	background = App->textures->Load("assets/backgroundlvl1.png");
+	backgroundFront = App->textures->Load("assets/backgroundlvl2.png");
+	gui = App->textures->Load("assets/GUI.png");
+
+	introVoiceSFX = App->audio->LoadFx("assets/sfx/VOICE_Welcome.wav");
 	App->audio->PlayFx(introVoiceSFX);
 	App->audio->PlayMusic("assets/music/MOOT_Theme.wav", 0.0f);
 
-	enemySpawnTimer = SDL_GetTicks();
+	Ending = false;
+	App->renderer->stopUpdating = false;
+	actualScoreBanner.x = 1;
+	actualScoreBanner.y = 0;
+	actualScoreBanner.w = 48;
+	actualScoreBanner.h = 14;
+	topScoreBanner = { 9, 15, 32, 14 };
+	liveIcon = { 20, 31, 10, 16 };	
 	scoreBoardPosition = (float)SCREEN_HEIGHT;
+
+	if (topScore < 10000)
+		topScore = 10000;
+
 	return true;
 }
 
 // UnLoad assets
 bool ModuleStage::CleanUp()
 {
-	LOG("Unloading space scene");
+	bool ret = true;
+
+	LOG("Unloading Game Stage");
 
  	App->textures->Unload(floor);
 	App->textures->Unload(background);
@@ -78,7 +81,7 @@ bool ModuleStage::CleanUp()
 	App->enemies->Disable();
 	App->obstacles->Disable();
 
-	return true;
+	return ret;
 }
 
 //Draw Floor, Background, and extras (All this parts will ALWAYS stay in the back of the screen)
@@ -86,18 +89,23 @@ update_status ModuleStage::PreUpdate()
 {
 	App->renderer->BackgroundBlit(background, 0.2f, 1);
 	App->renderer->BackgroundBlit(backgroundFront, 0.5f, 2);
-
 	App->renderer->FloorBlit(floor, nullptr);
+
 	return UPDATE_CONTINUE;
 }
 
-// Update: draw background
+// Update of the main stage
 update_status ModuleStage::Update()
 {
-	PrintUI();
+	//Main thread of the Game
 	tickUpdate = SDL_GetTicks();
-	if ((int)App->player->playerScore > topScore) topScore = (int)App->player->playerScore;
+	PrintUI();
+	
+	//If the player tops the topScore, it'll start incresing with his own one
+	if ((int)App->player->playerScore > topScore) 
+		topScore = (int)App->player->playerScore;
 
+	//If the player has any lives left, the game will continue spawning enemywaves, obstacles and even a final boss.
 	if (App->player->lives > 0)
 	{
 		if (!App->enemies->bossEncounter)
@@ -128,15 +136,19 @@ update_status ModuleStage::Update()
 		}
 		else if (App->enemies->bossEncounter && !App->enemies->aliveEnemy)
 		{
+			//If the player defeated the final boss of the stage, a Victory ending screen will appear with the scoreboard
 			EndingAndScoreBoard();
 		}
 	}
 	else
 	{
+		//Also, if the player does not have any live left, the ending screen will pop out with a Game Over message
 		EndingAndScoreBoard();
 	}
 
-	if(!App->renderer->stopUpdating) GenerateObstacles();
+	////While we keep on playing, obstacles will be generated with a certain random degree
+	if(!App->renderer->stopUpdating) 
+		GenerateObstacles();
 
 	return UPDATE_CONTINUE;
 }
@@ -185,11 +197,13 @@ void ModuleStage::PrintUI()
 
 void ModuleStage::GenerateObstacles()
 {
-	int randX, randY = 0;
+	int randX = 0;
+	int randY = 0;
 
 	if (!bossActive)
 	{
-		if (obstacleTimer1 < 15) obstacleTimer1++;
+		if (obstacleTimer1 < 15) 
+			obstacleTimer1++;
 		else
 		{
 			obstacleTimer1 = 0;
@@ -198,15 +212,18 @@ void ModuleStage::GenerateObstacles()
 			App->obstacles->AddObstacle(App->obstacles->bush, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, NOLETHAL_D_OBSTACLE);
 		}
 
-		if (obstacleTimer2 < 25) obstacleTimer2++;
+		if (obstacleTimer2 < 25)
+			obstacleTimer2++;
 		else
 		{
 			obstacleTimer2 = 0;
 			randX = rand() % (350 - (-350) + 1) + (-350);
 			randY = rand() % (150 - 80 + 1) + 80;
 
-			if (App->enemies->waveNum < 4) App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randX, (float)randY, D_OBSTACLE);
-			else App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, D_OBSTACLE);
+			if (App->enemies->waveNum < 4) 
+				App->obstacles->AddObstacle(App->obstacles->rock, ((float)SCREEN_WIDTH / 2.0f), (float)randX, (float)randY, D_OBSTACLE);
+			else 
+				App->obstacles->AddObstacle(App->obstacles->tree, ((float)SCREEN_WIDTH / 2.0f), (float)randX, 0.0f, D_OBSTACLE);
 		}
 	}
 }
@@ -220,22 +237,26 @@ void ModuleStage::EndingAndScoreBoard()
 		Ending = true;
 	}
 
-	SDL_Rect fullScreen = { 0, 0, SCREEN_WIDTH*SCREEN_SIZE, SCREEN_HEIGHT*SCREEN_SIZE };
-	App->renderer->DrawQuad(fullScreen, 0, 0, 0, 80);
-
+	string end;
 	int charWidth = App->fontManager->redFont->characterWidth;
 	int charHeight = App->fontManager->redFont->characterHeight;
-	string end;
+	SDL_Rect fullScreen = { 0, 0, SCREEN_WIDTH*SCREEN_SIZE, SCREEN_HEIGHT*SCREEN_SIZE };
+	
+	App->renderer->DrawQuad(fullScreen, 0, 0, 0, 80);
 
 	if (App->player->lives > 0)
 	{
-		if( !App->audio->isMusicPlaying()) App->audio->PlayMusic("assets/music/MUSIC_Victory.wav", 0.0f);
+		if( !App->audio->isMusicPlaying()) 
+			App->audio->PlayMusic("assets/music/MUSIC_Victory.wav", 0.0f);
+
 		end = "YOU WON!";
 		App->fontManager->greenFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
 	}
 	else
 	{
-		if (!App->audio->isMusicPlaying()) App->audio->PlayMusic("assets/music/MUSIC_GameOver.wav", 0.0f);
+		if (!App->audio->isMusicPlaying()) 
+			App->audio->PlayMusic("assets/music/MUSIC_GameOver.wav", 0.0f);
+
 		end = "GAME OVER";
 		App->fontManager->redFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
 	}
@@ -252,7 +273,8 @@ void ModuleStage::EndingAndScoreBoard()
 	App->fontManager->redFont->printText(player.c_str(), (SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
 	App->fontManager->redFont->printText(to_string((int)App->player->playerScore).c_str(), ((3 * SCREEN_WIDTH) / 5), scoreBoardPosition + (charHeight + 5)*counter);
 		
-	if (scoreBoardPosition > 80.0f) scoreBoardPosition -= 1.0f;
+	if (scoreBoardPosition > 80.0f) 
+		scoreBoardPosition -= 1.0f;
 	else
 	{
 		string thanks = "THANKS FOR PLAYING";
@@ -260,7 +282,5 @@ void ModuleStage::EndingAndScoreBoard()
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
-	{
-		App->fade->FadeToBlack((Module*)App->scene_intro, this, 4.0f);
-	}
+		App->fade->FadeToBlack((Module*)App->scene_intro, this, 3.0f);
 }

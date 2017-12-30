@@ -189,10 +189,10 @@ Particle::~Particle()
 
 void Particle::Update(const int& updateSelector)
 {
-	if (position.z > MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
+	LOG("Position Z: %f", position.z);
+	if (position.z >= MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
 	{
 		to_delete = true;
-
 		if(collider != nullptr) 
 			collider->to_delete = true;
 	}

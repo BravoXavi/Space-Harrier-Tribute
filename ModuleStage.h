@@ -50,7 +50,7 @@ private:
 
 	const static int stageNumber = 1;
 	const char* stageName = "MOOT";
-	int topScore = 1000000;
+	int topScore = 0;
 
 	bool bossActive = false;
 	bool Ending = false;

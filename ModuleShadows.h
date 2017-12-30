@@ -12,10 +12,9 @@ public:
 	~ModuleShadows();
 
 	bool Start();
-	update_status PreUpdate();
 	bool CleanUp();
 
-	void DrawShadow(const float& x, const float& y, const float& z, const float& playerWidth);
+	const void DrawShadow(const float& x, const float& y, const float& z, const float& playerWidth);
 
 private:
 	SDL_Texture* graphics = nullptr;

@@ -17,14 +17,11 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-public:
-	SDL_Texture* menuTexture = nullptr;
+private:
+	SDL_Texture * menuTexture = nullptr;
 	SDL_Rect backgroundRect;
 	SDL_Rect screenSize;
-
 	uint fx = 0;
-
-private:
 	Animation wavingGuy;
 	Animation robot;
 	Animation eye;

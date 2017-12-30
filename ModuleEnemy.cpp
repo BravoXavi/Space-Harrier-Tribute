@@ -137,7 +137,7 @@ update_status ModuleEnemy::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleEnemy::AddEnemy(const Enemy& enemy, float x, float y, float z, collisionType type, int moveSet, const float& oscillationAngle)
+void ModuleEnemy::AddEnemy(const Enemy& enemy, const float& x, const float& y, const float& z, collisionType type, const int& moveSet, const float& oscillationAngle)
 {	
 	fPoint pos = { x, y, z };
 	Enemy* e = enemy.createEnemyInstance(enemy, pos, type, moveSet, oscillationAngle);	
@@ -205,7 +205,7 @@ const bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollid
 	return true;
 }
 
-void ModuleEnemy::enemyWave(const int& selector)
+const void ModuleEnemy::enemyWave(const int& selector)
 {
 	switch (selector)
 	{

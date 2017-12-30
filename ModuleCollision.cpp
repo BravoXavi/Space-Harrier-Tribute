@@ -133,10 +133,13 @@ const bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 	bool yColl = true;
 	bool zColl = false;
 
-	if ( r.x > (this->rect.x + this->rect.w) || (r.x + r.w) < this->rect.x ) xColl = false;
-	if ( r.y > (this->rect.y + this->rect.h) || (r.y + r.h) < this->rect.y ) yColl = false;
+	if ( r.x > (this->rect.x + this->rect.w) || (r.x + r.w) < this->rect.x ) 
+		xColl = false;
+	if ( r.y > (this->rect.y + this->rect.h) || (r.y + r.h) < this->rect.y ) 
+		yColl = false;
 
-	if ( this->depth == depth || abs(this->depth - depth) <= 1) zColl = true;
+	if ( this->depth == depth || abs(this->depth - depth) <= 2) 
+		zColl = true;
 	
 	return (xColl && yColl && zColl);
 }

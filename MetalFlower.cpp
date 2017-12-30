@@ -35,7 +35,7 @@ void MetalFlower::Update()
 {
 	Uint32 actualTicks = SDL_GetTicks();
 
-	if (worldPosition.z <= MIN_Z || worldPosition.z > MAX_Z)
+	if (worldPosition.z <= MIN_Z || worldPosition.z >= MAX_Z)
 	{
 		collider->to_delete = true;
 		to_delete = true;

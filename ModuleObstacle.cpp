@@ -8,20 +8,18 @@
 #include "ModuleParticles.h"
 #include "ModuleShadows.h"
 #include "ModulePlayer.h"
-
 #include "SDL/include/SDL_timer.h"
 
 ModuleObstacle::ModuleObstacle(bool active) : Module(active)
 {}
 
 ModuleObstacle::~ModuleObstacle()
-{
-}
+{}
 
 // Load assets
 bool ModuleObstacle::Start()
 {
-	LOG("Loading obstacles");
+	LOG("Loading Obstacles");
 	graphics = App->textures->Load("assets/enemiesobstacles.png");
 
 	tree.anim.frames.push_back({ 206, 378, 40, 158 });
@@ -78,16 +76,20 @@ update_status ModuleObstacle::Update()
 	{
 		Obstacle* o = *it;
 
-		if(!App->renderer->stopUpdating) o->Update();
+		if(!App->renderer->stopUpdating) 
+			o->Update();
 
-		if (o->shadowCast) App->shadows->DrawShadow(o->screenPosition.x, o->screenPosition.y, o->screenPosition.z, o->dataToBlit->newWidth);
+		//Only some of the obstacles will cast a shadow. Tree already has it's own.
+		if (o->shadowCast) 
+			App->shadows->DrawShadow(o->screenPosition.x, o->screenPosition.y, o->screenPosition.z, o->dataToBlit->newWidth);
+
 		App->renderer->depthBuffer[(int)o->dataToBlit->z].push_back(*o->dataToBlit);
 	}
 
 	return UPDATE_CONTINUE;
 }
 
-void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffset, float y, collisionType type)
+void ModuleObstacle::AddObstacle(const Obstacle& obstacle, const float& x, const float& xOffset, const float& y, collisionType type)
 {
 	Obstacle* o = new Obstacle(obstacle);
 	o->worldPosition = { x, y, (float)MAX_Z};
@@ -100,25 +102,26 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, float x, float xOffse
 
 const bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
+	LOG("COLLISION!!!");
+	bool ret = true;
+
 	for (std::list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)
 	{
 		if ((*it)->collider == moduleOwner)
 		{
 			if (otherCollider->colType != PLAYER)
-			{				
+			{
 				//Obstacle gets destroyed
 				App->player->playerScore += 1000.0f;
 				(*it)->to_delete = true;
 				(*it)->collider->to_delete = true;
 				if (otherCollider->colType != PLAYER)
-				{
 					App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y + (*it)->dataToBlit->newHeight, (*it)->screenPosition.z, EXPLOSION);
-				}
 			}
 		}
 	}
 
-	return true;
+	return ret;
 }
 
 // -------------------------------------------------------------
@@ -127,7 +130,6 @@ const bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCol
 Obstacle::Obstacle()
 {}
 
-// TODO 3: Fill in a copy constructor
 Obstacle::Obstacle(const Obstacle& o) : anim(o.anim), worldPosition(o.worldPosition), shadowCast(o.shadowCast)
 {}
 
@@ -146,13 +148,15 @@ void Obstacle::Update()
 
 	float tempY = ((App->renderer->renderLineValues[lineToFollow]) / (float)SCREEN_SIZE);
 	float scaleValue = calculateScaleValue(tempY);
-
 	float newWidth = (float)anim.GetCurrentFrame().w * scaleValue;
 	float newHeight = (float)anim.GetCurrentFrame().h * scaleValue;
 
 	//Minimun size to avoid strange obstacle sizes
-	if (newHeight < 2.0f) newHeight = 2.0f;
-	if (newWidth < 1.0f) newWidth = 1.0f;
+	if (newHeight < 2.0f) 
+		newHeight = 2.0f;
+
+	if (newWidth < 1.0f) 
+		newWidth = 1.0f;
 	
 	//Set new projected position values for the obstacle (The projection is added by the scaleValue)
 	worldPosition.z = ((float)SCREEN_HEIGHT - tempY) / (App->renderer->horizonY / (float)MAX_Z);
@@ -166,12 +170,14 @@ void Obstacle::Update()
 	collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
 }
 
-float Obstacle::calculateScaleValue(float yRender)
+const float Obstacle::calculateScaleValue(float yRender) const
 {
 	float min = (float)SCREEN_HEIGHT - App->renderer->horizonY;
 	float max = (float)SCREEN_HEIGHT;
 	float toReturn = (yRender - min) / (max - min);
-	if (toReturn < 0.0f) toReturn = 0.0f;
+
+	if (toReturn < 0.0f) 
+		toReturn = 0.0f;
 
 	return toReturn;
 }

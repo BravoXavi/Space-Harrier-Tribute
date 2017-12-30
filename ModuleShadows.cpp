@@ -16,34 +16,32 @@ ModuleShadows::~ModuleShadows()
 
 bool ModuleShadows::Start()
 {
+	bool ret = true;
+
 	graphics = App->textures->Load("assets/shadow.png");
 	shadowPosition = { 2, 3, 43, 20 };
 
-	return true;
-}
-
-update_status ModuleShadows::PreUpdate()
-{
-	return UPDATE_CONTINUE;
+	return ret;
 }
 
 // Called before quitting
 bool ModuleShadows::CleanUp()
 {
-	return true;
+	bool ret = true;
+	return ret;
 }
 
-void ModuleShadows::DrawShadow(const float&x, const float& y, const float& z, const float& ownerWidth)
+const void ModuleShadows::DrawShadow(const float&x, const float& y, const float& z, const float& ownerWidth)
 {
 	float scaleValue = 1.0f - (z / (float)MAX_Z);
-	if (scaleValue < 0.0f) scaleValue = 0.0f;
+
+	if (scaleValue < 0.0f) 
+		scaleValue = 0.0f;
 
 	float scaledWidth = shadowPosition.w * scaleValue;
 	float scaledHeight = shadowPosition.h * scaleValue;
-
 	float xOwnerOffset = (x + (ownerWidth / 2.0f));
 	float scaledX = xOwnerOffset - (scaledWidth / 2.0f);
-
 	float minPosition = (float)SCREEN_HEIGHT - App->renderer->horizonY;
 	float scaledY = (scaleValue * ((float)SCREEN_HEIGHT - minPosition)) + minPosition;
 

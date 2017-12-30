@@ -15,7 +15,6 @@ ModuleSegaIntro::~ModuleSegaIntro()
 bool ModuleSegaIntro::Start()
 {
 	segaTimer = SDL_GetTicks();
-
 	logo = App->textures->Load("assets/segalogo.png");
 
 	if (fx == 0)
@@ -28,8 +27,9 @@ bool ModuleSegaIntro::Start()
 
 bool ModuleSegaIntro::CleanUp()
 {
+	bool ret = true;
 	App->textures->Unload(logo);
-	return true;
+	return ret;
 }
 
 update_status ModuleSegaIntro::Update()
@@ -39,7 +39,8 @@ update_status ModuleSegaIntro::Update()
 	Uint32 tick = SDL_GetTicks();
 	if (tick - segaTimer >= 4000.0f)
 	{
-		if(App->fade->isFading() == false) App->fade->FadeToBlack((Module*)App->scene_intro, this, 0.5f);
+		if (App->fade->isFading() == false)
+			App->fade->FadeToBlack((Module*)App->scene_intro, this, 0.5f);
 	}
 			
 	return UPDATE_CONTINUE;
