@@ -51,136 +51,145 @@ void AlienShip::Update()
 	screenPosition.z = worldPosition.z;
 
 	if (collider != nullptr)
-	{
 		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
-	}
 
 	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(enemyAnimation.GetCurrentFrame()));
 }
 
 //AlienShip movement patrons
-void AlienShip::selectMovementPatron(const int& moveSelector)
+const void AlienShip::selectMovementPatron(const int& moveSelector)
 {
 	float deltaUniDimensionalSpeed = uniDimensionalSpeed * App->time->getDeltaTime();
 	float deltaDepthSpeed = depthSpeed * App->time->getDeltaTime();
 
 	switch (moveSelector)
 	{
-	case 1:
-	{
-		if (worldPosition.x < (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w * 2.0f) && worldPosition.y == (float)SCREEN_HEIGHT / 3.0f)
+		case 1:
 		{
-			if (worldPosition.x > (float)SCREEN_WIDTH / 2.0f) worldPosition.x += deltaUniDimensionalSpeed*1.5f;
-			else worldPosition.x += deltaUniDimensionalSpeed;
-		}
-		else
-		{
-			if (worldPosition.y == (float)SCREEN_HEIGHT / 3.0f) worldPosition.y = 2.0f * ((float)SCREEN_HEIGHT / 3.0f);
-			worldPosition.x += -deltaUniDimensionalSpeed * 1.6f;
-			worldPosition.z -= deltaDepthSpeed;
-			worldPosition.y += 0.3f;
-			if (worldPosition.x < -(float)enemyAnimation.GetCurrentFrame().w) worldPosition.y = (float)SCREEN_HEIGHT / 3.0f;
-		}
-		break;
-	}
-	case 2:
-	{
-		if (worldPosition.y > (float)SCREEN_HEIGHT / 3.0f && worldPosition.z == 17.0f)
-		{
-			worldPosition.y -= deltaUniDimensionalSpeed;
-		}
-		else
-		{
-			if (worldPosition.z == 17.0f) App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
-			if (worldPosition.y < (3.0f * (float)SCREEN_HEIGHT / 4.0f))
+			if (worldPosition.x < (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w * 2.0f) && worldPosition.y == (float)SCREEN_HEIGHT / 3.0f)
 			{
-				worldPosition.y += deltaUniDimensionalSpeed;
-				worldPosition.z -= deltaDepthSpeed / 3.0f;
+				if (worldPosition.x > (float)SCREEN_WIDTH / 2.0f) 
+					worldPosition.x += deltaUniDimensionalSpeed*1.5f;
+				else 
+					worldPosition.x += deltaUniDimensionalSpeed;
 			}
 			else
 			{
-				worldPosition.z -= deltaDepthSpeed * 1.2f;
+				if (worldPosition.y == (float)SCREEN_HEIGHT / 3.0f) 
+					worldPosition.y = 2.0f * ((float)SCREEN_HEIGHT / 3.0f);
+
+				worldPosition.x += -deltaUniDimensionalSpeed * 1.6f;
+				worldPosition.z -= deltaDepthSpeed;
+				worldPosition.y += 0.3f;
+
+				if (worldPosition.x < -(float)enemyAnimation.GetCurrentFrame().w) 
+					worldPosition.y = (float)SCREEN_HEIGHT / 3.0f;
+			}
+			break;
+		}
+		case 2:
+		{
+			if (worldPosition.y > (float)SCREEN_HEIGHT / 3.0f && worldPosition.z == 17.0f)
+			{
+				worldPosition.y -= deltaUniDimensionalSpeed;
+			}
+			else
+			{
+				if (worldPosition.z == 17.0f) App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
+				if (worldPosition.y < (3.0f * (float)SCREEN_HEIGHT / 4.0f))
+				{
+					worldPosition.y += deltaUniDimensionalSpeed;
+					worldPosition.z -= deltaDepthSpeed / 3.0f;
+				}
+				else
+				{
+					worldPosition.z -= deltaDepthSpeed * 1.2f;
+				}
+			}
+			break;
+		}
+		case 3:
+		{
+			float angleOffset = cos(oscillationAngle);
+
+			if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) 
+				oscillationSpeed *= -1.0f;
+
+			if (oscillationSpeed > 0.0f) 
+				angleOffset *= -1.0f;
+
+			if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
+			{
+				App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
+				oscillationAngle = 0.0f;
 			}
 
-		}
-		break;
-	}
-	case 3:
-	{
-		float angleOffset = cos(oscillationAngle);
-
-		if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
-		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
-		if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
-		{
-			App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
-			oscillationAngle = 0.0f;
-		}
-
-		worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
-		oscillationAngle += oscillationSpeed;
-		oscillationRadius -= 0.2f;
-		worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
-		worldPosition.z += deltaDepthSpeed * 0.6f;
-
-		break;
-	}
-	case 4:
-	{
-		float angleOffset = cos(oscillationAngle);
-
-		if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
-		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
-
-		worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
-		oscillationAngle += oscillationSpeed;
-		oscillationRadius -= 0.2f;
-		
-		if (oscillationAngle > (3.0f*M_PI) / 2.0f)
-		{
-			worldPosition.z -= deltaDepthSpeed * 0.8f;
-			worldPosition.y += deltaUniDimensionalSpeed / 6.0f;
-		}
-		else
-		{
-			worldPosition.z += deltaDepthSpeed * 0.8f;
-			worldPosition.y -= deltaUniDimensionalSpeed / 6.0f;
-		}
-
-		break;
-	}
-	case 5:
-	{
-		float angleOffset = cos(oscillationAngle);
-
-		if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) oscillationSpeed *= -1.0f;
-		if (oscillationSpeed > 0.0f) angleOffset *= -1.0f;
-
-		if (oscillationRadius != 0.0f)
-		{
 			worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
 			oscillationAngle += oscillationSpeed;
 			oscillationRadius -= 0.2f;
 			worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
 			worldPosition.z += deltaDepthSpeed * 0.6f;
+			break;
 		}
-		else
+		case 4:
 		{
-			oscillationAngle = 0.0f;
-			if (worldPosition.x < (float)SCREEN_WIDTH / 2.0f) worldPosition.x -= deltaUniDimensionalSpeed / 4.0f;
-			else worldPosition.x += deltaUniDimensionalSpeed / 4.0f;
-			worldPosition.z -= deltaDepthSpeed * 1.5f;
+			float angleOffset = cos(oscillationAngle);
+
+			if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) 
+				oscillationSpeed *= -1.0f;
+
+			if (oscillationSpeed > 0.0f) 
+				angleOffset *= -1.0f;
+
+			worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+			oscillationAngle += oscillationSpeed;
+			oscillationRadius -= 0.2f;
+		
+			if (oscillationAngle > (3.0f*M_PI) / 2.0f)
+			{
+				worldPosition.z -= deltaDepthSpeed * 0.8f;
+				worldPosition.y += deltaUniDimensionalSpeed / 6.0f;
+			}
+			else
+			{
+				worldPosition.z += deltaDepthSpeed * 0.8f;
+				worldPosition.y -= deltaUniDimensionalSpeed / 6.0f;
+			}
+			break;
 		}
-
-
-		if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
+		case 5:
 		{
-			oscillationRadius = 0.0f;
-			App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
-		}
+			float angleOffset = cos(oscillationAngle);
 
-		break;
-	}
+			if (worldPosition.x == (float)(SCREEN_WIDTH + enemyAnimation.GetCurrentFrame().w)) 
+				oscillationSpeed *= -1.0f;
+
+			if (oscillationSpeed > 0.0f) 
+				angleOffset *= -1.0f;
+
+			if (oscillationRadius != 0.0f)
+			{
+				worldPosition.x = ((float)SCREEN_WIDTH / 2.0f) + angleOffset * oscillationRadius;
+				oscillationAngle += oscillationSpeed;
+				oscillationRadius -= 0.2f;
+				worldPosition.y -= abs(deltaUniDimensionalSpeed) / 6.0f;
+				worldPosition.z += deltaDepthSpeed * 0.6f;
+			}
+			else
+			{
+				oscillationAngle = 0.0f;
+				if (worldPosition.x < (float)SCREEN_WIDTH / 2.0f) worldPosition.x -= deltaUniDimensionalSpeed / 4.0f;
+				else worldPosition.x += deltaUniDimensionalSpeed / 4.0f;
+				worldPosition.z -= deltaDepthSpeed * 1.5f;
+			}
+
+			if (oscillationAngle >= 2.0f*M_PI || oscillationAngle <= -2.0f*M_PI)
+			{
+				oscillationRadius = 0.0f;
+				App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
+			}
+			break;
+		}
 	}	
 }
 

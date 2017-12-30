@@ -12,14 +12,15 @@ public:
 	~DragonPart();
 
 	void Update();
-	void selectMovementPatron(const int& moveSelector);
 	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector, const float& oscillationAngle) const;
+
+private:
+	const void selectMovementPatron(const int& moveSelector);
 
 private:
 	bool forward = true;
 	float oscillationX = 0.0f;
 	float oscillationY = 0.0f;
-
 	Uint32 fireBallTimer = 0;
 };
 

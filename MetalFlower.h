@@ -12,8 +12,11 @@ public:
 	~MetalFlower();
 
 	void Update();
-	void selectMovementPatron(const int& moveSelector);
 	Enemy* createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oscillationAngle) const;
+
+private:
+	const void selectMovementPatron(const int& moveSelector);
+
 };
 
 #endif // __METALFLOWER_H__

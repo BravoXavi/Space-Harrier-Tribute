@@ -7,11 +7,15 @@
 #include "ModuleEnemy.h"
 #include "ModulePlayer.h"
 
+//Each DragonPart can either be Head or Body/Tail. The only real difference between Head and Body/Tail is if superiorPart is nullptr or not. In case we set it as nullptr, this part will
+//act as the vulnerable point of the monster and the one leading the movement.
+
 DragonPart::DragonPart()
 {}
 
 DragonPart::DragonPart(const Enemy& e, const fPoint& pos, const collisionType& cType, const int& moveSelector, const float& oAngle)
 {
+	lifePoints = 8;
 	worldPosition = pos;
 	colType = cType;
 	collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)worldPosition.z, App->enemies);
@@ -24,8 +28,6 @@ DragonPart::DragonPart(const Enemy& e, const fPoint& pos, const collisionType& c
 	oscillationX = oAngle;
 	oscillationY = oAngle;
 	oscillationSpeed = 0.02f;
-
-	lifePoints = 8;
 }
 
 DragonPart::~DragonPart()
@@ -33,24 +35,26 @@ DragonPart::~DragonPart()
 	delete dataToBlit;
 }
 
-//DragonHead Update
+//DragonPart Update
 void DragonPart::Update()
 {
 	if (superiorBodyPart != nullptr && superiorBodyPart->to_delete)
 	{
 		collider->to_delete = true;
 		to_delete = true;
+
 		App->particles->AddParticle(App->particles->explosion, screenPosition.x, screenPosition.y, screenPosition.z, EXPLOSION);
 		App->player->playerScore += 2000.0f;
 	}
 
 	if (superiorBodyPart != nullptr)
-	{
 		lifePoints = superiorBodyPart->lifePoints;
-	}
-
+	
 	float zModifier = 1.0f - (worldPosition.z / (float)MAX_Z);
-	if (zModifier < 0.0f) zModifier = 0.0f;
+
+	if (zModifier < 0.0f) 
+		zModifier = 0.0f;
+
 	float newWidth = enemyAnimation.GetCurrentFrame().w * zModifier;
 	float newHeight = enemyAnimation.GetCurrentFrame().h * zModifier;
 
@@ -63,16 +67,15 @@ void DragonPart::Update()
 	screenPosition.z = worldPosition.z;
 
 	if (collider != nullptr)
-	{
 		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
-	}
 
 	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(enemyAnimation.GetCurrentFrame()));
 }
 
-//DragonHead movement patrons
-void DragonPart::selectMovementPatron(const int& moveSelector)
+//DragonPart movement patrons
+const void DragonPart::selectMovementPatron(const int& moveSelector)
 {
+	Uint32 shotCheck = SDL_GetTicks();
 	float deltaUniDimensionalSpeed = uniDimensionalSpeed * App->time->getDeltaTime();
 	float deltaDepthSpeed = depthSpeed * App->time->getDeltaTime();
 	worldPosition.z += deltaDepthSpeed;
@@ -98,9 +101,8 @@ void DragonPart::selectMovementPatron(const int& moveSelector)
 	oscillationX += oscillationSpeed/2;
 	oscillationY += oscillationSpeed;
 
-	if (oscillationAngle >= 2.0f*M_PI) oscillationAngle = 0.0f;
-
-	Uint32 shotCheck = SDL_GetTicks();
+	if (oscillationAngle >= 2.0f*M_PI) 
+		oscillationAngle = 0.0f;
 
 	if (superiorBodyPart == nullptr && worldPosition.z > 10.0f && shotCheck - fireBallTimer > 3000.0f)
 	{
@@ -111,7 +113,7 @@ void DragonPart::selectMovementPatron(const int& moveSelector)
 	}
 }
 
-//Return an instance of DragonHead
+//Return an instance of DragonPart
 Enemy* DragonPart::createEnemyInstance(const Enemy& e, const fPoint& pos, const collisionType& colType, const int& moveSelector, const float& oscillationAngle) const
 {
 	Enemy* instance = new DragonPart(e, pos, colType, moveSelector, oscillationAngle);

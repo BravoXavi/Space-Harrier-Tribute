@@ -33,18 +33,20 @@ MetalFlower::~MetalFlower()
 //MetalFlower Update
 void MetalFlower::Update()
 {
+	Uint32 actualTicks = SDL_GetTicks();
+
 	if (worldPosition.z <= MIN_Z || worldPosition.z > MAX_Z)
 	{
 		collider->to_delete = true;
 		to_delete = true;
 	}
 
-	Uint32 actualTicks = SDL_GetTicks();
+	if (enemyAnimation.GetCurrentFrame().x == 7) 
+		collider->colType = ND_ENEMY;
+	else 
+		collider->colType = ENEMY;
 
-	//MODIFY TO USE CURRENT_FRAME
-	if (enemyAnimation.GetCurrentFrame().x == 7) collider->colType = ND_ENEMY;
-	else collider->colType = ENEMY;
-
+	//Aside from the movements of the Enemy, the moveSet also defines if it's vulnerable or not and the way the animation behaves
 	if (moveSet == 1)
 	{
 		if (actualTicks - animationTimer > 2000.0f)
@@ -61,7 +63,8 @@ void MetalFlower::Update()
 				enemyAnimation.reverseAnimation = false;
 			}
 
-			if (!enemyAnimation.reverseAnimation) App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
+			if (!enemyAnimation.reverseAnimation) 
+				App->particles->AddParticle(App->particles->e_laser, worldPosition.x, worldPosition.y, worldPosition.z, E_LASER);
 		}
 	}
 	else
@@ -83,15 +86,13 @@ void MetalFlower::Update()
 	screenPosition.z = worldPosition.z;
 
 	if (collider != nullptr)
-	{
 		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
-	}
 
 	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(enemyAnimation.GetCurrentFrame()));
 }
 
 //MetalFlower movement patrons
-void MetalFlower::selectMovementPatron(const int& moveSelector)
+const void MetalFlower::selectMovementPatron(const int& moveSelector)
 {
 	float deltaUniDimensionalSpeed = uniDimensionalSpeed * App->time->getDeltaTime();
 	float deltaDepthSpeed = depthSpeed * App->time->getDeltaTime();
@@ -100,34 +101,37 @@ void MetalFlower::selectMovementPatron(const int& moveSelector)
 	worldPosition.y = 1.7f * ((float)SCREEN_HEIGHT / 3.0f) + sin(oscillationAngle) * oscillationRadius;
 	oscillationAngle += oscillationSpeed;
 
-	if (oscillationAngle >= 2.0f*M_PI) oscillationAngle = 0.0f;
+	if (oscillationAngle >= 2.0f*M_PI) 
+		oscillationAngle = 0.0f;
 
 	switch (moveSelector)
 	{
-	case 1:	
-		if (worldPosition.z >= 10.0f)
+		case 1:
 		{
-			if (collider->colType == ND_ENEMY)
+			if (worldPosition.z >= 10.0f)
 			{
-				oscillationRadius += 0.1f;
-				worldPosition.z -= deltaDepthSpeed;
+				if (collider->colType == ND_ENEMY)
+				{
+					oscillationRadius += 0.1f;
+					worldPosition.z -= deltaDepthSpeed;
+				}
 			}
+			else
+			{
+				moveSet++;
+			}
+			break;
 		}
-		else
+		case 2:
 		{
-			moveSet++;
+			oscillationSpeed = 0.05f;
+
+			if (oscillationRadius > 0.0f)
+				oscillationRadius -= 0.8f;
+
+			worldPosition.z += deltaDepthSpeed * 4.0f;
+			break;
 		}
-		break;
-
-	case 2:
-		oscillationSpeed = 0.05f;
-		if(oscillationRadius > 0.0f) oscillationRadius -= 0.8f;
-		worldPosition.z += deltaDepthSpeed * 4.0f;
-
-		break;
-
-	default:
-		break;
 	}
 }
 
