@@ -95,7 +95,7 @@ update_status ModulePlayer::Update()
 {
 	Uint32 tickCheck = SDL_GetTicks();
 
-	float speed = 200.0f * App->time->getDeltaTime();
+	float speed = 150.0f * App->time->getDeltaTime();
 	playerWidth = current_animation->GetCurrentFrame().w;
 	playerHeight = current_animation->GetCurrentFrame().h;
 	

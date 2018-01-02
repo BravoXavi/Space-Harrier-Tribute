@@ -180,11 +180,7 @@ const bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollid
 	{
 		if ((*it)->collider == moduleOwner)
 		{
-			if (otherCollider->colType == PLAYER)
-			{
-				LOG("ENEMY COLLIDED WITH PLAYER - PLAYER LOSES ONE LIVE");
-			}
-			else if (otherCollider->colType == P_LASER)
+			if (otherCollider->colType == P_LASER)
 			{
 				if (moduleOwner->colType != ND_ENEMY)
 				{
@@ -192,7 +188,6 @@ const bool ModuleEnemy::onCollision(Collider* moduleOwner, Collider* otherCollid
 					if ((*it)->lifePoints <= 0)
 					{
 						App->player->playerScore += 2000.0f;
-						//Enemy is dead
 						(*it)->collider->to_delete = true;
 						(*it)->to_delete = true;
 						App->particles->AddParticle(App->particles->explosion, (*it)->screenPosition.x, (*it)->screenPosition.y + (*it)->dataToBlit->newHeight, (*it)->screenPosition.z, EXPLOSION);
@@ -210,7 +205,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 	switch (selector)
 	{
 		case 1:
-			if(enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
+			if(enemyWaveCount == 0) 
+				App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 6)
 			{			
 				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT / 3.0f, 17.0f, ENEMY, 1);
@@ -224,7 +220,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 			break;
 
 		case 2:
-			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
+			if (enemyWaveCount == 0) 
+				App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 3)
 			{
 				switch (enemyWaveCount)
@@ -249,7 +246,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 			break;
 
 		case 3:
-			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
+			if (enemyWaveCount == 0) 
+				App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 11)
 			{
 				if( enemyWaveCount < 5 ) AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 3);
@@ -263,7 +261,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 			}
 			break;
 		case 4:
-			if (enemyWaveCount == 0) App->audio->PlayFx(tomosSFX);
+			if (enemyWaveCount == 0) 
+				App->audio->PlayFx(tomosSFX);
 			//METALFLOWER wave needs a certain oscillation angle for some of the enemies
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, 0.0f);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (2.0f * (float)M_PI) / 3.0f);
@@ -271,7 +270,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 			triggerEnemies = false;
 			break;
 		case 5:
-			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
+			if (enemyWaveCount == 0) 
+				App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 7)
 			{
 				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, ((3.0f * (float)SCREEN_HEIGHT) / 4.0f) - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 4);
@@ -284,7 +284,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 			}
 			break;
 		case 6:
-			if (enemyWaveCount == 0) App->audio->PlayFx(spaceshipSFX);
+			if (enemyWaveCount == 0) 
+				App->audio->PlayFx(spaceshipSFX);
 			if (enemyWaveCount < 6)
 			{
 				AddEnemy(alienShip, (float)-alienShip.enemyAnimation.GetCurrentFrame().w, (float)SCREEN_HEIGHT - ((float)FLOOR_Y_MIN / 2.0f), 2.0f, ENEMY, 5);
@@ -299,7 +300,8 @@ const void ModuleEnemy::enemyWave(const int& selector)
 			break;
 		case 7:
 			//METALFLOWER wave needs a certain oscillation angle for some of the enemies
-			if (enemyWaveCount == 0) App->audio->PlayFx(tomosSFX);
+			if (enemyWaveCount == 0) 
+				App->audio->PlayFx(tomosSFX);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, 0.0f);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (2.0f * (float)M_PI) / 3.0f);
 			App->enemies->AddEnemy(App->enemies->tomos, 0.0f, 0.0f, 20.0f, ENEMY, 1, (4.0f * (float)M_PI) / 3.0f);

@@ -32,6 +32,9 @@ AlienShip::~AlienShip()
 //AlienShip Update
 void AlienShip::Update()
 {
+	if (worldPosition.z > MAX_Z)
+		worldPosition.z = MAX_Z;
+
 	if (worldPosition.z <= MIN_Z || worldPosition.z >= MAX_Z)
 	{
 		collider->to_delete = true;

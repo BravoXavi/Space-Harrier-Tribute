@@ -36,6 +36,7 @@ bool ModuleParticles::Start()
 	p_laser.colType = P_LASER;
 
 	//EnemyLaser particle. The behaviour is the same as PlayerLaser but reversed and with a certain target
+	fireBall.fxIndex = App->audio->LoadFx("assets/sfx/BOSS_FireBall.wav");
 	e_laser.anim.frames.push_back({ 34, 105, 68, 45});
 	e_laser.anim.frames.push_back({ 117, 101, 62, 53 });
 	e_laser.anim.frames.push_back({ 201, 97, 54, 61 });
@@ -50,6 +51,7 @@ bool ModuleParticles::Start()
 	e_laser.colType = E_LASER;
 
 	//FireBall particle has the same behaviour as EnemyLaser particle
+	fireBall.fxIndex = App->audio->LoadFx("assets/sfx/BOSS_FireBall.wav");
 	fireBall.anim.frames.push_back({ 6, 280, 75, 69 });
 	fireBall.anim.frames.push_back({ 90, 282, 71, 64 });
 	fireBall.anim.frames.push_back({ 172, 278, 74, 71 });
@@ -142,10 +144,12 @@ void ModuleParticles::AddParticle(const Particle& particle, const float& x, cons
 		p->targetOffset.z = z;
 	}
 
-	if (colType == P_LASER || colType == E_LASER) 
+	if (colType == P_LASER || colType == E_LASER)
+	{
 		p->collider = App->collision->AddCollider({ 0, 0, 0, 0 }, colType, (int)z, App->particles);
+		App->audio->PlayFx(p->fxIndex, 0);
+	}
 
-	App->audio->PlayFx(p->fxIndex, 0);
 	active.push_back(p);
 }
 
@@ -189,7 +193,6 @@ Particle::~Particle()
 
 void Particle::Update(const int& updateSelector)
 {
-	LOG("Position Z: %f", position.z);
 	if (position.z >= MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
 	{
 		to_delete = true;

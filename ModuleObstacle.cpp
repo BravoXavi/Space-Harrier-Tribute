@@ -102,7 +102,6 @@ void ModuleObstacle::AddObstacle(const Obstacle& obstacle, const float& x, const
 
 const bool ModuleObstacle::onCollision(Collider* moduleOwner, Collider* otherCollider) 
 {
-	LOG("COLLISION!!!");
 	bool ret = true;
 
 	for (std::list<Obstacle*>::iterator it = active.begin(); it != active.end(); ++it)

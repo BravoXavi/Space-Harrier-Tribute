@@ -16,10 +16,10 @@
 
 ModuleStage::ModuleStage(bool active) : Module(active)
 {
-	scores["ZELLERYON"] = 10000;
-	scores["NEIKAR"] = 9000;
-	scores["PSYHOLIC"] = 7000;
-	scores["DOGJOE"] = 4000;
+	scores["ZELLERYON"] = 100000;
+	scores["NEIKAR"] = 90000;
+	scores["PSYHOLIC"] = 70000;
+	scores["DOGJOE"] = 40000;
 }
 
 ModuleStage::~ModuleStage()
@@ -30,12 +30,13 @@ bool ModuleStage::Start()
 {
 	LOG("Loading Game Stage");
 
+	App->collision->Enable();
 	App->player->Enable();
 	App->particles->Enable();
-	App->collision->Enable();
 	App->enemies->Enable();
 	App->obstacles->Enable();
 	App->shadows->Enable();
+	App->audio->Enable();
 
 	enemySpawnTimer = SDL_GetTicks();
 	
@@ -46,7 +47,7 @@ bool ModuleStage::Start()
 
 	introVoiceSFX = App->audio->LoadFx("assets/sfx/VOICE_Welcome.wav");
 	App->audio->PlayFx(introVoiceSFX);
-	App->audio->PlayMusic("assets/music/MOOT_Theme.wav", 0.0f);
+	App->audio->PlayMusic("assets/music/MOOT_Theme.ogg", 1.0f);
 
 	Ending = false;
 	App->renderer->stopUpdating = false;
@@ -121,7 +122,7 @@ update_status ModuleStage::Update()
 					if (App->enemies->waveNum == 8)
 					{
 						App->enemies->bossEncounter = true;
-						App->audio->PlayMusic("assets/music/MOOT_BossTheme.wav", 0.0f);
+						App->audio->PlayMusic("assets/music/MOOT_BossTheme.ogg", 0.0f);
 					}
 				}
 			}
@@ -146,7 +147,7 @@ update_status ModuleStage::Update()
 		EndingAndScoreBoard();
 	}
 
-	////While we keep on playing, obstacles will be generated with a certain random degree
+	//While we keep on playing, obstacles will be generated with a certain random degree
 	if(!App->renderer->stopUpdating) 
 		GenerateObstacles();
 
@@ -247,7 +248,7 @@ void ModuleStage::EndingAndScoreBoard()
 	if (App->player->lives > 0)
 	{
 		if( !App->audio->isMusicPlaying()) 
-			App->audio->PlayMusic("assets/music/MUSIC_Victory.wav", 0.0f);
+			App->audio->PlayMusic("assets/music/MUSIC_Victory.ogg", 0.0f);
 
 		end = "YOU WON!";
 		App->fontManager->greenFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
@@ -255,7 +256,7 @@ void ModuleStage::EndingAndScoreBoard()
 	else
 	{
 		if (!App->audio->isMusicPlaying()) 
-			App->audio->PlayMusic("assets/music/MUSIC_GameOver.wav", 0.0f);
+			App->audio->PlayMusic("assets/music/MUSIC_GameOver.ogg", 0.0f);
 
 		end = "GAME OVER";
 		App->fontManager->redFont->printText(end.c_str(), (float)((SCREEN_WIDTH / 2) - (end.length()*charWidth / 2)), 35.0f);
