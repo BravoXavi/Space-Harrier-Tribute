@@ -19,11 +19,70 @@ bool ModuleSceneIntro::Start()
 {
 	LOG("Loading Menu");
 	
-	menuTexture = App->textures->Load("assets/good.png");
-	backgroundRect.x = 10;
-	backgroundRect.y = 601;
-	backgroundRect.w = 400;
-	backgroundRect.h = 253;
+	menuTexture = App->textures->Load("assets/MenuFull.png");
+	backgroundRect.x = 1943;
+	backgroundRect.y = 57;
+	backgroundRect.w = 320;
+	backgroundRect.h = 224;
+
+	wavingGuy.frames.push_back({ 17, 5, 51, 35 });
+	wavingGuy.frames.push_back({ 69, 5, 51, 35 });
+	wavingGuy.frames.push_back({ 17, 40, 51, 35 });
+	wavingGuy.frames.push_back({ 69, 5, 51, 35 });
+	wavingGuy.speed = 1.5f;
+
+	eye.frames.push_back({ 17, 82, 31, 19 });
+	eye.frames.push_back({ 50, 82, 31, 19 });
+	eye.frames.push_back({ 84, 82, 31, 19 });
+	eye.frames.push_back({ 50, 82, 31, 19 });
+	eye.frames.push_back({ 17, 82, 31, 19 });
+	eye.frames.push_back({ 17, 103, 31, 19 });
+	eye.frames.push_back({ 50, 103, 31, 19 });
+	eye.frames.push_back({ 84, 103, 31, 19 });
+	eye.frames.push_back({ 50, 103, 31, 19 });
+	eye.frames.push_back({ 17, 103, 31, 19 });
+	eye.frames.push_back({ 17, 82, 31, 19 });
+	eye.frames.push_back({ 17, 123, 31, 19 });
+	eye.frames.push_back({ 50, 123, 31, 19 });
+	eye.frames.push_back({ 84, 123, 31, 19 });
+	eye.frames.push_back({ 50, 123, 31, 19 });
+	eye.frames.push_back({ 17, 123, 31, 19 });
+	eye.speed = 4.0f;
+
+	title.frames.push_back({ 129, 5, 158, 92 });
+	title.frames.push_back({ 129, 102, 158, 92 });
+	title.frames.push_back({ 129, 200, 158, 92 });
+	title.frames.push_back({ 295, 5, 158, 92 });
+	title.frames.push_back({ 295, 102, 158, 92 });
+	title.frames.push_back({ 295, 200, 158, 92 });
+	title.frames.push_back({ 459, 5, 158, 92 });
+	title.frames.push_back({ 459, 102, 158, 92 });
+	title.frames.push_back({ 459, 200, 158, 92 });
+	title.frames.push_back({ 623, 5, 158, 92 });
+	title.frames.push_back({ 623, 102, 158, 92 });
+	title.frames.push_back({ 623, 200, 158, 92 });
+	title.frames.push_back({ 786, 5, 158, 92 });
+	title.frames.push_back({ 786, 102, 158, 92 });
+	title.frames.push_back({ 786, 200, 158, 92 });
+	title.frames.push_back({ 948, 5, 158, 92 });
+	title.frames.push_back({ 948, 102, 158, 92 });
+	title.frames.push_back({ 948, 200, 158, 92 });
+	title.frames.push_back({ 1110, 5, 158, 92 });
+	title.frames.push_back({ 1110, 102, 158, 92 });
+	title.frames.push_back({ 1110, 200, 158, 92 });
+	title.frames.push_back({ 1275, 5, 158, 92 });
+	title.frames.push_back({ 1275, 102, 158, 92 });
+	title.frames.push_back({ 1275, 200, 158, 92 });
+	title.frames.push_back({ 1439, 5, 158, 92 });
+	title.frames.push_back({ 1439, 102, 158, 92 });
+	title.frames.push_back({ 1439, 200, 158, 92 });
+	title.frames.push_back({ 1603, 5, 158, 92 });
+	title.frames.push_back({ 1603, 102, 158, 92 });
+	title.frames.push_back({ 1603, 200, 158, 92 });
+	title.frames.push_back({ 1766, 5, 158, 92 });
+	title.frames.push_back({ 1766, 102, 158, 92 });
+	title.speed = 4.0f;
+	title.loop = false;
 
 	screenSize = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
@@ -48,7 +107,11 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	App->renderer->Blit(menuTexture, 0.0f, 0.0f, nullptr);//&backgroundRect, &screenSize);
+	App->renderer->Blit(menuTexture, 0.0f, 0.0f, &backgroundRect);//, SCREEN_WIDTH, SCREEN_HEIGHT);
+	App->renderer->Blit(menuTexture, 236, 38, &(wavingGuy.GetCurrentFrame()));
+	App->renderer->Blit(menuTexture, 67, 103, &(eye.GetCurrentFrame()));
+	App->renderer->Blit(menuTexture, 81, 2, &(title.GetCurrentFrame()));
+
 	App->fontManager->blueFont->printText("PRESS START", (SCREEN_WIDTH/2) - 40, SCREEN_HEIGHT/2 + 16);
 
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)

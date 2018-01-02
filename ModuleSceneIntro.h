@@ -23,7 +23,6 @@ private:
 	SDL_Rect screenSize;
 	uint fx = 0;
 	Animation wavingGuy;
-	Animation robot;
 	Animation eye;
 	Animation title;
 };
