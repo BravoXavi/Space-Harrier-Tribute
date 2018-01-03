@@ -17,5 +17,5 @@ In the website of _Space Harrier Tribute_ you will find detailed information on 
 
 Grab your jetpack and your handcannon, fasten your seatbelts and WELCOME TO THE FANTASY ZONE!
 
-🚀 [**Space Harrier Tribute - Game**](https://github.com/BravoXavi/Space-Harrier-Tribute/releases) - On Work
+🚀 [**Space Harrier Tribute - Game**](https://github.com/BravoXavi/Space-Harrier-Tribute/releases)  
 🚀 [**Space Harrier Tribute - Website**](https://bravoxavi.github.io/Space-Harrier-Tribute) 
