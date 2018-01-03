@@ -12,17 +12,24 @@ Original game Youtube gameplay: https://www.youtube.com/watch?v=Hzgrb-mjLaM
 
 ### Game Objective - HOW DO I WIN?!:
 
-_Space Harrier Tribute_ is a project that shows an approach of the original Space Harrier game programmed only using C++ and the SDL Library.
-In this project, different techniques will be used in order to recreate the original game without using the chips that the original developers had to use.
-All the resources (sprites, SFX and music) of the game where ripped using Gens KMOD emulator (http://gendev.spritesmind.net/page-gensK.html) or entirely by hand, trying to mimic on a
-maximum level the original game.
-In the website of _Space Harrier Tribute_ you will find detailed information on how to play, videos of the tribute and extra information about the original game.
+You're out there, alone, in the Fantasy Zone. With an unlimited ammo handcannon and your own skills you will have to dodge or
+destroy any obstacle, enemy or threat that tries to stop you. Fight through the level until you're ready to face the final
+boss, the big bad Green Dragon.
 
-Grab your jetpack and your handcannon, fasten your seatbelts and WELCOME TO THE FANTASY ZONE!
+Raise your score by taking down objectives while you dodge their attacks and make yourself a proud conqueror of the Fantasy Zone!
 
 ### Controls and Gameplay - HOW DO I PLAY?!:
 
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+# General Controls:
+	- W, A, S, D: Move around to dodge and position yourself!
+	- Space: Shoot your laser (Don't worry, lasers got no ammo).
+	- Enter/Return: Pause the game.
+
+# Debug keys:
+So, you wanna take a closer look to the game, don't you? Use this keys to give you a hint about some details of the game or just enjoying it without threats!
+
+	- F1 Key: Activate/Deactivate visible colliders.
+	- F2 Key: GODMODE! You won't be able to die on this mode so just enjoy the scenario!	
 
 ### Credits and License - WHO ARE YOU?!:
 
