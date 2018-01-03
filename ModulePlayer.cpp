@@ -75,6 +75,8 @@ bool ModulePlayer::Start()
 	if (App->renderer->horizonY != (float)FLOOR_Y_MIN) 
 		App->renderer->horizonY = (float)FLOOR_Y_MIN;
 
+	hit.animationWithoutLoopEnded = false;
+	hit.Reset();
 	current_animation = &run;
 
 	return true;
@@ -163,6 +165,9 @@ update_status ModulePlayer::Update()
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 			App->particles->AddParticle(App->particles->p_laser, position.x + (2.0f *(float)playerWidth) / 2.0f, position.y + (float)playerHeight / 3.0f, 1.0f, P_LASER);
+
+		if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+			godMode = !godMode;
 	}
 	else
 	{
@@ -219,7 +224,7 @@ update_status ModulePlayer::Update()
 	}
 
 	//If the player is in invulnerable state (just got hit) the sprite will appear with a certain alpha so the user can notice
-	if (invulnerableState) 
+	if (invulnerableState || godMode) 
 		SDL_SetTextureAlphaMod(graphics, 100);
 	else 
 		SDL_SetTextureAlphaMod(graphics, 250);
@@ -311,7 +316,7 @@ const bool ModulePlayer::onCollision(Collider* moduleOwner, Collider* otherColli
 {
 	bool ret = true;
 
-	if(!invulnerableState)
+	if(!invulnerableState && !godMode)
 	{
 		if (otherCollider->colType == NOLETHAL_D_OBSTACLE && !gotHit)
 		{

@@ -42,6 +42,7 @@ private:
 	int playerHeight = 0;
 	bool invulnerableState = false;
 	bool destroyed = false;
+	bool godMode = false;
 	const static float playerDepth;
 
 	Animation run;
