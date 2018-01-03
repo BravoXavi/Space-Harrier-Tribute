@@ -185,7 +185,7 @@ const bool Collider::CheckCollision(const SDL_Rect& r, const int& depth) const
 	if ( r.y > (this->rect.y + this->rect.h) || (r.y + r.h) < this->rect.y ) 
 		yColl = false;
 
-	if ( this->depth == depth || abs(this->depth - depth) <= 0.5) 
+	if ( this->depth == depth || abs(this->depth - depth) <= 1) 
 		zColl = true;
 	
 	return (xColl && yColl && zColl);

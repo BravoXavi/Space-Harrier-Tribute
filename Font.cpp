@@ -5,7 +5,6 @@
 #include "ModuleRender.h"
 #include <string>
 #include <iostream>
-#include <assert.h>
 
 Font::Font(const char* pathToImage, const char* traductor)
 {

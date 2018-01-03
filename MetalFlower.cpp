@@ -85,7 +85,7 @@ void MetalFlower::Update()
 	screenPosition.y += (-App->renderer->horizonY + (float)FLOOR_Y_MIN);
 	screenPosition.z = worldPosition.z;
 
-	if (collider != nullptr)
+	if( collider != nullptr )
 		collider->SetPos((int)screenPosition.x, (int)screenPosition.y, (int)worldPosition.z, (int)newWidth, (int)newHeight);
 
 	setRect(App->enemies->graphics, screenPosition.x, screenPosition.y, screenPosition.z, newWidth, newHeight, &(enemyAnimation.GetCurrentFrame()));

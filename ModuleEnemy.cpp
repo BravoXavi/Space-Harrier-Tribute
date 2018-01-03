@@ -50,7 +50,6 @@ bool ModuleEnemy::Start()
 	//DRAGON - Head
 	dragonHead.enemyAnimation.frames.push_back({ 347, 49, 65, 104 });
 	dragonHead.enemyAnimation.frames.push_back({ 268, 48, 69, 108 });
-
 	dragonHead.enemyAnimation.speed = 0.0f;
 	dragonHead.worldPosition = { 0, 0, MAX_Z };
 	dragonHead.colType = ENEMY;

@@ -196,7 +196,7 @@ void Particle::Update(const int& updateSelector)
 	if (position.z >= MAX_Z || position.z <= MIN_Z || anim.animationWithoutLoopEnded)
 	{
 		to_delete = true;
-		if(collider != nullptr) 
+		if(collider != nullptr)
 			collider->to_delete = true;
 	}
 
@@ -253,7 +253,7 @@ void Particle::Update(const int& updateSelector)
 
 	setDataToBlit(App->particles->graphics, newX, newY, position.z, newWidth, newHeight, &(anim.GetCurrentFrame()));
 
-	if (collider != nullptr)
+	if( collider != nullptr )
 		collider->SetPos((int)newX, (int)newY, (int)position.z, (int)newWidth, (int)newHeight);	
 }
 

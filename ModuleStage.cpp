@@ -16,10 +16,10 @@
 
 ModuleStage::ModuleStage(bool active) : Module(active)
 {
-	scores["ZELLERYON"] = 100000;
-	scores["NEIKAR"] = 90000;
-	scores["PSYHOLIC"] = 70000;
-	scores["DOGJOE"] = 40000;
+	scores["ZELLERYON"] = 170000;
+	scores["NEIKAR"] = 120000;
+	scores["PSYHOLIC"] = 80000;
+	scores["DOGJOE"] = 1;
 }
 
 ModuleStage::~ModuleStage()
@@ -263,16 +263,22 @@ void ModuleStage::EndingAndScoreBoard()
 	}
 	
 	int counter = 0;
+	bool playerAdded = false;
+	string player = "YOU";
+
 	for (std::map<const char*, int>::iterator it = scores.begin(); it != scores.end(); ++it)
 	{
+		if (App->player->playerScore > it->second && !playerAdded)
+		{
+			App->fontManager->redFont->printText(player.c_str(), (SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
+			App->fontManager->redFont->printText(to_string((int)App->player->playerScore).c_str(), ((3 * SCREEN_WIDTH) / 5), scoreBoardPosition + (charHeight + 5)*counter);
+			playerAdded = true;
+			counter++;
+		}
 		App->fontManager->redFont->printText(it->first, (float)(SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
 		App->fontManager->redFont->printText(to_string(it->second).c_str(), (float)((3 * SCREEN_WIDTH) / 5), (float)(scoreBoardPosition + (charHeight + 5)*counter));
 		counter++;
 	}
-
-	string player = "YOU";
-	App->fontManager->redFont->printText(player.c_str(), (SCREEN_WIDTH / 5), scoreBoardPosition + (charHeight + 5)*counter);
-	App->fontManager->redFont->printText(to_string((int)App->player->playerScore).c_str(), ((3 * SCREEN_WIDTH) / 5), scoreBoardPosition + (charHeight + 5)*counter);
 		
 	if (scoreBoardPosition > 80.0f) 
 		scoreBoardPosition -= 1.0f;

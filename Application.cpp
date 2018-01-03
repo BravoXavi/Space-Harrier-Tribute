@@ -70,7 +70,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(scene_stage, nullptr, 0.0f);
+	fade->FadeToBlack(sega_intro, nullptr, 0.0f);
 
 	return ret;
 }
@@ -79,7 +79,7 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
-	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN && scene_stage->IsEnabled())
 	{
 		if (App->totalPause == false)
 		{

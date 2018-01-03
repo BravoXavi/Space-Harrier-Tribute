@@ -9,17 +9,7 @@
 #include "FontManager.h"
 
 ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active)
-{}
-
-ModuleSceneIntro::~ModuleSceneIntro()
-{}
-
-// Load assets
-bool ModuleSceneIntro::Start()
 {
-	LOG("Loading Menu");
-	
-	menuTexture = App->textures->Load("assets/MenuFull.png");
 	backgroundRect.x = 1943;
 	backgroundRect.y = 57;
 	backgroundRect.w = 320;
@@ -83,6 +73,17 @@ bool ModuleSceneIntro::Start()
 	title.frames.push_back({ 1766, 102, 158, 92 });
 	title.speed = 4.0f;
 	title.loop = false;
+}
+
+ModuleSceneIntro::~ModuleSceneIntro()
+{}
+
+// Load assets
+bool ModuleSceneIntro::Start()
+{
+	LOG("Loading Menu");
+	
+	menuTexture = App->textures->Load("assets/MenuFull.png");
 
 	screenSize = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
@@ -91,6 +92,9 @@ bool ModuleSceneIntro::Start()
 
 	App->audio->StopMusic();
 	App->audio->PlayFx(fx);
+
+	title.animationWithoutLoopEnded = false;
+	title.Reset();
 
 	return true;
 }
@@ -107,14 +111,14 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	App->renderer->Blit(menuTexture, 0.0f, 0.0f, &backgroundRect);//, SCREEN_WIDTH, SCREEN_HEIGHT);
+	App->renderer->Blit(menuTexture, 0.0f, 0.0f, &backgroundRect);
 	App->renderer->Blit(menuTexture, 236, 38, &(wavingGuy.GetCurrentFrame()));
 	App->renderer->Blit(menuTexture, 67, 103, &(eye.GetCurrentFrame()));
 	App->renderer->Blit(menuTexture, 81, 2, &(title.GetCurrentFrame()));
 
-	App->fontManager->blueFont->printText("PRESS START", (SCREEN_WIDTH/2) - 40, SCREEN_HEIGHT/2 + 16);
+	App->fontManager->blueFont->printText("PRESS ENTER", (SCREEN_WIDTH/2) - 40, SCREEN_HEIGHT/2 + 16);
 
-	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
+	if(App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
 		App->fade->FadeToBlack((Module*)App->scene_stage, this, 0.5f);
 
 	return UPDATE_CONTINUE;
