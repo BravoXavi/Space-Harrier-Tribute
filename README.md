@@ -1,1 +1,0 @@
-# Space Harrier (MVJ)
