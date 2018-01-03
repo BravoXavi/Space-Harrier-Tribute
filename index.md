@@ -1,6 +1,14 @@
-# SPACE HARRIER TRIBUTE - A full C++ and SDL game!
+_This project is part of the Master on Videogame Development (Programming), coursed on the UPC School (Barcelona) and developed by Xavier Bravo Guillen._
 
-_This project is part of the Master on Videogame Development (Programming), coursed on the UPC School (Barcelona)._
+### Space Harrier? What's that?
+
+![](https://github.com/BravoXavi/Space-Harrier-Tribute/blob/master/spaceharrierbanner.png)
+
+Space Harrier is an arcade game that was developed by SEGA on 1985. It is considered the father of the third-person rail shooter games. This game
+has appeared in an long list of platforms as a single game or appearing on Collections, establishing itself as an absolute classic!
+
+Official Wikipedia page: https://en.wikipedia.org/wiki/Space_Harrier
+Original game Youtube gameplay: https://www.youtube.com/watch?v=Hzgrb-mjLaM
 
 ### Game Objective - HOW DO I WIN?!:
 
