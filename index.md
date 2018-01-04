@@ -10,6 +10,9 @@ has appeared in an long list of platforms as a single game or appearing on Colle
 Official Wikipedia page: https://en.wikipedia.org/wiki/Space_Harrier
 Original game Youtube gameplay: https://www.youtube.com/watch?v=Hzgrb-mjLaM
 
+The Tribute:
+
+
 ## Game Objective - HOW DO I WIN?!:
 
 You're out there, alone, in the Fantasy Zone. With an unlimited ammo handcannon and your own skills you will have to dodge or
@@ -29,6 +32,10 @@ Raise your score by taking down objectives while you dodge their attacks and mak
 So, you wanna take a closer look to the game, don't you? Use this keys to give you a hint about some details of the game or just enjoying it without threats!  
 - F1 Key: Activate/Deactivate visible colliders.
 - F2 Key: GODMODE! You won't be able to die on this mode so just enjoy the scenario!	
+
+## Download Space Harrier Tribute (Latest Release):
+
+https://github.com/BravoXavi/Space-Harrier-Tribute/releases/download/v1.0/SpaceHarrierTribute_v1.0.zip
 
 ## Credits and License - WHO ARE YOU?!:
 
