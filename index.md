@@ -8,7 +8,8 @@ Space Harrier is an arcade game that was developed by SEGA on 1985. It is consid
 has appeared in an long list of platforms as a single game or appearing on Collections, establishing itself as an absolute classic!
 
 Official Wikipedia page: https://en.wikipedia.org/wiki/Space_Harrier  
-Original game Youtube gameplay: https://www.youtube.com/watch?v=Hzgrb-mjLaM
+Original game Youtube gameplay:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Hzgrb-mjLaM" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
 The Tribute:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/teL41Dd8_38" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
