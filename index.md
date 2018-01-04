@@ -7,7 +7,7 @@ _This project is part of the Master on Videogame Development (Programming), cour
 Space Harrier is an arcade game that was developed by SEGA on 1985. It is considered the father of the third-person rail shooter games. This game
 has appeared in an long list of platforms as a single game or appearing on Collections, establishing itself as an absolute classic!
 
-Official Wikipedia page: https://en.wikipedia.org/wiki/Space_Harrier  
+Official Wikipedia page: [https://en.wikipedia.org/wiki/Space_Harrier](https://en.wikipedia.org/wiki/Space_Harrier)  
 Original game Youtube gameplay:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Hzgrb-mjLaM" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
@@ -36,10 +36,10 @@ So, you wanna take a closer look to the game, don't you? Use this keys to give y
 
 ## Download Space Harrier Tribute (Latest Release):
 
-https://github.com/BravoXavi/Space-Harrier-Tribute/releases/download/v1.0/SpaceHarrierTribute_v1.0.zip
+[Space Harrier Tribute v1.0](https://github.com/BravoXavi/Space-Harrier-Tribute/releases/download/v1.0/SpaceHarrierTribute_v1.0.zip)
 
 ## Credits and License - WHO ARE YOU?!:
 
 - **Author:** Xavier Bravo Guillen  
-- **Repository:** https://github.com/BravoXavi/Space-Harrier-Tribute
+- **Repository:** [https://github.com/BravoXavi/Space-Harrier-Tribute](https://github.com/BravoXavi/Space-Harrier-Tribute)
 - **License:** MIT License
